@@ -1,0 +1,11 @@
+-- TRACKER
+-- IN: Controls, Collision
+-- OUT: Generator, GUI
+
+-- The Tracker module stores and updates game information.
+-- This includes the bird's lives, the score, the time,
+-- difficulty stage, active effects, etc.
+
+-- The Tracker then sends this information to the GUI to display,
+-- and to the generator as arguments (the generator needs to know
+-- the current difficulty when generating obstacles and landscapes).
