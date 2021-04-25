@@ -1,0 +1,5 @@
+# VHDL (ModelSim + Quartus) and Notepad++
+
+# Notepad backups
+*.bak
+*/nppBackup/*
