@@ -33,8 +33,8 @@ ball_on <= '1' when ( ('0' & ball_x_pos <= '0' & pixel_column + size) and ('0' &
 
 -- Colours for pixel data on video signal
 -- Changing the background and ball colour by pushbuttons
-Red <=  pb1;
-Green <= (not pb2) and (not ball_on);
+Red <=  (not pb2);
+Green <= pb1 and (not ball_on);
 Blue <=  not ball_on;
 
 
@@ -43,13 +43,13 @@ begin
 	-- Move ball once every vertical sync
 	if (rising_edge(vert_sync)) then			
 		-- Bounce off top or bottom of the screen
-		if ( ('0' & ball_y_pos >= CONV_STD_LOGIC_VECTOR(479,10) - size) ) then
-			ball_y_motion <= - CONV_STD_LOGIC_VECTOR(2,10);
-		elsif (ball_y_pos <= size) then 
-			ball_y_motion <= CONV_STD_LOGIC_VECTOR(2,10);
+		if ( ('0' & y_pos >= CONV_STD_LOGIC_VECTOR(479,10) - size) ) then
+			ball_y_pos <= CONV_STD_LOGIC_VECTOR(479,10) - size;
+		elsif (y_pos <= size) then 
+			ball_y_pos <= CONV_STD_LOGIC_VECTOR(0,10) + size;
+		else
+			ball_y_pos <= y_pos;
 		end if;
-		-- Compute next ball Y position
-		ball_y_pos <= ball_y_pos + ball_y_motion;
 	end if;
 end process Move_Ball;
 
