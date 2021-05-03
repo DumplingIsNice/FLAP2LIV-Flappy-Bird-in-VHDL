@@ -11,4 +11,7 @@ See [course files](https://canvas.auckland.ac.nz/courses/60541/files/folder/Mini
 ### Simple Game Loop State Machine:
 ![state machine](./Resources/Simple_Game_Loop_State_Machine.svg)
 
-Generated with https://app.diagrams.net/
+### Expanded Functionality of System
+![process diagram](./Resources/CS305_Interim_Diagram.jpg)
+
+Generated with [app.diagrams.net](https://app.diagrams.net/) and [Miro](https://miro.com/app/)
