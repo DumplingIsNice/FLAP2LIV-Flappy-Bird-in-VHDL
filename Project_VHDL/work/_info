@@ -3,25 +3,103 @@ K3
 13
 cModel Technology
 dC:\Users\OEM\Documents\GitHub\CS305_VHDL_Project
-Echar_rom
-Z0 w1586098572
+Eball
+Z0 w1617181991
 Z1 DPx4 ieee 18 std_logic_unsigned 0 22 RYmj;=TK`k=k>D@Cz`zoB3
 Z2 DPx4 ieee 15 std_logic_arith 0 22 4`Y?g_lkdn;7UL9IiJck01
 Z3 DPx3 std 6 textio 0 22 5>J:;AW>W0[[dW0I6EN1Q0
 Z4 DPx4 ieee 14 std_logic_1164 0 22 5=aWaoGZSMWIcH0i^f`XF1
 Z5 dC:\Users\OEM\Documents\GitHub\CS305_VHDL_Project\Project_VHDL
-Z6 8C:/Users/OEM/Documents/GitHub/CS305_VHDL_Project/Project_VHDL/Modules/supplied_content/char_rom.vhd
-Z7 FC:/Users/OEM/Documents/GitHub/CS305_VHDL_Project/Project_VHDL/Modules/supplied_content/char_rom.vhd
+Z6 8C:/Users/OEM/Documents/GitHub/CS305_VHDL_Project/Project_VHDL/Testbenches/Provided/ball.vhd
+Z7 FC:/Users/OEM/Documents/GitHub/CS305_VHDL_Project/Project_VHDL/Testbenches/Provided/ball.vhd
+l0
+L7
+V;9P?DhB]fgC4`<Ygo;[=83
+Z8 OV;C;10.1d;51
+32
+Z9 !s108 1619936600.528000
+Z10 !s90 -reportprogress|300|-work|work|C:/Users/OEM/Documents/GitHub/CS305_VHDL_Project/Project_VHDL/Testbenches/Provided/ball.vhd|
+Z11 !s107 C:/Users/OEM/Documents/GitHub/CS305_VHDL_Project/Project_VHDL/Testbenches/Provided/ball.vhd|
+Z12 o-work work -O0
+Z13 tExplicit 1
+!s100 aDMM_OShGooVd9`=d1_ao1
+!i10b 1
+Abehavior
+R1
+R2
+R3
+R4
+DEx4 work 4 ball 0 22 ;9P?DhB]fgC4`<Ygo;[=83
+l20
+L14
+V?Z>KH9_>;hJ@m^CFBFY_g1
+R8
+32
+R9
+R10
+R11
+R12
+R13
+!s100 H^e34DT3mfSI=7?DlNg253
+!i10b 1
+Ebouncy_ball
+Z14 w1617181951
+Z15 DPx4 ieee 16 std_logic_signed 0 22 E>OLoMaBGQ?hbGgOoNXM^1
+R2
+R3
+R4
+R5
+Z16 8C:/Users/OEM/Documents/GitHub/CS305_VHDL_Project/Project_VHDL/Testbenches/Provided/bouncy_ball.vhd
+Z17 FC:/Users/OEM/Documents/GitHub/CS305_VHDL_Project/Project_VHDL/Testbenches/Provided/bouncy_ball.vhd
+l0
+L7
+VKRO6i_3]BP?_DNha1:E=`2
+R8
+32
+Z18 !s108 1619936601.083000
+Z19 !s90 -reportprogress|300|-work|work|C:/Users/OEM/Documents/GitHub/CS305_VHDL_Project/Project_VHDL/Testbenches/Provided/bouncy_ball.vhd|
+Z20 !s107 C:/Users/OEM/Documents/GitHub/CS305_VHDL_Project/Project_VHDL/Testbenches/Provided/bouncy_ball.vhd|
+R12
+R13
+!s100 [el<^Hmo]kJMEO?=M@RL<2
+!i10b 1
+Abehavior
+R15
+R2
+R3
+R4
+DEx4 work 11 bouncy_ball 0 22 KRO6i_3]BP?_DNha1:E=`2
+l22
+L14
+VZ^KY69X0J95o3Q[HdaG:W1
+R8
+32
+R18
+R19
+R20
+R12
+R13
+!s100 ^V0;QME3LH69mhXJcW>No3
+!i10b 1
+Echar_rom
+Z21 w1586098572
+R1
+R2
+R3
+R4
+R5
+Z22 8C:/Users/OEM/Documents/GitHub/CS305_VHDL_Project/Project_VHDL/Modules/supplied_content/char_rom.vhd
+Z23 FC:/Users/OEM/Documents/GitHub/CS305_VHDL_Project/Project_VHDL/Modules/supplied_content/char_rom.vhd
 l0
 L9
 VeB29ZO8zdk_[UQEA5>4[m2
-Z8 OV;C;10.1d;51
+R8
 32
-Z9 !s108 1617873017.938000
-Z10 !s90 -reportprogress|300|-work|work|-2002|-explicit|C:/Users/OEM/Documents/GitHub/CS305_VHDL_Project/Project_VHDL/Modules/supplied_content/char_rom.vhd|
-Z11 !s107 C:/Users/OEM/Documents/GitHub/CS305_VHDL_Project/Project_VHDL/Modules/supplied_content/char_rom.vhd|
-Z12 o-work work -2002 -explicit -O0
-Z13 tExplicit 1
+Z24 !s108 1617873017.938000
+Z25 !s90 -reportprogress|300|-work|work|-2002|-explicit|C:/Users/OEM/Documents/GitHub/CS305_VHDL_Project/Project_VHDL/Modules/supplied_content/char_rom.vhd|
+Z26 !s107 C:/Users/OEM/Documents/GitHub/CS305_VHDL_Project/Project_VHDL/Modules/supplied_content/char_rom.vhd|
+Z27 o-work work -2002 -explicit -O0
+R13
 !s100 8BTe6g2GzRlieT`CE33Ub1
 !i10b 1
 Asyn
@@ -35,34 +113,34 @@ L20
 VUGGH5bONVJ^>?H2Azm[I@2
 R8
 32
-R9
-R10
-R11
-R12
+R24
+R25
+R26
+R27
 R13
 !s100 T?kBoHZao@A_Sd@:b0D5d2
 !i10b 1
 Emouse
-Z14 w1617181975
+Z28 w1617181975
 R1
 R2
 R3
 R4
 R5
-Z15 8C:/Users/OEM/Documents/GitHub/CS305_VHDL_Project/Project_VHDL/Modules/supplied_content/mouse.vhd
-Z16 FC:/Users/OEM/Documents/GitHub/CS305_VHDL_Project/Project_VHDL/Modules/supplied_content/mouse.vhd
+Z29 8C:/Users/OEM/Documents/GitHub/CS305_VHDL_Project/Project_VHDL/Modules/supplied_content/mouse.vhd
+Z30 FC:/Users/OEM/Documents/GitHub/CS305_VHDL_Project/Project_VHDL/Modules/supplied_content/mouse.vhd
 l0
 L9
 VMI14R753K:Z;<O<dzd;i<3
-!s100 ]XHZZI:ABX]SP9GBRlUIc2
 R8
 32
-!i10b 1
-Z17 !s108 1617873018.207000
-Z18 !s90 -reportprogress|300|-work|work|-2002|-explicit|C:/Users/OEM/Documents/GitHub/CS305_VHDL_Project/Project_VHDL/Modules/supplied_content/mouse.vhd|
-Z19 !s107 C:/Users/OEM/Documents/GitHub/CS305_VHDL_Project/Project_VHDL/Modules/supplied_content/mouse.vhd|
-R12
+Z31 !s108 1617873018.207000
+Z32 !s90 -reportprogress|300|-work|work|-2002|-explicit|C:/Users/OEM/Documents/GitHub/CS305_VHDL_Project/Project_VHDL/Modules/supplied_content/mouse.vhd|
+Z33 !s107 C:/Users/OEM/Documents/GitHub/CS305_VHDL_Project/Project_VHDL/Modules/supplied_content/mouse.vhd|
+R27
 R13
+!s100 ]XHZZI:ABX]SP9GBRlUIc2
+!i10b 1
 Abehavior
 R1
 R2
@@ -72,33 +150,33 @@ DEx4 work 5 mouse 0 22 MI14R753K:Z;<O<dzd;i<3
 l44
 L18
 V=TW^:;NHk[=SW^Jn66OZA3
-!s100 747ZknDDV[UmC2lK^FK<I2
 R8
 32
-!i10b 1
-R17
-R18
-R19
-R12
+R31
+R32
+R33
+R27
 R13
+!s100 747ZknDDV[UmC2lK^FK<I2
+!i10b 1
 Evga_sync
-Z20 w1519684517
+Z34 w1519684517
 R1
 R2
 R3
 R4
 R5
-Z21 8C:/Users/OEM/Documents/GitHub/CS305_VHDL_Project/Project_VHDL/Modules/graphics/vga_sync.vhd
-Z22 FC:/Users/OEM/Documents/GitHub/CS305_VHDL_Project/Project_VHDL/Modules/graphics/vga_sync.vhd
+Z35 8C:/Users/OEM/Documents/GitHub/CS305_VHDL_Project/Project_VHDL/Modules/graphics/vga_sync.vhd
+Z36 FC:/Users/OEM/Documents/GitHub/CS305_VHDL_Project/Project_VHDL/Modules/graphics/vga_sync.vhd
 l0
 L7
 VNo71De?^LY>XReNFhT5bE0
 R8
 32
-Z23 !s108 1617873017.196000
-Z24 !s90 -reportprogress|300|-work|work|-2002|-explicit|C:/Users/OEM/Documents/GitHub/CS305_VHDL_Project/Project_VHDL/Modules/graphics/vga_sync.vhd|
-Z25 !s107 C:/Users/OEM/Documents/GitHub/CS305_VHDL_Project/Project_VHDL/Modules/graphics/vga_sync.vhd|
-R12
+Z37 !s108 1617873017.196000
+Z38 !s90 -reportprogress|300|-work|work|-2002|-explicit|C:/Users/OEM/Documents/GitHub/CS305_VHDL_Project/Project_VHDL/Modules/graphics/vga_sync.vhd|
+Z39 !s107 C:/Users/OEM/Documents/GitHub/CS305_VHDL_Project/Project_VHDL/Modules/graphics/vga_sync.vhd|
+R27
 R13
 !s100 EzPbFIbmV;hg7RF`7Uc]00
 !i10b 1
@@ -113,10 +191,49 @@ L13
 VY9UGI<f9U3Pm0Q:4OBS;g2
 R8
 32
-R23
-R24
-R25
-R12
+R37
+R38
+R39
+R27
 R13
 !s100 QXoa:boXbTi_9N8T36zV42
 !i10b 1
+Evga_sync_original
+Z40 w1619935961
+R1
+R2
+R3
+R4
+R5
+Z41 8C:/Users/OEM/Documents/GitHub/CS305_VHDL_Project/Project_VHDL/Testbenches/Provided/vga_sync_original.vhd
+Z42 FC:/Users/OEM/Documents/GitHub/CS305_VHDL_Project/Project_VHDL/Testbenches/Provided/vga_sync_original.vhd
+l0
+L7
+V0B4lSCQM<0bn5img?FSJc3
+!s100 8Vb_9oeHI<YWZ1jT:QbU83
+R8
+32
+!i10b 1
+Z43 !s108 1619936601.615000
+Z44 !s90 -reportprogress|300|-work|work|C:/Users/OEM/Documents/GitHub/CS305_VHDL_Project/Project_VHDL/Testbenches/Provided/vga_sync_original.vhd|
+Z45 !s107 C:/Users/OEM/Documents/GitHub/CS305_VHDL_Project/Project_VHDL/Testbenches/Provided/vga_sync_original.vhd|
+R12
+R13
+Aa
+R1
+R2
+R3
+R4
+DEx4 work 17 vga_sync_original 0 22 0B4lSCQM<0bn5img?FSJc3
+l18
+L13
+VcihePdDH?He28X<50:IKg2
+!s100 aJnNJedX[5V]1L`F3@Xz92
+R8
+32
+!i10b 1
+R43
+R44
+R45
+R12
+R13

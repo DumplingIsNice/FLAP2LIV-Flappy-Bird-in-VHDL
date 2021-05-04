@@ -19,11 +19,11 @@
 library IEEE;
 use IEEE.std_logic_1164.all;
 
---- Main ---
-entity main is
+--- MAINMENU ---
+entity MAINMENU is
 	port(clk : in std_logic;
 		game_mode : in std_logic;
 		start : in std_logic;
 		game_mode_out : out std_logic;
 		start_out : out std_logic);
-end entity main;
+end entity MAINMENU;
