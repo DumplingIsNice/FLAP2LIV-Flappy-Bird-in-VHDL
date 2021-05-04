@@ -1,6 +1,0 @@
-<?xml version="1.0" ?>
-<LOG_ROOT>
-	<PROJECT NAME="MAINMENU">
-		<CBX_INST_ENTRY INSTANCE_NAME="|physics_test_schematic|altpll0:inst|altpll:altpll_component" CBX_FILE_NAME="altpll0_altpll.v"/>
-	</PROJECT>
-</LOG_ROOT>
