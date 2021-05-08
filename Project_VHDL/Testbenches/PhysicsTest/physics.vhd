@@ -48,11 +48,11 @@ BEGIN
 		-- Move ball once every vertical sync
 		if (rising_edge(vert_sync)) then			
 			-- Stop off top or bottom of the screen
-			-- Note: Adding buffer of 8 to prevent sprite bounds overlap
-			if ((y + v) >= CONV_STD_LOGIC_VECTOR(471,10)) then
-				y <= CONV_STD_LOGIC_VECTOR(471,10);
-			elsif ((y + v) <= CONV_STD_LOGIC_VECTOR(7,10)) then 
-				y <= CONV_STD_LOGIC_VECTOR(7,10);
+			-- Note: Adding buffer of 6*8 to prevent sprite bounds overlap
+			if ((y + v) >= CONV_STD_LOGIC_VECTOR(431,10)) then
+				y <= CONV_STD_LOGIC_VECTOR(431,10);
+			elsif ((y + v) <= CONV_STD_LOGIC_VECTOR(0,10)) then 
+				y <= CONV_STD_LOGIC_VECTOR(0,10);
 			else
 				y <= y + v;
 			end if;
