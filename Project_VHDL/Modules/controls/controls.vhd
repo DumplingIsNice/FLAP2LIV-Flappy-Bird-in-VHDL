@@ -11,3 +11,23 @@
 -- it can apply a transform to the position of the bird.
 -- The Controls module needs to know when the game is paused.
 
+
+
+-- TEMP: proof for DIP switch, ssg, and button
+
+LIBRARY IEEE;
+USE  IEEE.NUMERIC_STD.all;
+USE  IEEE.STD_LOGIC_1164.all;
+
+ENTITY controls IS
+	PORT(
+		button		: IN STD_LOGIC;
+		switch		: IN STD_LOGIC;
+		ssg			: OUT STD_LOGIC_VECTOR(3 downto 0) := "0000");
+END ENTITY controls;
+
+ARCHITECTURE a OF controls IS
+BEGIN
+	ssg(0) <= '1' when (button = '0' and switch = '0') else '0';
+	ssg(1) <= '1' when (button = '0' and switch = '1') else '0';
+END ARCHITECTURE a;

@@ -1,51 +1,129 @@
--- GRAPHICS
--- IN: Controls, GUI, Generator
--- OUT: Collision, <output_device>
-
--- The Graphics module composites and renders the frames to be sent
--- to the display device (via a VGA formatter).
--- It must output at 640x480 at a 25MHz pixel rate (40ns per), for a
--- refresh rate of 60 Hz. We may need to alternate between two buffers,
--- one outputting while the other is being composited.
-
--- The inputs are layered with the following priority (low to high):
--- [background_layer +> objects] +> bird +> UI = Output_Render
--- Where background_layer and objects are pre-packaged when sent from
--- the Generator module [1].
-
--- The Graphics module also tracks the position of the bird, applying
--- primitive movement transforms to it to emulate physics (including
--- falling, and impulses upwards [2]).
-
--- Our frame buffer updates like a shift register, controlled by the
--- inputs from the Generator module. The bird sprite and GUI elements
--- are excepted from this, as they should remain within fixed bounds,
--- and so are overlayed between reading and outputting the buffer.
-
--- There are two channels for modifying the buffer:
--- * Parallel Shift Register: Input must be in form 480xNx..., replacing
---      the previous data. It is for populated arrays.
---      i.e. from Generator
--- * Indexed Pixels: Input must be in the form [x, y, R, G, B, ...],
---      replaces/overwrites the previous data, and is for what would
---      otherwise be sparse arrays.
---      i.e. GUI, Bird sprite
+--	GRAPHICS
+--
+--	Authors:		Callum McDowell
+--	Date:			May 2021
+--	Course:		CS305 Miniproject
+--
+--
+--	In:			GUI			(inputs mouse, bird, fonts, and other overlay rendering packets)
+--					GENERATOR	(inputs background and obstacles)
+--					VGA_SYNC		(update each pixel depending on pixel position) ------------------------------ NOTE: change DFF edge to clk? not col?
+--
+--	Out:			VGA_SYNC		(outputs rbg values for each pixel)
+--					COLLISION	(description)
+--
+--	Summary
+--
+--		GRAPHICS determines the rgb values for each pixel using the given column
+--		and row positioning. It overlays the background and obstacles layer with
+--		fonts from the GUI font_queue.
+--		Note that queue position 0 is reserved for the mouse cursor, and position
+--		1 for the bird sprite.
+--
+--		See GRAPHICS_PKG for more information on font queues and packets.
 
 
+LIBRARY IEEE;
+USE  IEEE.NUMERIC_STD.all;
+USE  IEEE.STD_LOGIC_1164.all;
+
+USE work.graphics_pkg.all;
 
 
--- [1] NOTE: The Generator module sends (in parallel) a number of pixel
--- columns to the Graphics module each frame, the number increasing
--- with speed (as the difficulty gets harder). This data holds the
--- background layer with generated objects overlayed. The collision
--- bits are also set here.
+ENTITY graphics IS
+	PORT(
+		clk, vert_sync				: IN STD_LOGIC;
+		
+		f_cols						: IN FONT_COLS;
+		f_rows						: IN FONT_ROWS;
+		f_scales						: IN FONT_SCALES;
+		f_addresses					: IN FONT_ADDRESSES;
+		f_red							: IN FONT_RED;
+		f_green						: IN FONT_GREEN;
+		f_blue						: IN FONT_BLUE;
+		
+		rom_output					: IN STD_LOGIC;
+		rom_address					: OUT STD_LOGIC_VECTOR (5 DOWNTO 0);
+		rom_row, rom_col			: OUT STD_LOGIC_VECTOR (2 DOWNTO 0);
+		
+		pixel_row, pixel_column	: IN STD_LOGIC_VECTOR(9 downto 0);
+		r,g,b							: OUT STD_LOGIC);
+END ENTITY graphics;
 
 
--- [2] NOTE: For physics, use a simple model based on v, a, t?
--- Constant acceleration downwards, opposed by infrequent sustained
--- impulse upwards (for smooth movement). The impulse (+a) decays
--- linearly over a set number of frames. Change in y direction is
--- proportional to velocity, a function of 'a' and 't' (frames).
--- v = a*t
--- Modularise this logic into a small component, so that the main
--- Graphics module only handles the x,y to render the bird sprite to.
+ARCHITECTURE behaviour OF graphics IS
+	SIGNAL vr, vg, vb				: STD_LOGIC := '0';
+	
+	-- f_BOUNDS_EVAL
+	-- Returns true if the current pixel position is inside the given bounds.
+	-- Bounds are col->col+(8*scale), row->row+(8*scale)
+	FUNCTION f_BOUNDS_EVAL (
+		col, row, f_col, f_row	: STD_LOGIC_VECTOR(9 downto 0);
+		scale, address				: STD_LOGIC_VECTOR(5 downto 0))
+		RETURN BOOLEAN IS
+		VARIABLE b		: BOOLEAN;
+		VARIABLE s		: STD_LOGIC_VECTOR(9 downto 0);
+	BEGIN
+		s := "0" & scale & "000";	-- shift left 3 (x8)
+		if ((UNSIGNED(col) > UNSIGNED(f_col)) and (UNSIGNED(col) < UNSIGNED(f_col) + UNSIGNED(s))
+		and (UNSIGNED(row) > UNSIGNED(f_row)) and (UNSIGNED(row) < UNSIGNED(f_row) + UNSIGNED(s))) then
+			b := TRUE;
+		else
+			b := FALSE;
+		end if;
+		return b;
+	END FUNCTION f_BOUNDS_EVAL;
+	
+	-- f_FONT_EVAL
+	-- Evaluate pixel using font bitmap
+	IMPURE FUNCTION f_FONT_EVAL (
+		col, row, f_col, f_row	: STD_LOGIC_VECTOR(9 downto 0);
+		scale, address				: STD_LOGIC_VECTOR(5 downto 0))
+		RETURN BOOLEAN IS
+		VARIABLE b		: BOOLEAN;
+	BEGIN
+		rom_address	<= address;
+		rom_col		<= STD_LOGIC_VECTOR(UNSIGNED(UNSIGNED(col) - UNSIGNED(f_col))/UNSIGNED(scale))(2 downto 0);
+		rom_row		<= STD_LOGIC_VECTOR(UNSIGNED(UNSIGNED(row) - UNSIGNED(f_row))/UNSIGNED(scale))(2 downto 0);
+		if (rom_output = '1') then
+			b := TRUE;
+		else
+			b := FALSE;
+		end if;
+		return b;
+	END FUNCTION f_FONT_EVAL;
+		
+		
+BEGIN
+
+	r <= vr;
+	g <= vg;
+	b <= vb;
+	
+
+-- Set r,g,b for every pixel (updating for each change in row or col)
+pixel_eval: PROCESS(clk, pixel_row, pixel_column)
+BEGIN
+	if (rising_edge(pixel_column(0))) then
+		vr <= '0';
+		vg <= '0';
+		vb <= '0';
+		
+		-- Loop downwards such that index 0 has overwrite priority
+		for k in FONT_QUEUE_LENGTH downto 0 loop
+			if (F_BOUNDS_EVAL(pixel_column, pixel_row, f_cols(k), f_rows(k), f_scales(k), f_addresses(k))) then
+				if (F_FONT_EVAL(pixel_column, pixel_row, f_cols(k), f_rows(k), f_scales(k), f_addresses(k))) then
+					vr <= f_red(k)(0);	-- TODO: expand support for bitvector rgb values
+					vg <= f_green(k)(0);
+					vb <= f_blue(k)(0);
+				end if;
+			end if;
+		end loop;
+		
+	end if;
+END PROCESS pixel_eval;
+
+
+
+
+END behaviour;
