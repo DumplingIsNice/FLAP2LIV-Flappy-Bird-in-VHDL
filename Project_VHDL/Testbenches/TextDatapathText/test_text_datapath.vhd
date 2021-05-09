@@ -9,14 +9,14 @@ end entity test_text_datapath;
 architecture my_test of test_text_datapath is
     signal  t_row, t_col	        : STD_LOGIC_VECTOR(9 DOWNTO 0);
 	signal  t_clock				    : STD_LOGIC;
-	signal	t_font_row, t_font_col  : STD_LOGIC_VECTOR(9 DOWNTO 0);
+	signal	t_font_row, t_font_col  : STD_LOGIC_VECTOR(2 DOWNTO 0);
     signal  t_scale                 : STD_LOGIC_VECTOR(2 DOWNTO 0);
     signal  t_o_address             : STD_LOGIC_VECTOR (5 DOWNTO 0);
     
     component text_datapath IS
 	PORT(   row, col	        : IN STD_LOGIC_VECTOR(9 DOWNTO 0);
             clock				: IN STD_LOGIC;
-            font_row, font_col  : OUT STD_LOGIC_VECTOR(9 DOWNTO 0);
+            font_row, font_col  : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
             scale               : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
             o_address           : OUT STD_LOGIC_VECTOR (5 DOWNTO 0)
         );

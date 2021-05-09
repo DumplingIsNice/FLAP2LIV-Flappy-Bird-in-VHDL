@@ -23,7 +23,7 @@ ENTITY text_datapath IS
 		-- character_address	:	IN STD_LOGIC_VECTOR (5 DOWNTO 0);
 		row, col	        :	IN STD_LOGIC_VECTOR(9 DOWNTO 0);
 		clock				: 	IN STD_LOGIC;
-		font_row, font_col  :   OUT STD_LOGIC_VECTOR(9 DOWNTO 0);
+		font_row, font_col  :   OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
         scale               :   OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
         o_address           :   OUT STD_LOGIC_VECTOR (5 DOWNTO 0)
 	);
@@ -32,7 +32,7 @@ END text_datapath;
 ARCHITECTURE path OF text_datapath IS
 
     -- Intermediate output signals.
-    SIGNAL	i_font_row, i_font_col  : STD_LOGIC_VECTOR(9 DOWNTO 0);
+    SIGNAL	i_font_row, i_font_col  : STD_LOGIC_VECTOR(2 DOWNTO 0);
     SIGNAL  i_scale                 : STD_LOGIC_VECTOR(2 DOWNTO 0);
     SIGNAL  i_o_address             : STD_LOGIC_VECTOR (5 DOWNTO 0);
 
@@ -43,7 +43,7 @@ ARCHITECTURE path OF text_datapath IS
         (   
             SIGNAL row, col                   : IN STD_LOGIC_VECTOR(9 DOWNTO 0);
             SIGNAL char                       : IN FONT_CHAR;
-            SIGNAL font_row, font_col         : OUT STD_LOGIC_VECTOR(9 DOWNTO 0);
+            SIGNAL font_row, font_col         : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
             SIGNAL scale                      : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
             SIGNAL o_address                  : OUT STD_LOGIC_VECTOR (5 DOWNTO 0)
         ) IS
@@ -60,8 +60,8 @@ ARCHITECTURE path OF text_datapath IS
             col_relative := col - char.x;
             row_relative := row - char.y;
 
-            font_col <= col_relative;
-            font_row <= row_relative;
+            font_col <= col_relative(2 downto 0);
+            font_row <= row_relative(2 downto 0);
             scale <= char.scale;
             o_address <= char.address;
         ELSE
