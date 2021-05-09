@@ -1,3 +1,30 @@
+--	PHYSICS
+--
+--	Authors:		Callum McDowell
+--	Date:			May 2021
+--	Course:		CS305 Miniproject
+--
+--
+--	In:			VGA_SYNC		(get vertical_sync to update each frame)
+--					MOUSE			(apply 'jump' effect on lclick)
+--
+--	Out:			GUI			(send bird y position (row) for rendering)
+--
+--	Summary
+--
+--		PHYSICS tracks the current bird location, applies vertical boundaries to its
+--		movement (to prevent the bird from moving out of the screen), and applies
+--		physics (impulse updwards on lclick, otherwise falling downwards).
+--
+--		The physics calculations are frame dependent. By default they are locked to
+--		60Hz (vert_sync).
+--
+--		The bird moves v rows each frame. The velocity (v) decrements to GRAVITY over
+--		time, creating the traditional bouncy, floaty movement when the bird reaches
+--		the apex of each jump.
+
+
+
 LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.all;
 USE  IEEE.STD_LOGIC_ARITH.all;
@@ -14,14 +41,11 @@ CONSTANT GRAVITY			: STD_LOGIC_VECTOR(9 downto 0)	:= CONV_STD_LOGIC_VECTOR(3,10)
 CONSTANT DECEL				: STD_LOGIC_VECTOR(9 downto 0)	:= CONV_STD_LOGIC_VECTOR(1,10);		-- rate of movement towards equillibrium (GRAVITY)
 CONSTANT IMPULSE			: STD_LOGIC_VECTOR(9 downto 0)	:= CONV_STD_LOGIC_VECTOR(10,10);		-- rate of ascent
 
-
---CONSTANT GRAVITY			: STD_LOGIC_VECTOR(9 downto 0)	:= CONV_STD_LOGIC_VECTOR(32,10);		-- top to bottom of screen in 0.5s
---CONSTANT IMPULSE			: STD_LOGIC_VECTOR(9 downto 0)	:= CONV_STD_LOGIC_VECTOR(128,10);	-- 
----- we must disable input for a short time after it is first received as mouse clicks are significantly longer than one 25Mhz clock cycle
+---- we could disable input for a short time after it is first received as mouse clicks are significantly longer than one 25Mhz clock cycle
 ---- at 60Hz clk for a 50ms delay the count would be 3
----- for reference, average human reaction time is 150-300ms
+---- for reference, average human reaction time is 150-250ms
 
-SIGNAL v, v_temp			: std_logic_vector(9 downto 0);
+SIGNAL v						: std_logic_vector(9 downto 0);
 SIGNAL y						: std_logic_vector(9 downto 0) := CONV_STD_LOGIC_VECTOR(240,10);		-- start in middle of screen
 
 BEGIN
@@ -30,8 +54,6 @@ BEGIN
 	BEGIN
 		if (rising_edge(vert_sync)) then
 			if (mouse_lclick = '1') then
-				--v_temp <= v;
-				--v <= v_temp + IMPULSE;
 				v <= - IMPULSE;		-- 0 is top; thus negative is up
 			else
 				if (v + DECEL >= GRAVITY) then

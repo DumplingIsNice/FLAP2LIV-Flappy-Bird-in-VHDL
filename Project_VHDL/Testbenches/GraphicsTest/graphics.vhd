@@ -1,31 +1,7 @@
---	GRAPHICS
---
---	Authors:		Callum McDowell
---	Date:			May 2021
---	Course:		CS305 Miniproject
---
---
---	In:			GUI			(inputs mouse, bird, fonts, and other overlay rendering packets)
---					GENERATOR	(inputs background and obstacles)
---					VGA_SYNC		(update each pixel depending on pixel position) ------------------------------ NOTE: change DFF edge to clk? not col?
---
---	Out:			VGA_SYNC		(outputs rbg values for each pixel)
---					COLLISION	(description)
---
---	Summary
---
---		GRAPHICS determines the rgb values for each pixel using the given column
---		and row positioning. It overlays the background and obstacles layer with
---		fonts from the GUI font_queue.
---		Note that queue position 0 is reserved for the mouse cursor, and position
---		1 for the bird sprite.
---
---		See GRAPHICS_PKG for more information on font queues and packets.
-
-
 LIBRARY IEEE;
 USE  IEEE.NUMERIC_STD.all;
 USE  IEEE.STD_LOGIC_1164.all;
+
 
 USE work.graphics_pkg.all;
 
@@ -38,9 +14,6 @@ ENTITY graphics IS
 		f_rows						: IN FONT_ROWS;
 		f_scales						: IN FONT_SCALES;
 		f_addresses					: IN FONT_ADDRESSES;
-		f_red							: IN FONT_RED;
-		f_green						: IN FONT_GREEN;
-		f_blue						: IN FONT_BLUE;
 		
 		rom_output					: IN STD_LOGIC;
 		rom_address					: OUT STD_LOGIC_VECTOR (5 DOWNTO 0);
@@ -100,6 +73,10 @@ BEGIN
 	g <= vg;
 	b <= vb;
 	
+	
+-- for each pixel (col, then row) perform ifs for font_queue
+-- modularise these checks into a function
+
 
 -- Set r,g,b for every pixel (updating for each change in row or col)
 pixel_eval: PROCESS(clk, pixel_row, pixel_column)
@@ -109,17 +86,43 @@ BEGIN
 		vg <= '0';
 		vb <= '0';
 		
-		-- Loop downwards such that index 0 has overwrite priority
-		for k in FONT_QUEUE_LENGTH downto 0 loop
-			if (F_BOUNDS_EVAL(pixel_column, pixel_row, f_cols(k), f_rows(k), f_scales(k), f_addresses(k))) then
-				if (F_FONT_EVAL(pixel_column, pixel_row, f_cols(k), f_rows(k), f_scales(k), f_addresses(k))) then
-					vr <= f_red(k)(0);	-- TODO: expand support for bitvector rgb values
-					vg <= f_green(k)(0);
-					vb <= f_blue(k)(0);
-				end if;
+		-- For each packet in the font queue:
+		-- (lower numbers have higher priority, 0 overwrites all)
+		if (F_BOUNDS_EVAL(pixel_column, pixel_row, f_cols(4), f_rows(4), f_scales(4), f_addresses(4))) then
+			if (F_FONT_EVAL(pixel_column, pixel_row, f_cols(4), f_rows(4), f_scales(4), f_addresses(4))) then
+				vr <= '0';
+				vg <= '1';
+				vb <= '1';
 			end if;
-		end loop;
-		
+		end if;
+		if (F_BOUNDS_EVAL(pixel_column, pixel_row, f_cols(3), f_rows(3), f_scales(3), f_addresses(3))) then
+			if (F_FONT_EVAL(pixel_column, pixel_row, f_cols(3), f_rows(3), f_scales(3), f_addresses(3))) then
+				vr <= '0';
+				vg <= '1';
+				vb <= '1';
+			end if;
+		end if;
+		if (F_BOUNDS_EVAL(pixel_column, pixel_row, f_cols(2), f_rows(2), f_scales(2), f_addresses(2))) then
+			if (F_FONT_EVAL(pixel_column, pixel_row, f_cols(2), f_rows(2), f_scales(2), f_addresses(2))) then
+				vr <= '0';
+				vg <= '1';
+				vb <= '1';
+			end if;
+		end if;
+		if (F_BOUNDS_EVAL(pixel_column, pixel_row, f_cols(1), f_rows(1), f_scales(1), f_addresses(1))) then
+			if (F_FONT_EVAL(pixel_column, pixel_row, f_cols(1), f_rows(1), f_scales(1), f_addresses(1))) then
+				vr <= '0';
+				vg <= '1';
+				vb <= '0';
+			end if;
+		end if;
+		if (F_BOUNDS_EVAL(pixel_column, pixel_row, f_cols(0), f_rows(0), f_scales(0), f_addresses(0))) then	
+			if (F_FONT_EVAL(pixel_column, pixel_row, f_cols(0), f_rows(0), f_scales(0), f_addresses(0))) then
+				vr <= '1';
+				vg <= '0';
+				vb <= '0';
+			end if;
+		end if;	
 	end if;
 END PROCESS pixel_eval;
 
