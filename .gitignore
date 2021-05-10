@@ -4,19 +4,6 @@
 *.bak
 */nppBackup/*
 
-# Quartus Project Files
-*/db/*
-*/incremental_db/*
-*/output_files/*
-*/simulation/modelsim/*
-*.mti
-*.mpf
-*.cdb
-*.hdb
-*.qsf
-*.qws
-
-
 
 # Adding from: https://gist.github.com/nhasbun/71918796044b7ba89d6662133495f754
 
