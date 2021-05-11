@@ -53,14 +53,17 @@ END ENTITY graphics;
 
 
 ARCHITECTURE behaviour OF graphics IS
-	SIGNAL vr,vg,vb				: FONT_COLOUR_PACKET		:= (others => '0');
+	SIGNAL vr,vg,vb								: FONT_COLOUR_PACKET		:= (others => '0');
+	SIGNAL vr_bird,vg_bird,vb_bird			: FONT_COLOUR_PACKET		:= (others => '0');
+	SIGNAL vr_cursor,vg_cursor,vb_cursor	: FONT_COLOUR_PACKET		:= (others => '0');
+	SIGNAL bird_flag, cursor_flag				: STD_LOGIC					:= '0';
 
 	-- f_BOUNDS_EVAL
 	-- Returns true if the current pixel position is inside the given bounds.
 	-- Bounds are col->col+(8*scale), row->row+(8*scale)
 	FUNCTION f_BOUNDS_EVAL (
 		col, row, f_col, f_row	: STD_LOGIC_VECTOR(9 downto 0);
-		scale, address				: STD_LOGIC_VECTOR(5 downto 0))
+		scale							: STD_LOGIC_VECTOR(5 downto 0))
 		RETURN BOOLEAN IS
 		VARIABLE b		: BOOLEAN;
 		VARIABLE s		: STD_LOGIC_VECTOR(9 downto 0);
@@ -112,7 +115,7 @@ BEGIN
 		
 		-- Loop downwards such that index 0 has overwrite priority
 		for k in FONT_QUEUE_LENGTH downto 0 loop
-			if (F_BOUNDS_EVAL(pixel_column, pixel_row, f_cols(k), f_rows(k), f_scales(k), f_addresses(k))) then
+			if (F_BOUNDS_EVAL(pixel_column, pixel_row, f_cols(k), f_rows(k), f_scales(k))) then
 				if (F_FONT_EVAL(pixel_column, pixel_row, f_cols(k), f_rows(k), f_scales(k), f_addresses(k))) then
 					vr <= f_red(k);	-- TODO: expand support for bitvector rgb values
 					vg <= f_green(k);
@@ -120,6 +123,55 @@ BEGIN
 				end if;
 			end if;
 		end loop;
+
+--		-- Priority Channel: Bird (secondary)
+--		if (F_BOUNDS_EVAL(pixel_column, pixel_row, f_cols(1), f_rows(1), f_scales(1))) then
+--			if (F_FONT_EVAL(pixel_column, pixel_row, f_cols(1), f_rows(1), f_scales(1), f_addresses(1))) then
+--				vr_bird <= f_red(1);	-- TODO: expand support for bitvector rgb values
+--				vg_bird <= f_green(1);
+--				vb_bird <= f_blue(1);
+--				bird_flag <= '1';
+--			end if;
+--		end if;
+--		
+--		-- Priority Channel: Cursor (primary)
+--		if (F_BOUNDS_EVAL(pixel_column, pixel_row, f_cols(0), f_rows(0), f_scales(0))) then
+--			if (F_FONT_EVAL(pixel_column, pixel_row, f_cols(0), f_rows(0), f_scales(0), f_addresses(0))) then
+--				vr_cursor <= f_red(0);	-- TODO: expand support for bitvector rgb values
+--				vg_cursor <= f_green(0);
+--				vb_cursor <= f_blue(0);
+--				cursor_flag <= '1';
+--			end if;
+--		end if;
+--		
+--		-- MUX priority channels
+--		if (cursor_flag = '1') then
+--			vr <= vr_cursor;
+--			vg <= vg_cursor;
+--			vb <= vb_cursor;
+--		elsif (bird_flag = '1') then
+--			vr <= vr_bird;
+--			vg <= vg_bird;
+--			vb <= vb_bird;
+--		end if;
+--		
+--		cursor_flag <= '0';	-- reset
+--		bird_flag <= '0';
+		
+		
+--		-- WARNING: Is overwritten with position 0 in font queue.
+--		-- This is as F_BOUNDS_EVAL will return true when we want it, but F_FONT_EVAL will return true unreliably;
+--		--	F_FONT_EVAL should only be considered true when WITHIN the corresponding bounds.
+--		-- In this situation F_FONT_EVAL will return the mask for whichever the current address is -- thus overwriting everything with the last, k.
+--
+--		for k in FONT_QUEUE_LENGTH downto 0 loop
+--			if (F_BOUNDS_EVAL(pixel_column, pixel_row, f_cols(k), f_rows(k), f_scales(k))
+--				and (F_FONT_EVAL(pixel_column, pixel_row, f_cols(k), f_rows(k), f_scales(k), f_addresses(k)))) then
+--					vr <= f_red(k);	-- TODO: expand support for bitvector rgb values
+--					vg <= f_green(k);
+--					vb <= f_blue(k);
+--			end if;
+--		end loop;
 		
 	end if;
 END PROCESS pixel_eval;

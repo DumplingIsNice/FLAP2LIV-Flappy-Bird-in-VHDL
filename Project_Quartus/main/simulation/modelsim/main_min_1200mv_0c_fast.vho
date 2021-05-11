@@ -16,7 +16,7 @@
 -- PROGRAM "Quartus II 64-Bit"
 -- VERSION "Version 13.0.0 Build 156 04/24/2013 SJ Full Version"
 
--- DATE "05/11/2021 14:55:51"
+-- DATE "05/11/2021 15:41:01"
 
 -- 
 -- Device: Altera EP3C16F484C6 Package FBGA484
@@ -1780,6 +1780,14 @@ SIGNAL \inst1|red_out~0_combout\ : std_logic;
 SIGNAL \inst1|red_out[2]~feeder_combout\ : std_logic;
 SIGNAL \inst1|red_out[1]~feeder_combout\ : std_logic;
 SIGNAL \inst1|red_out[0]~feeder_combout\ : std_logic;
+SIGNAL \inst1|v_count\ : std_logic_vector(9 DOWNTO 0);
+SIGNAL \inst1|red_out\ : std_logic_vector(3 DOWNTO 0);
+SIGNAL \inst1|pixel_row\ : std_logic_vector(9 DOWNTO 0);
+SIGNAL \inst1|pixel_column\ : std_logic_vector(9 DOWNTO 0);
+SIGNAL \inst1|h_count\ : std_logic_vector(9 DOWNTO 0);
+SIGNAL \inst1|green_out\ : std_logic_vector(3 DOWNTO 0);
+SIGNAL \inst1|blue_out\ : std_logic_vector(3 DOWNTO 0);
+SIGNAL \inst|altpll_component|auto_generated|wire_pll1_clk\ : std_logic_vector(4 DOWNTO 0);
 SIGNAL \inst4|PACKET_CHAR1\ : std_logic_vector(7 DOWNTO 0);
 SIGNAL \inst4|OUTCNT\ : std_logic_vector(3 DOWNTO 0);
 SIGNAL \inst4|INCNT\ : std_logic_vector(3 DOWNTO 0);
@@ -1804,14 +1812,6 @@ SIGNAL \inst4|filter\ : std_logic_vector(7 DOWNTO 0);
 SIGNAL \inst4|inhibit_wait_count\ : std_logic_vector(11 DOWNTO 0);
 SIGNAL \inst5|y\ : std_logic_vector(9 DOWNTO 0);
 SIGNAL \inst4|cursor_row\ : std_logic_vector(9 DOWNTO 0);
-SIGNAL \inst1|v_count\ : std_logic_vector(9 DOWNTO 0);
-SIGNAL \inst1|red_out\ : std_logic_vector(3 DOWNTO 0);
-SIGNAL \inst1|pixel_row\ : std_logic_vector(9 DOWNTO 0);
-SIGNAL \inst1|pixel_column\ : std_logic_vector(9 DOWNTO 0);
-SIGNAL \inst1|h_count\ : std_logic_vector(9 DOWNTO 0);
-SIGNAL \inst1|green_out\ : std_logic_vector(3 DOWNTO 0);
-SIGNAL \inst1|blue_out\ : std_logic_vector(3 DOWNTO 0);
-SIGNAL \inst|altpll_component|auto_generated|wire_pll1_clk\ : std_logic_vector(4 DOWNTO 0);
 SIGNAL \inst4|ALT_INV_MOUSE_CLK_FILTER~clkctrl_outclk\ : std_logic;
 SIGNAL \ALT_INV_button~input_o\ : std_logic;
 SIGNAL \inst4|ALT_INV_send_data~q\ : std_logic;
