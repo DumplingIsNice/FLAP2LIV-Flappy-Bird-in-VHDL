@@ -4,10 +4,16 @@ use  IEEE.STD_LOGIC_1164.all;
 use  IEEE.STD_LOGIC_ARITH.all;
 use  IEEE.STD_LOGIC_UNSIGNED.all;
 
+use work.graphics_pkg.all;
+
+
 ENTITY VGA_SYNC IS
-	PORT(	clock_25Mhz, red, green, blue		: IN	STD_LOGIC;
-			red_out, green_out, blue_out, horiz_sync_out, vert_sync_out	: OUT	STD_LOGIC;
-			pixel_row, pixel_column: OUT STD_LOGIC_VECTOR(9 DOWNTO 0));
+	PORT(	clock_25Mhz					: IN	STD_LOGIC;
+			red, green, blue			: IN FONT_COLOUR_PACKET;
+	
+			red_out, green_out, blue_out	: OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+			horiz_sync_out, vert_sync_out	: OUT	STD_LOGIC;
+			pixel_row, pixel_column			: OUT STD_LOGIC_VECTOR(9 DOWNTO 0));
 END VGA_SYNC;
 
 ARCHITECTURE a OF VGA_SYNC IS
@@ -79,9 +85,14 @@ BEGIN
 	END IF;
 
 -- Put all video signals through DFFs to elminate any delays that cause a blurry image
-		red_out <= red AND video_on;
-		green_out <= green AND video_on;
-		blue_out <= blue AND video_on;
+		if (video_on = '1') then
+			red_out <= red;
+		else
+			red_out <= (others => '0');
+		end if;
+		
+		if (video_on = '1') then green_out <= green;	else green_out	<= (others => '0'); end if;
+		if (video_on = '1') then blue_out <= blue;	else blue_out	<= (others => '0'); end if;
 		horiz_sync_out <= horiz_sync;
 		vert_sync_out <= vert_sync;
 

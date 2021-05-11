@@ -47,9 +47,9 @@ TYPE font_rows			IS ARRAY (FONT_QUEUE_LENGTH downto 0) OF std_logic_vector(9 dow
 TYPE font_scales		IS ARRAY (FONT_QUEUE_LENGTH downto 0) OF std_logic_vector(5 downto 0);
 TYPE font_addresses	IS ARRAY (FONT_QUEUE_LENGTH downto 0) OF std_logic_vector(5 downto 0);
 
-TYPE font_red			IS ARRAY (FONT_QUEUE_LENGTH downto 0) OF std_logic_vector(3 downto 0);
-TYPE font_green		IS ARRAY (FONT_QUEUE_LENGTH downto 0) OF std_logic_vector(3 downto 0);
-TYPE font_blue			IS ARRAY (FONT_QUEUE_LENGTH downto 0) OF std_logic_vector(3 downto 0);
+SUBTYPE font_colour_packet IS std_logic_vector(3 downto 0);
+TYPE font_colour		IS ARRAY (FONT_QUEUE_LENGTH downto 0) OF FONT_COLOUR_PACKET;
+
 
 
 

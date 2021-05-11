@@ -33,9 +33,7 @@ ENTITY gui_feed IS
 		f_scales						: OUT FONT_SCALES			:= (others => (others => '0'));
 		f_addresses					: OUT FONT_ADDRESSES		:= (others => (others => '0'));
 		
-		f_red							: OUT FONT_RED;
-		f_green						: OUT FONT_GREEN;
-		f_blue						: OUT FONT_BLUE);
+		f_red, f_green, f_blue	: OUT FONT_COLOUR);
 END ENTITY gui_feed;
 	
 
@@ -46,7 +44,7 @@ BEGIN
 	-- Mouse Cursor
 	f_scales(0) <= STD_LOGIC_VECTOR(TO_UNSIGNED(4,6));
 	f_addresses(0) <= CURSOR_ADDRESS;
-	f_red(0)		<= "0001";
+	f_red(0)		<= "1111";
 	f_green(0)	<=	"0000";
 	f_blue(0)	<=	"0000";
 	-- Bird Sprite
@@ -54,7 +52,7 @@ BEGIN
 	f_addresses(1) <= BIRD_ADDRESS;
 	f_red(1)		<=	"0000";
 	f_green(1)	<=	"0000";
-	f_blue(1)	<=	"0001";
+	f_blue(1)	<=	"1111";
 	
 	-- Static
 	-- A
@@ -62,25 +60,25 @@ BEGIN
 	f_rows(2)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(60,10));
 	f_scales(2)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(8,6));
 	f_addresses(2)		<= A_ADDRESS;
-	f_red(2)		<=	"0001";
-	f_green(2)	<=	"0001";
-	f_blue(2)	<=	"0001";
+	f_red(2)		<=	"1111";
+	f_green(2)	<=	"1111";
+	f_blue(2)	<=	"1111";
 	-- B
 	f_cols(3)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(124,10)); -- 60 + 8*8
 	f_rows(3)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(60,10));
 	f_scales(3)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(8,6));
 	f_addresses(3)		<= B_ADDRESS;
-	f_red(3)		<=	"0001";
-	f_green(3)	<=	"0001";
-	f_blue(3)	<=	"0001";
+	f_red(3)		<=	"1111";
+	f_green(3)	<=	"1111";
+	f_blue(3)	<=	"1111";
 	-- C
 	f_cols(4)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(188,10)); -- 60 + 2*8*8
 	f_rows(4)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(60,10));
 	f_scales(4)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(8,6));
 	f_addresses(4)		<= C_ADDRESS;
-	f_red(4)		<=	"0001";
-	f_green(4)	<=	"0001";
-	f_blue(4)	<=	"0001";
+	f_red(4)		<=	"1111";
+	f_green(4)	<=	"1111";
+	f_blue(4)	<=	"1111";
 	
 	
 -- Updates BIRD position

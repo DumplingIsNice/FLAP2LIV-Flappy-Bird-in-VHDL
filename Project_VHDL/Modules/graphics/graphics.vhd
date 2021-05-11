@@ -30,30 +30,31 @@ USE  IEEE.STD_LOGIC_1164.all;
 USE work.graphics_pkg.all;
 
 
+
+
+
 ENTITY graphics IS
 	PORT(
 		clk, vert_sync				: IN STD_LOGIC;
+		pixel_row, pixel_column	: IN STD_LOGIC_VECTOR(9 downto 0);
 		
 		f_cols						: IN FONT_COLS;
 		f_rows						: IN FONT_ROWS;
 		f_scales						: IN FONT_SCALES;
 		f_addresses					: IN FONT_ADDRESSES;
-		f_red							: IN FONT_RED;
-		f_green						: IN FONT_GREEN;
-		f_blue						: IN FONT_BLUE;
+		f_red, f_green, f_blue	: IN FONT_COLOUR;
 		
 		rom_output					: IN STD_LOGIC;
 		rom_address					: OUT STD_LOGIC_VECTOR (5 DOWNTO 0);
 		rom_row, rom_col			: OUT STD_LOGIC_VECTOR (2 DOWNTO 0);
 		
-		pixel_row, pixel_column	: IN STD_LOGIC_VECTOR(9 downto 0);
-		r,g,b							: OUT STD_LOGIC);
+		r,g,b							: OUT FONT_COLOUR_PACKET);
 END ENTITY graphics;
 
 
 ARCHITECTURE behaviour OF graphics IS
-	SIGNAL vr, vg, vb				: STD_LOGIC := '0';
-	
+	SIGNAL vr,vg,vb				: FONT_COLOUR_PACKET		:= (others => '0');
+
 	-- f_BOUNDS_EVAL
 	-- Returns true if the current pixel position is inside the given bounds.
 	-- Bounds are col->col+(8*scale), row->row+(8*scale)
@@ -105,17 +106,17 @@ BEGIN
 pixel_eval: PROCESS(clk, pixel_row, pixel_column)
 BEGIN
 	if (rising_edge(pixel_column(0))) then
-		vr <= '0';
-		vg <= '0';
-		vb <= '0';
+		vr <= (others => '0');
+		vg <= (others => '0');
+		vb <= (others => '0');
 		
 		-- Loop downwards such that index 0 has overwrite priority
 		for k in FONT_QUEUE_LENGTH downto 0 loop
 			if (F_BOUNDS_EVAL(pixel_column, pixel_row, f_cols(k), f_rows(k), f_scales(k), f_addresses(k))) then
 				if (F_FONT_EVAL(pixel_column, pixel_row, f_cols(k), f_rows(k), f_scales(k), f_addresses(k))) then
-					vr <= f_red(k)(0);	-- TODO: expand support for bitvector rgb values
-					vg <= f_green(k)(0);
-					vb <= f_blue(k)(0);
+					vr <= f_red(k);	-- TODO: expand support for bitvector rgb values
+					vg <= f_green(k);
+					vb <= f_blue(k);
 				end if;
 			end if;
 		end loop;

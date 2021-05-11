@@ -96,22 +96,22 @@ applicable agreement for further details.
 	(port
 		(pt 272 96)
 		(output)
-		(text "f_red[23..0][1..0]" (rect 0 0 66 12)(font "Arial" ))
-		(text "f_red[23..0][1..0]" (rect 185 91 251 103)(font "Arial" ))
+		(text "f_red[23..0][3..0]" (rect 0 0 67 12)(font "Arial" ))
+		(text "f_red[23..0][3..0]" (rect 184 91 251 103)(font "Arial" ))
 		(line (pt 272 96)(pt 256 96)(line_width 3))
 	)
 	(port
 		(pt 272 112)
 		(output)
-		(text "f_green[23..0][1..0]" (rect 0 0 75 12)(font "Arial" ))
-		(text "f_green[23..0][1..0]" (rect 176 107 251 119)(font "Arial" ))
+		(text "f_green[23..0][3..0]" (rect 0 0 76 12)(font "Arial" ))
+		(text "f_green[23..0][3..0]" (rect 175 107 251 119)(font "Arial" ))
 		(line (pt 272 112)(pt 256 112)(line_width 3))
 	)
 	(port
 		(pt 272 128)
 		(output)
-		(text "f_blue[23..0][1..0]" (rect 0 0 68 12)(font "Arial" ))
-		(text "f_blue[23..0][1..0]" (rect 183 123 251 135)(font "Arial" ))
+		(text "f_blue[23..0][3..0]" (rect 0 0 69 12)(font "Arial" ))
+		(text "f_blue[23..0][3..0]" (rect 182 123 251 135)(font "Arial" ))
 		(line (pt 272 128)(pt 256 128)(line_width 3))
 	)
 	(drawing
