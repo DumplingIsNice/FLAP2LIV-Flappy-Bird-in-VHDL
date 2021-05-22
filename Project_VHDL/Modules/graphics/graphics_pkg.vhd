@@ -52,5 +52,14 @@ TYPE font_colour		IS ARRAY (FONT_QUEUE_LENGTH downto 0) OF FONT_COLOUR_PACKET;
 
 
 
+CONSTANT OBJ_QUEUE_LENGTH : INTEGER := 23;
+
+TYPE obj_cols			IS ARRAY (OBJ_QUEUE_LENGTH downto 0) OF std_logic_vector(9 downto 0);
+TYPE obj_rows			IS ARRAY (OBJ_QUEUE_LENGTH downto 0) OF std_logic_vector(9 downto 0);
+TYPE obj_type			IS ARRAY (OBJ_QUEUE_LENGTH downto 0) OF std_logic_vector(3 downto 0);
+TYPE obj_colour		IS ARRAY (OBJ_QUEUE_LENGTH downto 0) OF FONT_COLOUR_PACKET;
+
+
+
 
 END PACKAGE graphics_pkg;
