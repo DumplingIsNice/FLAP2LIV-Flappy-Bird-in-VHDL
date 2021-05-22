@@ -9,12 +9,12 @@ end entity test_psudo_rand_gen;
 architecture my_test of test_psudo_rand_gen is
     SIGNAL  t_seed	                    :	STD_LOGIC_VECTOR (9 DOWNTO 0);
 	SIGNAL	t_enable, t_gen, t_reset	: 	STD_LOGIC;
-	SIGNAL	t_q                         :	STD_LOGIC_VECTOR (9 DOWNTO 0);
+	SIGNAL	t_q                         :	STD_LOGIC;
     
     component psudo_rand_gen IS
     PORT(   seed	                :	IN STD_LOGIC_VECTOR (9 DOWNTO 0);
     		enable, gen, reset	: 	IN STD_LOGIC;
-    		q                       :	OUT STD_LOGIC_VECTOR (9 DOWNTO 0)
+    		q                       :	OUT STD_LOGIC
     	);
     END component psudo_rand_gen;
     

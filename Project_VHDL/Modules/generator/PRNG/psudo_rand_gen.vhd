@@ -6,8 +6,8 @@
     --        - When low, holds current output q.
     -- reset - Asynchronous reset to seed value.
 -- Output: 
-    -- q - Currently the full 10-bit shift register for debugging purposes.
-    --     Must uses the (0) feedback value as the most random output.
+    -- q - Must uses the (0) feedback value as the most random output.
+
 
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
@@ -17,15 +17,16 @@ USE IEEE.STD_LOGIC_UNSIGNED.all;
 ENTITY psudo_rand_gen IS
 	PORT(   seed	                :	IN STD_LOGIC_VECTOR (9 DOWNTO 0);
 		    enable, gen, reset	    : 	IN STD_LOGIC;
-		    q                       :	OUT STD_LOGIC_VECTOR (9 DOWNTO 0)
+		    -- q                       :	OUT STD_LOGIC_VECTOR (9 DOWNTO 0) -- the full 10-bit shift register for debugging purposes.
+            q                       :	OUT STD_LOGIC
 	    );
 END psudo_rand_gen;
 
 ARCHITECTURE beh OF psudo_rand_gen IS
-    SIGNAL q_i : STD_LOGIC_VECTOR (9 DOWNTO 0)  := CONV_STD_LOGIC_VECTOR(0, q'length);
+    SIGNAL q_i : STD_LOGIC_VECTOR (9 DOWNTO 0)  := CONV_STD_LOGIC_VECTOR(0, 10);
 BEGIN
 
-    q <= q_i;
+    q <= q_i(0);
 
     shift: PROCESS (gen, reset) is
         VARIABLE temp_tap1 : STD_LOGIC;
@@ -46,7 +47,11 @@ BEGIN
 
             -- Zero value protection
             IF (q_i = CONV_STD_LOGIC_VECTOR(0, q_i'length)) THEN
-                q_i <= seed;
+                IF (seed = CONV_STD_LOGIC_VECTOR(0, q_i'length)) THEN
+                    q_i <= "1001000000"; -- Arbitary seed value;
+                ELSE
+                    q_i <= seed;
+                END IF;
             END IF;            
         END IF;
     END PROCESS;
