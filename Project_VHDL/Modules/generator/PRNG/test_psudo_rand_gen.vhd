@@ -39,10 +39,10 @@ begin
     ctrl_gen: process
     begin
         t_enable <= '1';
-        t_reset <='1';
-        t_seed <= "1001000000";
-        wait for 10 ns;
         t_reset <='0';
+        t_seed <= "1001000000";
+        wait for 100 ns;
+        t_reset <='1', '0' after 10 ns;
         wait;
     end process;
     

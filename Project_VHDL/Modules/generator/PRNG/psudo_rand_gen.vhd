@@ -21,7 +21,7 @@ ENTITY psudo_rand_gen IS
 END psudo_rand_gen;
 
 ARCHITECTURE beh OF psudo_rand_gen IS
-    SIGNAL q_i : STD_LOGIC_VECTOR (9 DOWNTO 0);
+    SIGNAL q_i : STD_LOGIC_VECTOR (9 DOWNTO 0)  := CONV_STD_LOGIC_VECTOR(0, q'length);
 BEGIN
 
     q <= q_i;
