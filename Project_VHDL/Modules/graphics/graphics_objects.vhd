@@ -37,6 +37,7 @@ USE work.graphics_pkg.all;
 ENTITY graphics_objects IS
 	PORT(
 		clk, vert_sync							: IN STD_LOGIC;
+		disable_render							: IN STD_LOGIC;
 		pixel_row, pixel_column				: IN STD_LOGIC_VECTOR(9 downto 0);
 		
 		obj_cols_left, obj_cols_right		: IN OBJ_COLS;
@@ -55,7 +56,6 @@ ARCHITECTURE behaviour OF graphics_objects IS
 
 	-- f_BOUNDS_EVAL
 	-- Returns true if the current pixel position is inside the given bounds.
-	-- Bounds are col->col+(8*scale), row->row+(8*scale)
 	PURE FUNCTION f_BOUNDS_EVAL (
 		col, row					: STD_LOGIC_VECTOR(9 downto 0);
 		col_left, col_right	: STD_LOGIC_VECTOR(9 downto 0);
@@ -73,10 +73,10 @@ ARCHITECTURE behaviour OF graphics_objects IS
 	END FUNCTION f_BOUNDS_EVAL;
 	
 BEGIN
-
-	r <= vr;
-	g <= vg;
-	b <= vb;
+	-- disable render is LOW=ON to take advantage of the inverse relationship with show_menu from GUI
+	r <= vr when (disable_render = '0') else (others => '0');
+	g <= vg when (disable_render = '0') else (others => '0');
+	b <= vb when (disable_render = '0') else (others => '0');
 
 	pixel_eval: PROCESS (pixel_column)
 	BEGIN
