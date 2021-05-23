@@ -53,13 +53,34 @@ TYPE font_colour		IS ARRAY (FONT_QUEUE_LENGTH downto 0) OF FONT_COLOUR_PACKET;
 	-- Each object queue has packets [col_left, row_upper, col_right, row_lower, type, r, g, b]
 	-- left,upper describes the point the vector rectangle begins.
 	-- right,lower describes the point the vector rectangle ends.
-CONSTANT OBJ_QUEUE_LENGTH : INTEGER := 23;
+	CONSTANT OBJ_QUEUE_LENGTH : INTEGER := 23; -- Arbitrary
+
+	SUBTYPE obj_type_packet IS std_logic_vector(3 downto 0);
+	TYPE obj_cols			IS ARRAY (OBJ_QUEUE_LENGTH downto 0) OF std_logic_vector(9 downto 0);
+	TYPE obj_rows			IS ARRAY (OBJ_QUEUE_LENGTH downto 0) OF std_logic_vector(9 downto 0);
+	TYPE obj_type			IS ARRAY (OBJ_QUEUE_LENGTH downto 0) OF OBJ_TYPE_PACKET;
+	TYPE obj_colour		IS ARRAY (OBJ_QUEUE_LENGTH downto 0) OF FONT_COLOUR_PACKET;
 	
-TYPE obj_cols			IS ARRAY (OBJ_QUEUE_LENGTH downto 0) OF std_logic_vector(9 downto 0);
-TYPE obj_rows			IS ARRAY (OBJ_QUEUE_LENGTH downto 0) OF std_logic_vector(9 downto 0);
-TYPE obj_types			IS ARRAY (OBJ_QUEUE_LENGTH downto 0) OF std_logic_vector(3 downto 0);
-TYPE obj_colours		IS ARRAY (OBJ_QUEUE_LENGTH downto 0) OF FONT_COLOUR_PACKET;
-
-
+	-- (3, 2) = top coordinate (col, row), (1, 0) = bot coordinate (col, row)
+	TYPE obj_pos IS ARRAY (3 downto 0) OF STD_LOGIC_VECTOR (9 downto 0);
+	TYPE obj_mem IS ARRAY(OBJ_QUEUE_LENGTH downto 0) OF OBJ_POS;
+	
+	CONSTANT OBJ_POS_ALL_ZERO : obj_pos := (others => "0000000000");
+	CONSTANT GAP_FACTOR 	: STD_LOGIC_VECTOR(6 downto 0) := CONV_STD_LOGIC_VECTOR(10, 7);
+	CONSTANT BORDER_MARGIN 	: STD_LOGIC_VECTOR(9 downto 0) := CONV_STD_LOGIC_VECTOR(40, 10);
+	CONSTANT GAP_HEIGHT 	: STD_LOGIC_VECTOR(9 downto 0) := CONV_STD_LOGIC_VECTOR(96, 10);
+	
+	CONSTANT SCREEN_TOP		: STD_LOGIC_VECTOR(9 downto 0) := CONV_STD_LOGIC_VECTOR(0, 10);
+	CONSTANT SCREEN_BOT		: STD_LOGIC_VECTOR(9 downto 0) := CONV_STD_LOGIC_VECTOR(640, 10);
+	CONSTANT SCREEN_LEFT	: STD_LOGIC_VECTOR(9 downto 0) := CONV_STD_LOGIC_VECTOR(0, 10);
+	CONSTANT SCREEN_RIGHT	: STD_LOGIC_VECTOR(9 downto 0) := CONV_STD_LOGIC_VECTOR(480, 10);
+	
+	CONSTANT PIPE_WIDTH 		: STD_LOGIC_VECTOR(9 downto 0) := CONV_STD_LOGIC_VECTOR(40, 10);
+	CONSTANT DIS_BETWEEN_PIPE 	: INTEGER := 120;
+	CONSTANT PIPE_TYPE			: obj_type_packet := "0000";
+	CONSTANT PIPE_COLOUR		: font_colour_packet := "0000";
+	
+	CONSTANT DEFAULT_SPEED		: INTEGER := 5;
+	CONSTANT SPEED_INC			: INTEGER := 10;
 
 END PACKAGE graphics_pkg;
