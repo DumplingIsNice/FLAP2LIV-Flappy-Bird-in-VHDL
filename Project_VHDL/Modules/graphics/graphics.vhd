@@ -7,7 +7,7 @@
 --
 --	In:			GUI			(inputs mouse, bird, fonts, and other overlay rendering packets)
 --					GENERATOR	(inputs background and obstacles)
---					VGA_SYNC		(update each pixel depending on pixel position) ------------------------------ NOTE: change DFF edge to clk? not col?
+--					VGA_SYNC		(update each pixel depending on pixel position)
 --
 --	Out:			VGA_SYNC		(outputs rbg values for each pixel)
 --					COLLISION	(description)
@@ -44,6 +44,8 @@ ENTITY graphics IS
 		f_addresses					: IN FONT_ADDRESSES;
 		f_red, f_green, f_blue	: IN FONT_COLOUR;
 		
+		obj_r, obj_g, obj_b		: IN FONT_COLOUR_PACKET;
+		
 		rom_output					: IN STD_LOGIC;
 		rom_address					: OUT STD_LOGIC_VECTOR (5 DOWNTO 0);
 		rom_row, rom_col			: OUT STD_LOGIC_VECTOR (2 DOWNTO 0);
@@ -54,9 +56,9 @@ END ENTITY graphics;
 
 ARCHITECTURE behaviour OF graphics IS
 	SIGNAL vr,vg,vb								: FONT_COLOUR_PACKET		:= (others => '0');
-	SIGNAL vr_bird,vg_bird,vb_bird			: FONT_COLOUR_PACKET		:= (others => '0');
-	SIGNAL vr_cursor,vg_cursor,vb_cursor	: FONT_COLOUR_PACKET		:= (others => '0');
-	SIGNAL bird_flag, cursor_flag				: STD_LOGIC					:= '0';
+--	SIGNAL vr,vg,vb,vr_t,vg_t,vb_t			: FONT_COLOUR_PACKET		:= (others => '0');
+--	SIGNAL vr_bird,vg_bird,vb_bird			: FONT_COLOUR_PACKET		:= (others => '0');
+--	SIGNAL vr_cursor,vg_cursor,vb_cursor	: FONT_COLOUR_PACKET		:= (others => '0');
 
 	-- f_BOUNDS_EVAL
 	-- Returns true if the current pixel position is inside the given bounds.
@@ -69,8 +71,8 @@ ARCHITECTURE behaviour OF graphics IS
 		VARIABLE s		: STD_LOGIC_VECTOR(9 downto 0);
 	BEGIN
 		s := "0" & scale & "000";	-- shift left 3 (x8)
-		if ((UNSIGNED(col) > UNSIGNED(f_col)) and (UNSIGNED(col) < UNSIGNED(f_col) + UNSIGNED(s))
-		and (UNSIGNED(row) > UNSIGNED(f_row)) and (UNSIGNED(row) < UNSIGNED(f_row) + UNSIGNED(s))) then
+		if ((UNSIGNED(col) >= UNSIGNED(f_col)) and (UNSIGNED(col) < UNSIGNED(f_col) + UNSIGNED(s))
+		and (UNSIGNED(row) >= UNSIGNED(f_row)) and (UNSIGNED(row) < UNSIGNED(f_row) + UNSIGNED(s))) then
 			b := TRUE;
 		else
 			b := FALSE;
@@ -96,52 +98,48 @@ ARCHITECTURE behaviour OF graphics IS
 		end if;
 		return b;
 	END FUNCTION f_FONT_EVAL;
-		
+	
 		
 BEGIN
 
 	r <= vr;
 	g <= vg;
 	b <= vb;
-	
-
+		
 -- Set r,g,b for every pixel (updating for each change in row or col)
-pixel_eval: PROCESS(clk, pixel_row, pixel_column)
+pixel_eval: PROCESS (pixel_column)
 BEGIN
 	if (rising_edge(pixel_column(0))) then
-		vr <= (others => '0');
-		vg <= (others => '0');
-		vb <= (others => '0');
 		
-		-- Loop downwards such that index 0 has overwrite priority
+		vr <= obj_r;
+		vg <= obj_g;
+		vb <= obj_b;
+		
+		-- Loop downwards such that lower indices have overwrite priority
 		for k in FONT_QUEUE_LENGTH downto 0 loop
 			if (F_BOUNDS_EVAL(pixel_column, pixel_row, f_cols(k), f_rows(k), f_scales(k))) then
 				if (F_FONT_EVAL(pixel_column, pixel_row, f_cols(k), f_rows(k), f_scales(k), f_addresses(k))) then
-					vr <= f_red(k);	-- TODO: expand support for bitvector rgb values
+					vr <= f_red(k);
 					vg <= f_green(k);
 					vb <= f_blue(k);
 				end if;
 			end if;
-		end loop;
-
---		-- Priority Channel: Bird (secondary)
---		if (F_BOUNDS_EVAL(pixel_column, pixel_row, f_cols(1), f_rows(1), f_scales(1))) then
---			if (F_FONT_EVAL(pixel_column, pixel_row, f_cols(1), f_rows(1), f_scales(1), f_addresses(1))) then
---				vr_bird <= f_red(1);	-- TODO: expand support for bitvector rgb values
---				vg_bird <= f_green(1);
---				vb_bird <= f_blue(1);
---				bird_flag <= '1';
---			end if;
---		end if;
---		
---		-- Priority Channel: Cursor (primary)
+		end loop;	
+		
+	end if;
+				
+--		-- FRAMEWORK FOR CHANNEL PRIORITY MUX FIX
+--		-- NOTE: Uses mux to choose between two different rgb values so font channels can overlap.
+--		-- WARNING: Signals should only be driven from one source. Need to use more signals to decouple.
+--
 --		if (F_BOUNDS_EVAL(pixel_column, pixel_row, f_cols(0), f_rows(0), f_scales(0))) then
 --			if (F_FONT_EVAL(pixel_column, pixel_row, f_cols(0), f_rows(0), f_scales(0), f_addresses(0))) then
---				vr_cursor <= f_red(0);	-- TODO: expand support for bitvector rgb values
+--				vr_cursor <= f_red(0);
 --				vg_cursor <= f_green(0);
 --				vb_cursor <= f_blue(0);
---				cursor_flag <= '1';
---			end if;
+--				cursor_flag := '1';
+--			else
+--				cursor_flag := '0';
 --		end if;
 --		
 --		-- MUX priority channels
@@ -149,34 +147,43 @@ BEGIN
 --			vr <= vr_cursor;
 --			vg <= vg_cursor;
 --			vb <= vb_cursor;
---		elsif (bird_flag = '1') then
---			vr <= vr_bird;
---			vg <= vg_bird;
---			vb <= vb_bird;
 --		end if;
---		
---		cursor_flag <= '0';	-- reset
---		bird_flag <= '0';
-		
-		
---		-- WARNING: Is overwritten with position 0 in font queue.
---		-- This is as F_BOUNDS_EVAL will return true when we want it, but F_FONT_EVAL will return true unreliably;
---		--	F_FONT_EVAL should only be considered true when WITHIN the corresponding bounds.
---		-- In this situation F_FONT_EVAL will return the mask for whichever the current address is -- thus overwriting everything with the last, k.
---
---		for k in FONT_QUEUE_LENGTH downto 0 loop
---			if (F_BOUNDS_EVAL(pixel_column, pixel_row, f_cols(k), f_rows(k), f_scales(k))
---				and (F_FONT_EVAL(pixel_column, pixel_row, f_cols(k), f_rows(k), f_scales(k), f_addresses(k)))) then
---					vr <= f_red(k);	-- TODO: expand support for bitvector rgb values
---					vg <= f_green(k);
---					vb <= f_blue(k);
---			end if;
---		end loop;
-		
-	end if;
+
 END PROCESS pixel_eval;
 
 
+-- FRAMEWORK FOR ROM 'GHOST PIXEL' FIX
+-- NOTE: Requires changes to CHAR_ROM and requisite inputs here
+--
+--t_bounds_eval: PROCESS(pixel_column)
+--	VARIABLE index : integer;
+--	VARIABLE temp_column, temp_row : STD_LOGIC_VECTOR(9 downto 0);
+--BEGIN
+--	if (rising_edge(pixel_column(0))) then
+--		-- [1]	Evaluate the bounds to get the address of the highest priority overlapped font
+--		index := 25;
+--		for k in FONT_QUEUE_LENGTH downto 0 loop
+--			if (F_BOUNDS_EVAL(temp_column, temp_row, f_cols(k), f_rows(k), f_scales(k))) then
+--				index := k;
+--			end if;
+--		end loop;
+--		
+--		-- [2]	Load ROM with correct values for current font
+--		if (index /= 25) then
+--			F_FONT_EVAL(temp_column, temp_row, f_cols(k), f_rows(k), f_scales(k), f_addresses(k));
+--		end if;
+--	end if;
+--END PROCESS t_bounds_eval;
+--	
+--t_font_eval: PROCESS(rom_flag)
+--BEGIN
+--	-- [3]	Once the ROM has output a value, complete the evaluation of rgb
+--	if (rising_edge(rom_flag)) then
+--		vr <= f_red(k)		when rom_output = '1'	else (others => '0');
+--		vg <= f_green(k)	when rom_output = '1'	else (others => '0');
+--		vb <= f_blue(k)	when rom_output = '1'	else (others => '0');
+--	end if;
+--END PROCESS t_font_eval;
 
 
 END behaviour;

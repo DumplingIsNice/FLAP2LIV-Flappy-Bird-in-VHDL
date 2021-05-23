@@ -20,9 +20,9 @@ applicable agreement for further details.
 */
 (header "symbol" (version "1.1"))
 (symbol
-	(rect 16 16 288 256)
+	(rect 16 16 288 320)
 	(text "graphics" (rect 5 0 38 12)(font "Arial" ))
-	(text "inst" (rect 8 224 20 236)(font "Arial" ))
+	(text "inst" (rect 8 288 20 300)(font "Arial" ))
 	(port
 		(pt 0 32)
 		(input)
@@ -103,9 +103,30 @@ applicable agreement for further details.
 	(port
 		(pt 0 208)
 		(input)
+		(text "obj_r[3..0]" (rect 0 0 40 12)(font "Arial" ))
+		(text "obj_r[3..0]" (rect 21 203 61 215)(font "Arial" ))
+		(line (pt 0 208)(pt 16 208)(line_width 3))
+	)
+	(port
+		(pt 0 224)
+		(input)
+		(text "obj_g[3..0]" (rect 0 0 41 12)(font "Arial" ))
+		(text "obj_g[3..0]" (rect 21 219 62 231)(font "Arial" ))
+		(line (pt 0 224)(pt 16 224)(line_width 3))
+	)
+	(port
+		(pt 0 240)
+		(input)
+		(text "obj_b[3..0]" (rect 0 0 41 12)(font "Arial" ))
+		(text "obj_b[3..0]" (rect 21 235 62 247)(font "Arial" ))
+		(line (pt 0 240)(pt 16 240)(line_width 3))
+	)
+	(port
+		(pt 0 256)
+		(input)
 		(text "rom_output" (rect 0 0 46 12)(font "Arial" ))
-		(text "rom_output" (rect 21 203 67 215)(font "Arial" ))
-		(line (pt 0 208)(pt 16 208)(line_width 1))
+		(text "rom_output" (rect 21 251 67 263)(font "Arial" ))
+		(line (pt 0 256)(pt 16 256)(line_width 1))
 	)
 	(port
 		(pt 272 32)
@@ -150,6 +171,6 @@ applicable agreement for further details.
 		(line (pt 272 112)(pt 256 112)(line_width 3))
 	)
 	(drawing
-		(rectangle (rect 16 16 256 224)(line_width 1))
+		(rectangle (rect 16 16 256 288)(line_width 1))
 	)
 )
