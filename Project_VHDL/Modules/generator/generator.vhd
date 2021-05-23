@@ -1,29 +1,58 @@
 -- GENERATOR
--- IN: Tracker
--- OUT: Graphics
+
+--	Authors:		Hao Lin
+--	Date:			May 2021
+--	Course:		CS305 Miniproject
+
+--	In:				TRACKER		(difficulty parameters and state control 
+-- 								 signals to control object generation)
+-- 					RAND_NUM 	(5-bit random number for random elements)
+--					VGA_SYNC	(vert_sync as object update signal)
+-- 						NOTE: This module is driven by vert_sync.
+--
+--	Out:			GENERATOR_BUFFER (To be held constant for a screen refresh)
+
+-- 						NOTE: q_out - An internal memory array. 
+--							  Output for debugging purposes in modelsim.
+
+--	Summary
 
 -- The Generator module generates the background layout and obstacles
--- using simple alogorithms and RNG, and outputs a raster of the
+-- using simple alogorithms and RNG, and outputs a queue of the
 -- composite image.
--- Output is in the format of 480xNx4 columns, where N is the number of
--- pixel columns to be sent each frame. N increases with speed. The 4
--- layers take the form of RGB and a one-bit collision flag layer.
 
--- The Tracker module stores the current difficulty, which influences:
--- * Background colour scheme (and perhaps pattern)
--- * Obstacle (barrier) patterns and frequency
--- * Obstacle (barrier) colour scheme and sprite shape
--- * Pickup frequency and type
+-- Output queues is in the format of OBJ_QUEUE_LENGTHx1 pixel 
+-- pixel columns to be sent each frame. Where each idex position
+-- corresponds to a object whihc exist. The content of each position
+-- is a 10-bit value of the corner coordinates of the object's 
+-- position on screen. This position (in pairs of top and bottem
+-- coordinates) is phased by GRAPHICS to draw the object.
 
--- New generation begins when the previous buffer clears (is shifted out).
+-- The colour queue take the format of OBJ_QUEUE_LENGTHxFONT_COLOUR_PACKET.
+-- FOR GRAPHIC display.
+
+-- The type queue tke the format of OBJ_QUEUE_LENGTHxTYPE_PACKET. 
+-- For COLLISION calculation.
+
+-- See GRAPHICS_PKG for more information on font queues and packets
+
+-- TRACKER's RELATIONSHIP
+
+-- The TRACKER module stores the current difficulty, which influences:
+	-- * Background colour scheme (and perhaps pattern)
+	-- * Obstacle (barrier) patterns and frequency
+	-- * Obstacle (barrier) colour scheme and sprite shape
+	-- * Pickup frequency and type
+-- In this GENERATION module.
+
+-- New generation begins when the screen is refreshed (vert_sync).
 -- As the speed varies, generation will be irregular, and on-demand. 
 -- There is a blank space between each obstacle column, so generation
 -- does not have to be continuous (we have the time to repopulate the
--- buffer before needing to shift it out again).
+-- buffer before each refresh).
 
 -- NOTE: For more complex sprites it may be cheaper to have a pool of mapped,
 -- pre-defined bitmaps for objects, rather than trying to generate with vectors.
-
 
 LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.all;
