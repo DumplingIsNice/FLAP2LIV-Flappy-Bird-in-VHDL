@@ -61,8 +61,8 @@ begin
     begin
         rand_num <= CONV_STD_LOGIC_VECTOR(29, 5);
         difficulty <= '0';
-        enable <= '1';
-        reset <= '0';
+        enable <= '1', '0' after 100 ns, '1' after 200 ns;
+        reset <= '0', '1' after 130 ns, '0' after 135 ns, '1' after 230 ns, '0' after 235 ns;
     wait;
     end process;
 

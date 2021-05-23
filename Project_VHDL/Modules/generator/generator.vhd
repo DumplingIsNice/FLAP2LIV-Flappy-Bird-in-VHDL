@@ -69,9 +69,9 @@ ENTITY generator IS
 
 			obj_cols_top, obj_cols_bot		: OUT OBJ_COLS		:= (others => (others => '0'));
 			obj_rows_top, obj_rows_bot		: OUT OBJ_ROWS		:= (others => (others => '0'));
-			object_type						: OUT obj_type 		:= (others => (others => '0'));
-			object_colour					: OUT obj_colour 	:= (others => (others => '0'));
-			q_out							: OUT obj_mem		:= (others => OBJ_POS_ALL_ZERO)
+			object_type						: OUT OBJ_TYPE 		:= (others => (others => '0'));
+			object_colour					: OUT OBJ_COLOUR 	:= (others => (others => '0'));
+			q_out							: OUT OBJ_MEM		:= (others => OBJ_POS_ALL_ZERO)
         );
 END ENTITY generator;
 
@@ -158,6 +158,8 @@ BEGIN
 		IF (reset = '1') THEN
 			object_pos_mem <= (others => OBJ_POS_ALL_ZERO);
 			speed := CONV_STD_LOGIC_VECTOR(DEFAULT_SPEED, 10);
+			mem_index := OBJ_QUEUE_LENGTH;
+			dis_counter := CONV_STD_LOGIC_VECTOR(DIS_BETWEEN_PIPE, 10);
 		END IF;
 
 		IF (RISING_EDGE(vert_sync) AND enable = '1') THEN
