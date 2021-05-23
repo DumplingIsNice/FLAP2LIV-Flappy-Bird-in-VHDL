@@ -27,7 +27,7 @@ USE		IEEE.STD_LOGIC_1164.all;
 
 PACKAGE graphics_pkg IS
 
-	-- Constants
+	-- Constants --
 CONSTANT CURSOR_ADDRESS		: STD_LOGIC_VECTOR (5 DOWNTO 0) := o"77";
 CONSTANT BIRD_ADDRESS		: STD_LOGIC_VECTOR (5 DOWNTO 0) := o"76";
 
@@ -36,9 +36,7 @@ CONSTANT B_ADDRESS			: STD_LOGIC_VECTOR (5 DOWNTO 0) := "000010";	-- address: 02
 CONSTANT C_ADDRESS			: STD_LOGIC_VECTOR (5 DOWNTO 0) := "000011";	-- address: 03row
 
 
-
-
-
+	-- FONT --
 	-- Break up font packet [col, row, scale, address] into 1D arrays for synthesis
 CONSTANT FONT_QUEUE_LENGTH	: INTEGER := 23;
 
@@ -51,14 +49,16 @@ SUBTYPE font_colour_packet IS std_logic_vector(3 downto 0);
 TYPE font_colour		IS ARRAY (FONT_QUEUE_LENGTH downto 0) OF FONT_COLOUR_PACKET;
 
 
-
+	-- OBJECT --
+	-- Each object queue has packets [col_left, row_upper, col_right, row_lower, type, r, g, b]
+	-- left,upper describes the point the vector rectangle begins.
+	-- right,lower describes the point the vector rectangle ends.
 CONSTANT OBJ_QUEUE_LENGTH : INTEGER := 23;
-
+	
 TYPE obj_cols			IS ARRAY (OBJ_QUEUE_LENGTH downto 0) OF std_logic_vector(9 downto 0);
 TYPE obj_rows			IS ARRAY (OBJ_QUEUE_LENGTH downto 0) OF std_logic_vector(9 downto 0);
-TYPE obj_type			IS ARRAY (OBJ_QUEUE_LENGTH downto 0) OF std_logic_vector(3 downto 0);
-TYPE obj_colour		IS ARRAY (OBJ_QUEUE_LENGTH downto 0) OF FONT_COLOUR_PACKET;
-
+TYPE obj_types			IS ARRAY (OBJ_QUEUE_LENGTH downto 0) OF std_logic_vector(3 downto 0);
+TYPE obj_colours		IS ARRAY (OBJ_QUEUE_LENGTH downto 0) OF FONT_COLOUR_PACKET;
 
 
 
