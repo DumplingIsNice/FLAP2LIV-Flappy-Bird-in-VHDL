@@ -1606,14 +1606,6 @@ applicable agreement for further details.
 	(bus)
 )
 (connector
-	(pt -472 -128)
-	(pt -464 -128)
-)
-(connector
-	(pt -464 -128)
-	(pt -448 -128)
-)
-(connector
 	(pt 328 976)
 	(pt 328 696)
 	(bus)
@@ -1740,6 +1732,14 @@ applicable agreement for further details.
 	(text "show_menu" (rect 434 816 491 828)(font "Arial" ))
 	(pt 520 832)
 	(pt 440 832)
+)
+(connector
+	(pt -472 -128)
+	(pt -464 -128)
+)
+(connector
+	(pt -464 -128)
+	(pt -448 -128)
 )
 (junction (pt 1176 520))
 (junction (pt 472 728))
