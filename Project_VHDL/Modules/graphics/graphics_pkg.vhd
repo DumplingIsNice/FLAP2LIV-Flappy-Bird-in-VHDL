@@ -64,9 +64,12 @@ TYPE font_colour		IS ARRAY (FONT_QUEUE_LENGTH downto 0) OF FONT_COLOUR_PACKET;
 	
 	-- (3, 2) = top coordinate (col, row), (1, 0) = bot coordinate (col, row)
 	TYPE obj_pos IS ARRAY (3 downto 0) OF STD_LOGIC_VECTOR (9 downto 0);
-	TYPE obj_mem IS ARRAY(OBJ_QUEUE_LENGTH downto 0) OF OBJ_POS;
+	-- TYPE obj_mem IS ARRAY (OBJ_QUEUE_LENGTH downto 0) OF OBJ_POS; -- Depreciated.
 	
-	CONSTANT OBJ_POS_ALL_ZERO : obj_pos := (others => "0000000000");
+	CONSTANT OBJ_POS_ALL_ZERO 	: obj_pos 							:= (others => "0000000000");
+	CONSTANT OBJ_COLS_ALL_ZERO 	: obj_cols 							:= (others => "0000000000");
+	CONSTANT TEN_BIT_ALL_ZERO 	: STD_LOGIC_VECTOR (9 downto 0) 	:= "0000000000";
+
 	CONSTANT GAP_FACTOR 	: STD_LOGIC_VECTOR(6 downto 0) := CONV_STD_LOGIC_VECTOR(10, 7);
 	CONSTANT BORDER_MARGIN 	: STD_LOGIC_VECTOR(9 downto 0) := CONV_STD_LOGIC_VECTOR(40, 10);
 	CONSTANT GAP_HEIGHT 	: STD_LOGIC_VECTOR(9 downto 0) := CONV_STD_LOGIC_VECTOR(96, 10);

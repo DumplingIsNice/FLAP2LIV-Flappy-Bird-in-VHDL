@@ -70,8 +70,7 @@ ENTITY generator IS
 			obj_cols_top, obj_cols_bot		: OUT OBJ_COLS		:= (others => (others => '0'));
 			obj_rows_top, obj_rows_bot		: OUT OBJ_ROWS		:= (others => (others => '0'));
 			object_type						: OUT OBJ_TYPE 		:= (others => (others => '0'));
-			object_colour					: OUT OBJ_COLOUR 	:= (others => (others => '0'));
-			q_out							: OUT OBJ_MEM		:= (others => OBJ_POS_ALL_ZERO)
+			object_colour					: OUT OBJ_COLOUR 	:= (others => (others => '0'))
         );
 END ENTITY generator;
 
@@ -80,17 +79,21 @@ ARCHITECTURE behaviour OF generator IS
 	-- Loads a set of positon data into the next memory array
 	PROCEDURE LOAD_OBJ
         (   
-			VARIABLE obj_data_pos 		: IN obj_pos;
-			VARIABLE obj_data_type		: IN obj_type_packet;
-			VARIABLE obj_data_colour	: IN font_colour_packet;
-			VARIABLE mem_index 			: INOUT INTEGER;
-			SIGNAL object_pos_mem 		: OUT obj_mem;
-			SIGNAL object_type			: OUT obj_type;
-			SIGNAL object_colour 		: OUT obj_colour
+			VARIABLE obj_data_pos 								: IN obj_pos;
+			VARIABLE obj_data_type								: IN obj_type_packet;
+			VARIABLE obj_data_colour							: IN font_colour_packet;
+			VARIABLE mem_index 									: INOUT INTEGER;
+			SIGNAL top_cols, top_rows, bot_cols, bot_rows 		: OUT obj_cols;
+			SIGNAL object_type									: OUT obj_type;
+			SIGNAL object_colour 								: OUT obj_colour
         ) IS
 
     BEGIN 
-		object_pos_mem(mem_index) 	<= obj_data_pos;
+		top_cols(mem_index) 		<= obj_data_pos(3);
+		top_rows(mem_index) 		<= obj_data_pos(2);
+		bot_cols(mem_index) 		<= obj_data_pos(1);
+		bot_rows(mem_index) 		<= obj_data_pos(0);
+		
 		object_type(mem_index)		<= obj_data_type;
 		object_colour(mem_index) 	<= obj_data_colour;
 
@@ -105,39 +108,48 @@ ARCHITECTURE behaviour OF generator IS
 	-- Updates the col value of all non-zero item of the memory array
 	PROCEDURE UPDATE_OBJ
         (   
-			VARIABLE speed 			: IN STD_LOGIC_VECTOR(9 downto 0);
-			VARIABLE mem_index 		: IN INTEGER;
-			SIGNAL object_pos_mem 	: INOUT obj_mem
+			VARIABLE speed 										: IN STD_LOGIC_VECTOR(9 downto 0);
+			VARIABLE mem_index 									: IN INTEGER;
+			SIGNAL top_cols, top_rows, bot_cols, bot_rows 		: INOUT obj_cols
         ) IS
 
 		VARIABLE current_obj	: obj_pos := OBJ_POS_ALL_ZERO;
     BEGIN 
-		FOR index IN (object_pos_mem'length - 1) downto 0 LOOP
-			IF (object_pos_mem(index) /= OBJ_POS_ALL_ZERO) THEN
-				current_obj := object_pos_mem(index);
+		FOR index IN (OBJ_QUEUE_LENGTH) downto 0 LOOP
+			IF  (
+					not(top_cols(index) = TEN_BIT_ALL_ZERO AND
+						top_rows(index) = TEN_BIT_ALL_ZERO AND
+						bot_cols(index) = TEN_BIT_ALL_ZERO AND
+						bot_rows(index) = TEN_BIT_ALL_ZERO)
+				) THEN
+
+				-- From obj_pos TYPE in graphics_pkg.vhd:
+				-- (3, 2) = top coordinate (col, row), (1, 0) = bot coordinate (col, row)
 
 				-- Bin objects which have left the screen.
-				IF (current_obj(1) <= 0) THEN
-					current_obj := OBJ_POS_ALL_ZERO;
+				IF (bot_cols(index) <= TEN_BIT_ALL_ZERO) THEN
+					top_cols(index) <= TEN_BIT_ALL_ZERO;
+					top_rows(index) <= TEN_BIT_ALL_ZERO;
+					bot_cols(index) <= TEN_BIT_ALL_ZERO;
+					bot_rows(index) <= TEN_BIT_ALL_ZERO;
 				ELSE
 					-- Col of top coordinate remains at SCREEN_LEFT
 					-- When it has reached SCREEN_LEFT and beyond
 					-- (not within 0 to SCREEN_RIGHT)
-					IF (current_obj(3) /= 0 OR not(current_obj(3) <= SCREEN_RIGHT)) THEN
-						current_obj(3) := current_obj(3) - speed;
+					IF (top_cols(index) /= 0 OR not(top_cols(index) <= SCREEN_RIGHT)) THEN
+						top_cols(index) <= top_cols(index) - speed;
 					END IF;
 					-- Col of bottem coordinate remains at SCREEN_RIGHT 
 					-- until PIP_WIDTH have been reached.
-					IF (SCREEN_RIGHT - current_obj(3) > PIPE_WIDTH) THEN
-						current_obj(1) := current_obj(1) - speed;
+					IF ((SCREEN_RIGHT - top_cols(index)) >= PIPE_WIDTH) THEN
+						bot_cols(index) <= bot_cols(index) - speed;
 					END IF;
 				END IF;
-				object_pos_mem(index) <= current_obj;
 			END IF;
 		END LOOP;
     END PROCEDURE UPDATE_OBJ;
 
-	SIGNAL object_pos_mem 						: obj_mem 	:= (others => OBJ_POS_ALL_ZERO);
+	SIGNAL top_cols, top_rows, bot_cols, bot_rows 	: obj_cols 	:= 	OBJ_COLS_ALL_ZERO;
 BEGIN
 	-- Object generation
 	-- Interesting problem: Results always seemed to be delayed b 1/T. Yet it scales with T.
@@ -150,13 +162,16 @@ BEGIN
 
 		VARIABLE mem_index : INTEGER := OBJ_QUEUE_LENGTH;
 
-		VARIABLE dis_counter					: STD_LOGIC_VECTOR(9 downto 0) := CONV_STD_LOGIC_VECTOR(DIS_BETWEEN_PIPE, 10);
+		VARIABLE dis_counter						: STD_LOGIC_VECTOR(9 downto 0) 	:= CONV_STD_LOGIC_VECTOR(DIS_BETWEEN_PIPE, 10);
 		-- pixel/ver_sync
-		VARIABLE speed 							: STD_LOGIC_VECTOR(9 downto 0) := CONV_STD_LOGIC_VECTOR(DEFAULT_SPEED, 10);
+		VARIABLE speed 								: STD_LOGIC_VECTOR(9 downto 0) 	:= CONV_STD_LOGIC_VECTOR(DEFAULT_SPEED, 10);
 	BEGIN
 
 		IF (reset = '1') THEN
-			object_pos_mem <= (others => OBJ_POS_ALL_ZERO);
+			top_cols <= OBJ_COLS_ALL_ZERO;
+			top_rows <= OBJ_COLS_ALL_ZERO;
+			bot_cols <= OBJ_COLS_ALL_ZERO;
+			bot_rows <= OBJ_COLS_ALL_ZERO;
 			speed := CONV_STD_LOGIC_VECTOR(DEFAULT_SPEED, 10);
 			mem_index := OBJ_QUEUE_LENGTH;
 			dis_counter := CONV_STD_LOGIC_VECTOR(DIS_BETWEEN_PIPE, 10);
@@ -166,7 +181,7 @@ BEGIN
 			-- Update object
 			-- To do: Speed change based on difficulty.
 			dis_counter := dis_counter + speed;
-			UPDATE_OBJ(speed, mem_index, object_pos_mem);
+			UPDATE_OBJ(speed, mem_index, top_cols, top_rows, bot_cols, bot_rows);
 
 			-- Pipe Creation
 			IF (dis_counter >= CONV_STD_LOGIC_VECTOR(DIS_BETWEEN_PIPE, 10)) THEN
@@ -199,26 +214,25 @@ BEGIN
 				LOAD_OBJ(
 							pipe_top, pipe_top_type, pipe_top_colour, 
 							mem_index, 
-							object_pos_mem, object_type, object_colour);	
+							top_cols, top_rows, bot_cols, bot_rows,
+							object_type, object_colour);	
 				LOAD_OBJ(
 							pipe_bot, pipe_bot_type, pipe_bot_colour, 
 							mem_index,
-							object_pos_mem, object_type, object_colour);	
+							top_cols, top_rows, bot_cols, bot_rows,
+							object_type, object_colour);	
 			END IF;
 		END IF;
-
-		q_out <= object_pos_mem;
-
 	END PROCESS OBJ_CREATION;
 
 	
-	UNPACK: PROCESS(object_pos_mem)
+	UNPACK: PROCESS(top_cols, top_rows, bot_cols, bot_rows)
 	BEGIN
-		FOR index IN (object_pos_mem'length - 1) downto 0 LOOP
-			obj_cols_top(index) <= object_pos_mem(index)(3);
-			obj_rows_top(index) <= object_pos_mem(index)(2);
-			obj_cols_bot(index) <= object_pos_mem(index)(1);
-			obj_rows_bot(index) <= object_pos_mem(index)(0);
+		FOR index IN (OBJ_QUEUE_LENGTH) downto 0 LOOP
+			obj_cols_top(index) <= top_cols(index);
+			obj_rows_top(index) <= top_rows(index);
+			obj_cols_bot(index) <= bot_cols(index);
+			obj_rows_bot(index) <= bot_rows(index);
 		END LOOP;
 	END PROCESS UNPACK;
 
