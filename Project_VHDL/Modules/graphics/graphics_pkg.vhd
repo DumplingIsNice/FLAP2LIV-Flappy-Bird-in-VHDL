@@ -60,12 +60,13 @@ TYPE font_colour		IS ARRAY (FONT_QUEUE_LENGTH downto 0) OF FONT_COLOUR_PACKET;
 	TYPE obj_cols			IS ARRAY (OBJ_QUEUE_LENGTH downto 0) OF std_logic_vector(9 downto 0);
 	TYPE obj_rows			IS ARRAY (OBJ_QUEUE_LENGTH downto 0) OF std_logic_vector(9 downto 0);
 	TYPE obj_type			IS ARRAY (OBJ_QUEUE_LENGTH downto 0) OF OBJ_TYPE_PACKET;
-	TYPE obj_colour		IS ARRAY (OBJ_QUEUE_LENGTH downto 0) OF FONT_COLOUR_PACKET;
+	TYPE obj_colour			IS ARRAY (OBJ_QUEUE_LENGTH downto 0) OF FONT_COLOUR_PACKET;
 	
 	-- (3, 2) = top coordinate (col, row), (1, 0) = bot coordinate (col, row)
 	TYPE obj_pos IS ARRAY (3 downto 0) OF STD_LOGIC_VECTOR (9 downto 0);
 	-- TYPE obj_mem IS ARRAY (OBJ_QUEUE_LENGTH downto 0) OF OBJ_POS; -- Depreciated.
 	
+	CONSTANT OBJ_COLOUR_ZERO	: FONT_COLOUR_PACKET				:= "0000";
 	CONSTANT OBJ_POS_ALL_ZERO 	: obj_pos 							:= (others => "0000000000");
 	CONSTANT OBJ_COLS_ALL_ZERO 	: obj_cols 							:= (others => "0000000000");
 	CONSTANT TEN_BIT_ALL_ZERO 	: STD_LOGIC_VECTOR (9 downto 0) 	:= "0000000000";

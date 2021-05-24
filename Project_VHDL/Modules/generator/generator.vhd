@@ -12,9 +12,6 @@
 --
 --	Out:			GENERATOR_BUFFER (To be held constant for a screen refresh)
 
--- 						NOTE: q_out - An internal memory array. 
---							  Output for debugging purposes in modelsim.
-
 --	Summary
 
 -- The Generator module generates the background layout and obstacles
@@ -70,7 +67,9 @@ ENTITY generator IS
 			obj_cols_top, obj_cols_bot		: OUT OBJ_COLS		:= (others => (others => '0'));
 			obj_rows_top, obj_rows_bot		: OUT OBJ_ROWS		:= (others => (others => '0'));
 			object_type						: OUT OBJ_TYPE 		:= (others => (others => '0'));
-			object_colour					: OUT OBJ_COLOUR 	:= (others => (others => '0'))
+			obj_colour_r					: OUT OBJ_COLOUR 	:= (others => (others => '0'));
+			obj_colour_g					: OUT OBJ_COLOUR 	:= (others => (others => '0'));
+			obj_colour_b					: OUT OBJ_COLOUR 	:= (others => (others => '0'))
         );
 END ENTITY generator;
 
@@ -81,11 +80,11 @@ ARCHITECTURE behaviour OF generator IS
         (   
 			VARIABLE obj_data_pos 								: IN obj_pos;
 			VARIABLE obj_data_type								: IN obj_type_packet;
-			VARIABLE obj_data_colour							: IN font_colour_packet;
+			VARIABLE obj_r, obj_g, obj_b 						: IN font_colour_packet;
 			VARIABLE mem_index 									: INOUT INTEGER;
 			SIGNAL top_cols, top_rows, bot_cols, bot_rows 		: OUT obj_cols;
 			SIGNAL object_type									: OUT obj_type;
-			SIGNAL object_colour 								: OUT obj_colour
+			SIGNAL obj_colour_r, obj_colour_g, obj_colour_b		: OUT OBJ_COLOUR
         ) IS
 
     BEGIN 
@@ -95,7 +94,9 @@ ARCHITECTURE behaviour OF generator IS
 		bot_rows(mem_index) 		<= obj_data_pos(0);
 		
 		object_type(mem_index)		<= obj_data_type;
-		object_colour(mem_index) 	<= obj_data_colour;
+		obj_colour_r(mem_index) 	<= obj_r;
+		obj_colour_g(mem_index) 	<= obj_g;
+		obj_colour_b(mem_index) 	<= obj_b;
 
         IF (mem_index = 0) THEN
 			mem_index := OBJ_QUEUE_LENGTH;
@@ -157,7 +158,7 @@ BEGIN
 		VARIABLE pipe_top, pipe_bot 				: obj_pos 						:= OBJ_POS_ALL_ZERO;
 		VARIABLE gap_top, gap_bot, gap_pos			: STD_LOGIC_VECTOR(9 downto 0) 	:= CONV_STD_LOGIC_VECTOR(0, 10);
 		VARIABLE pipe_top_type, pipe_bot_type		: obj_type_packet				:= PIPE_TYPE;
-		VARIABLE pipe_top_colour, pipe_bot_colour	: obj_type_packet				:= PIPE_COLOUR;
+		VARIABLE pipe_r, pipe_g, pipe_b				: obj_type_packet				:= OBJ_COLOUR_ZERO;
 		VARIABLE intermediate 						: STD_LOGIC_VECTOR(11 downto 0) := CONV_STD_LOGIC_VECTOR(0, 12);
 
 		VARIABLE mem_index : INTEGER := OBJ_QUEUE_LENGTH;
@@ -201,26 +202,32 @@ BEGIN
 				pipe_top(1) 	:= SCREEN_RIGHT;
 				pipe_top(0) 	:= gap_top; -- Top of gap to bottem coordinate of top pipe.
 				pipe_top_type 	:= PIPE_TYPE;
-				pipe_top_colour := PIPE_COLOUR;
 
 				pipe_bot(3) 	:= SCREEN_RIGHT; 
 				pipe_bot(2) 	:= gap_bot; -- Bottem of gap to top coordinate of bottem pipe.
 				pipe_bot(1) 	:= SCREEN_RIGHT;
 				pipe_bot(0) 	:= SCREEN_BOT; 
 				pipe_bot_type 	:= "0001";
-				pipe_bot_colour := "0001";
+
+				pipe_r := OBJ_COLOUR_ZERO;
+				pipe_g := "1111";
+				pipe_b := OBJ_COLOUR_ZERO;
 
 				-- Load real positional data into memory
 				LOAD_OBJ(
-							pipe_top, pipe_top_type, pipe_top_colour, 
+							pipe_top, pipe_top_type, 
+							pipe_r, pipe_g, pipe_b, 
 							mem_index, 
 							top_cols, top_rows, bot_cols, bot_rows,
-							object_type, object_colour);	
+							object_type, 
+							obj_colour_r, obj_colour_g, obj_colour_b);	
 				LOAD_OBJ(
-							pipe_bot, pipe_bot_type, pipe_bot_colour, 
+							pipe_bot, pipe_bot_type,
+							pipe_r, pipe_g, pipe_b,
 							mem_index,
 							top_cols, top_rows, bot_cols, bot_rows,
-							object_type, object_colour);	
+							object_type,
+							obj_colour_r, obj_colour_g, obj_colour_b);	
 			END IF;
 		END IF;
 	END PROCESS OBJ_CREATION;

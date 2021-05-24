@@ -17,7 +17,9 @@ architecture bench of generator_tb is
             obj_cols_top, obj_cols_bot		: OUT OBJ_COLS;
             obj_rows_top, obj_rows_bot		: OUT OBJ_ROWS;
             object_type						        : OUT obj_type;
-            object_colour					        : OUT obj_colour
+            obj_colour_r				        	: OUT OBJ_COLOUR 	:= (others => (others => '0'));
+            obj_colour_g				        	: OUT OBJ_COLOUR 	:= (others => (others => '0'));
+            obj_colour_b				        	: OUT OBJ_COLOUR 	:= (others => (others => '0'))
           );
   end component;
 
@@ -27,7 +29,9 @@ architecture bench of generator_tb is
   signal obj_cols_top, obj_cols_bot		  : OBJ_COLS;
   signal obj_rows_top, obj_rows_bot		  : OBJ_ROWS;
   signal object_type				            : obj_type;
-  signal object_colour					        : obj_colour;
+  signal obj_colour_r					          : OBJ_COLOUR 	:= (others => (others => '0'));
+  signal obj_colour_g					          : OBJ_COLOUR 	:= (others => (others => '0'));
+  signal obj_colour_b					          : OBJ_COLOUR 	:= (others => (others => '0'));
 
 begin
 
@@ -44,7 +48,9 @@ begin
                             obj_rows_bot  => obj_rows_bot,
 
                             object_type   => object_type,
-                            object_colour => object_colour);
+                            obj_colour_r  => obj_colour_r,
+                            obj_colour_g  => obj_colour_g,
+                            obj_colour_b  => obj_colour_b);
 
     vert_sync_gen: process
     begin

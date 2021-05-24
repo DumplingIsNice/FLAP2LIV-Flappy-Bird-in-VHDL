@@ -25,12 +25,16 @@ ENTITY generator_screen_buffer IS
 			obj_cols_top, obj_cols_bot				: IN OBJ_COLS;
 			obj_rows_top, obj_rows_bot				: IN OBJ_ROWS;
 			object_type								: IN OBJ_TYPE;
-			object_colour							: IN OBJ_COLOUR;
+			obj_colour_r							: IN OBJ_COLOUR;
+			obj_colour_g							: IN OBJ_COLOUR;
+			obj_colour_b							: IN OBJ_COLOUR;
 
             obj_cols_top_out, obj_cols_bot_out		: OUT OBJ_COLS			:= (others => (others => '0'));
 			obj_rows_top_out, obj_rows_bot_out		: OUT OBJ_ROWS			:= (others => (others => '0'));
 			obj_type_out							: OUT OBJ_TYPE			:= (others => (others => '0'));
-			obj_colour_out					    	: OUT OBJ_COLOUR		:= (others => (others => '0'))
+			obj_colour_r_out						: OUT OBJ_COLOUR 		:= (others => (others => '0'));
+			obj_colour_g_out						: OUT OBJ_COLOUR 		:= (others => (others => '0'));
+			obj_colour_b_out						: OUT OBJ_COLOUR 		:= (others => (others => '0'))
         );
 END ENTITY generator_screen_buffer;
 
@@ -39,6 +43,9 @@ ARCHITECTURE behaviour OF generator_screen_buffer IS
 	SIGNAL obj_rows_top_i, obj_rows_bot_i			: OBJ_ROWS			:= (others => (others => '0'));
 	SIGNAL object_type_i							: OBJ_TYPE			:= (others => (others => '0'));
 	SIGNAL object_colour_i							: OBJ_COLOUR		:= (others => (others => '0'));
+	SIGNAL obj_colour_r_i							: OBJ_COLOUR 		:= (others => (others => '0'));
+	SIGNAL obj_colour_g_i							: OBJ_COLOUR 		:= (others => (others => '0'));
+	SIGNAL obj_colour_b_i							: OBJ_COLOUR 		:= (others => (others => '0'));
 BEGIN
 
 	PROCESS(read_data, reset)
@@ -49,7 +56,9 @@ BEGIN
 			obj_cols_bot_i 		<= (others => "0000000000");
 			obj_rows_bot_i 		<= (others => "0000000000");
 			object_type_i	 	<= (others => "0000");
-			object_colour_i		<= (others => "0000");
+			obj_colour_r_i		<= (others => (others => '0'));
+			obj_colour_g_i		<= (others => (others => '0'));
+			obj_colour_b_i		<= (others => (others => '0'));
 		END IF;
 
 		IF (RISING_EDGE(read_data)) THEN
@@ -58,7 +67,9 @@ BEGIN
 			obj_cols_bot_i 		<= obj_cols_top;
 			obj_rows_bot_i 		<= obj_rows_top;
 			object_type_i	 	<= object_type;
-			object_colour_i		<= object_colour;
+			obj_colour_r_i		<= (others => (others => '0'));
+			obj_colour_g_i		<= (others => (others => '0'));
+			obj_colour_b_i		<= (others => (others => '0'));
 		END IF;
 	END PROCESS;
 
@@ -67,6 +78,8 @@ BEGIN
 	obj_cols_bot_out 	<= obj_cols_top_i;
 	obj_rows_bot_out 	<= obj_rows_top_i;
 	obj_type_out	 	<= object_type_i;
-	obj_colour_out		<= object_colour_i;
+	obj_colour_r_out	<= obj_colour_r_i;
+	obj_colour_g_out	<= obj_colour_g_i;
+	obj_colour_b_out	<= obj_colour_b_i;
 
 END ARCHITECTURE behaviour;
