@@ -1260,9 +1260,26 @@ applicable agreement for further details.
 	)
 )
 (symbol
-	(rect -664 1232 -632 1264)
+	(rect -672 1232 -640 1264)
 	(text "GND" (rect 8 16 29 26)(font "Arial" (font_size 6)))
 	(text "inst11" (rect 3 21 32 33)(font "Arial" )(invisible))
+	(port
+		(pt 16 0)
+		(output)
+		(text "1" (rect 18 0 23 12)(font "Courier New" (bold))(invisible))
+		(text "1" (rect 18 0 23 12)(font "Courier New" (bold))(invisible))
+		(line (pt 16 8)(pt 16 0))
+	)
+	(drawing
+		(line (pt 8 8)(pt 16 16))
+		(line (pt 16 16)(pt 24 8))
+		(line (pt 8 8)(pt 24 8))
+	)
+)
+(symbol
+	(rect -352 1232 -320 1264)
+	(text "GND" (rect 8 16 29 26)(font "Arial" (font_size 6)))
+	(text "inst12" (rect 3 21 32 33)(font "Arial" )(invisible))
 	(port
 		(pt 16 0)
 		(output)
@@ -1997,14 +2014,6 @@ applicable agreement for further details.
 	(bus)
 )
 (connector
-	(pt -472 -128)
-	(pt -464 -128)
-)
-(connector
-	(pt -464 -128)
-	(pt -448 -128)
-)
-(connector
 	(pt -648 1104)
 	(pt -648 1128)
 )
@@ -2025,17 +2034,33 @@ applicable agreement for further details.
 	(pt -544 1192)
 )
 (connector
-	(pt -648 1208)
-	(pt -544 1208)
-)
-(connector
-	(pt -648 1232)
-	(pt -648 1208)
-)
-(connector
 	(pt -304 1176)
 	(pt -360 1176)
 	(bus)
+)
+(connector
+	(pt -544 1208)
+	(pt -656 1208)
+)
+(connector
+	(pt -656 1208)
+	(pt -656 1232)
+)
+(connector
+	(pt -304 1144)
+	(pt -336 1144)
+)
+(connector
+	(pt -336 1144)
+	(pt -336 1232)
+)
+(connector
+	(pt -472 -128)
+	(pt -464 -128)
+)
+(connector
+	(pt -464 -128)
+	(pt -448 -128)
 )
 (junction (pt 1176 520))
 (junction (pt 472 728))
