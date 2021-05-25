@@ -22,6 +22,15 @@ END ENTITY generator_II;
 
 
 ARCHITECTURE behaviour OF generator_II IS
+	SIGNAL v_obj_cols_left					: OBJ_COLS			:= (others => (others => '0'));
+	SIGNAL v_obj_cols_right					: OBJ_COLS			:= (others => (others => '0'));
+	SIGNAL v_obj_rows_upper					: OBJ_ROWS			:= (others => (others => '0'));
+	SIGNAL v_obj_rows_lower					: OBJ_ROWS			:= (others => (others => '0'));
+	SIGNAL v_obj_types						: OBJ_TYPES			:= (others => (others => '0'));
+	SIGNAL v_obj_red							: OBJ_COLOURS		:= (others => (others => '0'));
+	SIGNAL v_obj_green						: OBJ_COLOURS		:= (others => (others => '0'));
+	SIGNAL v_obj_blue							: OBJ_COLOURS		:= (others => (others => '0'));
+
 	SIGNAL shift_step_size					: UNSIGNED(2 downto 0)	:= TO_UNSIGNED(1,10);
 
 	SIGNAL shift_clk							: STD_LOGIC;
@@ -32,6 +41,16 @@ ARCHITECTURE behaviour OF generator_II IS
 	SIGNAL pickup_count_limit				: UNSIGNED(3 downto 0)	:= TO_UNSIGNED(3,4);		-- period (in obstacles) between each pickup
 BEGIN
 
+	obj_cols_left		<= v_obj_cols_left;
+	obj_cols_right		<= v_obj_cols_right;
+	obj_rows_upper		<= v_obj_rows_upper;
+	obj_rows_lower		<= v_obj_rows_lower;
+	obj_types			<= v_obj_types;
+	obj_red				<= v_obj_red;
+	obj_green			<= v_obj_green;
+	obj_blue				<= v_obj_blue;
+
+	
 	
 	-- TODO:
 	
@@ -41,19 +60,26 @@ BEGIN
 	
 	
 	
-	
-	
-	-- need memory component to store data in
-	
-	shift: PROCESS (shift_clk) IS
+	shift_and_gen: PROCESS (shift_clk) IS
 		VARIABLE temp							: STD_LOGIC_VECTOR (9 downto 0);
 	BEGIN
 		for k in OBJ_QUEUE_LENGTH downto 0 loop
-			-- temp := cols(k);
-			-- -- NOTE: we cannot simultaneously read and write to same location in memory. Store in temp first.
-			-- cols(k) <= STD_LOGIC_VECTOR(UNSIGNED(temp) + UNSIGNED(shift_step_size));
+			-- NOTE: we cannot simultaneously read and write to same location in memory. Store in temp first.
+			temp					:= v_obj_cols_left(k);
+			if (UNSIGNED(temp) >= UNSIGNED(shift_step_size)) then
+				v_obj_cols_left	<= STD_LOGIC_VECTOR(UNSIGNED(temp) - UNSIGNED(shift_step_size));
+			else
+				v_obj_cols_left	<= (others => '0');
+			end if;
+			
+			temp					:= v_obj_cols_right(k);
+			if (UNSIGNED(temp) >= UNSIGNED(shift_step_size)) then
+				v_obj_cols_right	<= STD_LOGIC_VECTOR(UNSIGNED(temp) - UNSIGNED(shift_step_size));
+			else
+				v_obj_cols_right	<= (others => '0');
+			end if;
 		end loop;
-	END PROCESS shift;
+	END PROCESS shift_and_gen;
 
 
 	set_count_limit: PROCESS(clk) IS

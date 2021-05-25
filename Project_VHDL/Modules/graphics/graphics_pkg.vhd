@@ -32,12 +32,12 @@ PACKAGE graphics_pkg IS
 	-- Break up font packet [col, row, scale, address] into 1D arrays for synthesis
 CONSTANT FONT_QUEUE_LENGTH	: INTEGER := 23;
 
-TYPE font_cols			IS ARRAY (FONT_QUEUE_LENGTH downto 0) OF std_logic_vector(9 downto 0);
-TYPE font_rows			IS ARRAY (FONT_QUEUE_LENGTH downto 0) OF std_logic_vector(9 downto 0);
-TYPE font_scales		IS ARRAY (FONT_QUEUE_LENGTH downto 0) OF std_logic_vector(5 downto 0);
-TYPE font_addresses	IS ARRAY (FONT_QUEUE_LENGTH downto 0) OF std_logic_vector(5 downto 0);
+TYPE font_cols			IS ARRAY (FONT_QUEUE_LENGTH downto 0) OF STD_LOGIC_VECTOR(9 downto 0);
+TYPE font_rows			IS ARRAY (FONT_QUEUE_LENGTH downto 0) OF STD_LOGIC_VECTOR(9 downto 0);
+TYPE font_scales		IS ARRAY (FONT_QUEUE_LENGTH downto 0) OF STD_LOGIC_VECTOR(5 downto 0);
+TYPE font_addresses	IS ARRAY (FONT_QUEUE_LENGTH downto 0) OF STD_LOGIC_VECTOR(5 downto 0);
 
-SUBTYPE font_colour_packet IS std_logic_vector(3 downto 0);
+SUBTYPE font_colour_packet IS STD_LOGIC_VECTOR(3 downto 0);
 TYPE font_colour		IS ARRAY (FONT_QUEUE_LENGTH downto 0) OF FONT_COLOUR_PACKET;
 
 
@@ -47,12 +47,25 @@ TYPE font_colour		IS ARRAY (FONT_QUEUE_LENGTH downto 0) OF FONT_COLOUR_PACKET;
 	-- right,lower describes the point the vector rectangle ends.
 CONSTANT OBJ_QUEUE_LENGTH : INTEGER := 23;
 	
-TYPE obj_cols			IS ARRAY (OBJ_QUEUE_LENGTH downto 0) OF std_logic_vector(9 downto 0);
-TYPE obj_rows			IS ARRAY (OBJ_QUEUE_LENGTH downto 0) OF std_logic_vector(9 downto 0);
+TYPE obj_cols			IS ARRAY (OBJ_QUEUE_LENGTH downto 0) OF STD_LOGIC_VECTOR(9 downto 0);
+TYPE obj_rows			IS ARRAY (OBJ_QUEUE_LENGTH downto 0) OF STD_LOGIC_VECTOR(9 downto 0);
 
-SUBTYPE obj_type_packet IS std_logic_vector(3 downto 0);
+SUBTYPE obj_type_packet IS STD_LOGIC_VECTOR(3 downto 0);
 TYPE obj_types			IS ARRAY (OBJ_QUEUE_LENGTH downto 0) OF OBJ_TYPE_PACKET;
 TYPE obj_colours		IS ARRAY (OBJ_QUEUE_LENGTH downto 0) OF FONT_COLOUR_PACKET;
+
+	-- record is used for structured storage in generator memory
+TYPE obj_queue_packet IS RECORD
+	col					: STD_LOGIC_VECTOR(9 downto 0);
+	row					: STD_LOGIC_VECTOR(9 downto 0);
+	obj_type				: OBJ_TYPE_PACKET;
+	r						: FONT_COLOUR_PACKET;
+	g						: FONT_COLOUR_PACKET;
+	b						: FONT_COLOUR_PACKET;
+END RECORD obj_queue_packet;
+
+
+
 
 	-- OBJECT HELPERS --
 	-- (3, 2) = top coordinate (col, row), (1, 0) = bot coordinate (col, row)
