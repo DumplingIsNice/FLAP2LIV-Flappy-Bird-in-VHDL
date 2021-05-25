@@ -16,10 +16,10 @@ architecture bench of generator_tb is
   			    rand_num						          : IN STD_LOGIC_VECTOR(4 downto 0);
             obj_cols_top, obj_cols_bot		: OUT OBJ_COLS;
             obj_rows_top, obj_rows_bot		: OUT OBJ_ROWS;
-            object_type						        : OUT obj_type;
-            obj_colour_r				        	: OUT OBJ_COLOUR 	:= (others => (others => '0'));
-            obj_colour_g				        	: OUT OBJ_COLOUR 	:= (others => (others => '0'));
-            obj_colour_b				        	: OUT OBJ_COLOUR 	:= (others => (others => '0'))
+            object_type						        : OUT OBJ_TYPES;
+            obj_colour_r				        	: OUT OBJ_COLOURS 	:= (others => (others => '0'));
+            obj_colour_g				        	: OUT OBJ_COLOURS 	:= (others => (others => '0'));
+            obj_colour_b				        	: OUT OBJ_COLOURS 	:= (others => (others => '0'))
           );
   end component;
 
@@ -28,10 +28,10 @@ architecture bench of generator_tb is
   signal rand_num                       : STD_LOGIC_VECTOR(4 downto 0);
   signal obj_cols_top, obj_cols_bot		  : OBJ_COLS;
   signal obj_rows_top, obj_rows_bot		  : OBJ_ROWS;
-  signal object_type				            : obj_type;
-  signal obj_colour_r					          : OBJ_COLOUR 	:= (others => (others => '0'));
-  signal obj_colour_g					          : OBJ_COLOUR 	:= (others => (others => '0'));
-  signal obj_colour_b					          : OBJ_COLOUR 	:= (others => (others => '0'));
+  signal object_type				            : OBJ_TYPES;
+  signal obj_colour_r					          : OBJ_COLOURS 	:= (others => (others => '0'));
+  signal obj_colour_g					          : OBJ_COLOURS 	:= (others => (others => '0'));
+  signal obj_colour_b					          : OBJ_COLOURS 	:= (others => (others => '0'));
 
 begin
 
