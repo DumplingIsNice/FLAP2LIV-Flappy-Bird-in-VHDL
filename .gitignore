@@ -4,6 +4,8 @@
 *.bak
 */nppBackup/*
 
+# Local files
+*/deprecated/*
 
 # Adding from: https://gist.github.com/nhasbun/71918796044b7ba89d6662133495f754
 
