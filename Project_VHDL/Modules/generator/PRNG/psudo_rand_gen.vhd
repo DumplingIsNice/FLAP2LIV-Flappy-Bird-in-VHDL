@@ -17,7 +17,6 @@ USE IEEE.STD_LOGIC_UNSIGNED.all;
 ENTITY psudo_rand_gen IS
 	PORT(   seed	                :	IN STD_LOGIC_VECTOR (9 DOWNTO 0);
 		    enable, gen, reset	    : 	IN STD_LOGIC;
-		    -- q                       :	OUT STD_LOGIC_VECTOR (9 DOWNTO 0) -- the full 10-bit shift register for debugging purposes.
             q                       :	OUT STD_LOGIC
 	    );
 END psudo_rand_gen;
@@ -28,31 +27,33 @@ BEGIN
 
     q <= q_i(0);
 
-    shift: PROCESS (gen, enable, reset, seed, q_i) is
+    shift: PROCESS (gen, enable, reset, seed) is
         VARIABLE temp_tap1 : STD_LOGIC;
     BEGIN
 
-        IF (reset = '1') THEN
-            q_i <= seed;
-        END IF;
+        IF (RISING_EDGE(gen)) THEN
+            IF (reset = '1') THEN
+                q_i <= seed;
+            END IF;
 
-        IF ((enable = '1')) THEN
-            
-            -- 10bit right shift register, tap[7, 0]=tapmask=0010000001, with 1023 Cycle period.
-                q_i(9) <= q_i(0);
-                temp_tap1 := q_i(7) xor q_i(0);
+            IF (enable = '1') THEN
+                
+                -- 10bit right shift register, tap[7, 0]=tapmask=0010000001, with 1023 Cycle period.
+                    q_i(9) <= q_i(0);
+                    temp_tap1 := q_i(7) xor q_i(0);
 
-                q_i(8 downto 0) <= q_i(9 downto 1);
-                q_i(6) <= temp_tap1;
+                    q_i(8 downto 0) <= q_i(9 downto 1);
+                    q_i(6) <= temp_tap1;
 
-            -- Zero value protection
-            IF (q_i = CONV_STD_LOGIC_VECTOR(0, q_i'length)) THEN
-                IF (seed = CONV_STD_LOGIC_VECTOR(0, q_i'length)) THEN
-                    q_i <= "1001000000"; -- Arbitary seed value;
-                ELSE
-                    q_i <= seed;
-                END IF;
-            END IF;            
+                -- Zero value protection
+                IF (q_i = CONV_STD_LOGIC_VECTOR(0, q_i'length)) THEN
+                    IF (seed = CONV_STD_LOGIC_VECTOR(0, q_i'length)) THEN
+                        q_i <= "1001000000"; -- Arbitary seed value;
+                    ELSE
+                        q_i <= seed;
+                    END IF;
+                END IF;            
+            END IF;
         END IF;
     END PROCESS;
 

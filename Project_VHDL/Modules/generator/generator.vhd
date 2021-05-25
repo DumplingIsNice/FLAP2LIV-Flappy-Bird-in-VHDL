@@ -66,7 +66,7 @@ ENTITY generator IS
 
 			obj_cols_top, obj_cols_bot		: OUT OBJ_COLS		:= (others => (others => '0'));
 			obj_rows_top, obj_rows_bot		: OUT OBJ_ROWS		:= (others => (others => '0'));
-			object_type						: OUT OBJ_TYPES 		:= (others => (others => '0'));
+			object_type						: OUT OBJ_TYPES 	:= (others => (others => '0'));
 			obj_colour_r					: OUT OBJ_COLOURS 	:= (others => (others => '0'));
 			obj_colour_g					: OUT OBJ_COLOURS 	:= (others => (others => '0'));
 			obj_colour_b					: OUT OBJ_COLOURS 	:= (others => (others => '0'))
@@ -151,6 +151,7 @@ ARCHITECTURE behaviour OF generator IS
     END PROCEDURE UPDATE_OBJ;
 
 	SIGNAL top_cols, top_rows, bot_cols, bot_rows 	: obj_cols 	:= 	OBJ_COLS_ALL_ZERO;
+	-- SIGNAL rand_num : STD_LOGIC_VECTOR(4 downto 0) := CONV_STD_LOGIC_VECTOR(29, 5);
 BEGIN
 	-- Object generation
 	-- Interesting problem: Results always seemed to be delayed b 1/T. Yet it scales with T.
@@ -196,6 +197,10 @@ BEGIN
 					
 					gap_top := gap_pos + BORDER_MARGIN;
 					gap_bot := gap_top + GAP_HEIGHT;
+
+					IF (gap_bot >= SCREEN_BOT - BORDER_MARGIN) THEN
+						gap_bot := SCREEN_BOT - BORDER_MARGIN;
+					END IF;
 
 					-- From obj_pos TYPE in graphics_pkg.vhd:
 					-- (3, 2) = top coordinate (col, row), (1, 0) = bot coordinate (col, row)
