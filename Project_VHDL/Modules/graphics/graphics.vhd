@@ -106,50 +106,50 @@ BEGIN
 	g <= vg;
 	b <= vb;
 		
--- Set r,g,b for every pixel (updating for each change in row or col)
-pixel_eval: PROCESS (pixel_column)
-BEGIN
-	if (rising_edge(pixel_column(0))) then
-		
-		vr <= obj_r;
-		vg <= obj_g;
-		vb <= obj_b;
-		
-		-- Loop downwards such that lower indices have overwrite priority
-		for k in FONT_QUEUE_LENGTH downto 0 loop
-			if (F_BOUNDS_EVAL(pixel_column, pixel_row, f_cols(k), f_rows(k), f_scales(k))) then
-				if (F_FONT_EVAL(pixel_column, pixel_row, f_cols(k), f_rows(k), f_scales(k), f_addresses(k))) then
-					vr <= f_red(k);
-					vg <= f_green(k);
-					vb <= f_blue(k);
+	-- Set r,g,b for every pixel (updating for each change in row or col)
+	pixel_eval: PROCESS (pixel_column)
+	BEGIN
+		if (rising_edge(pixel_column(0))) then
+			
+			vr <= obj_r;
+			vg <= obj_g;
+			vb <= obj_b;
+			
+			-- Loop downwards such that lower indices have overwrite priority
+			for k in FONT_QUEUE_LENGTH downto 0 loop
+				if (F_BOUNDS_EVAL(pixel_column, pixel_row, f_cols(k), f_rows(k), f_scales(k))) then
+					if (F_FONT_EVAL(pixel_column, pixel_row, f_cols(k), f_rows(k), f_scales(k), f_addresses(k))) then
+						vr <= f_red(k);
+						vg <= f_green(k);
+						vb <= f_blue(k);
+					end if;
 				end if;
-			end if;
-		end loop;	
-		
-	end if;
-				
---		-- FRAMEWORK FOR CHANNEL PRIORITY MUX FIX
---		-- NOTE: Uses mux to choose between two different rgb values so font channels can overlap.
---		-- WARNING: Signals should only be driven from one source. Need to use more signals to decouple.
---
---		if (F_BOUNDS_EVAL(pixel_column, pixel_row, f_cols(0), f_rows(0), f_scales(0))) then
---			if (F_FONT_EVAL(pixel_column, pixel_row, f_cols(0), f_rows(0), f_scales(0), f_addresses(0))) then
---				vr_cursor <= f_red(0);
---				vg_cursor <= f_green(0);
---				vb_cursor <= f_blue(0);
---				cursor_flag := '1';
---			else
---				cursor_flag := '0';
---		end if;
---		
---		-- MUX priority channels
---		if (cursor_flag = '1') then
---			vr <= vr_cursor;
---			vg <= vg_cursor;
---			vb <= vb_cursor;
---		end if;
+			end loop;	
+			
+		end if;
+					
+	--		-- FRAMEWORK FOR CHANNEL PRIORITY MUX FIX
+	--		-- NOTE: Uses mux to choose between two different rgb values so font channels can overlap.
+	--		-- WARNING: Signals should only be driven from one source. Need to use more signals to decouple.
+	--
+	--		if (F_BOUNDS_EVAL(pixel_column, pixel_row, f_cols(0), f_rows(0), f_scales(0))) then
+	--			if (F_FONT_EVAL(pixel_column, pixel_row, f_cols(0), f_rows(0), f_scales(0), f_addresses(0))) then
+	--				vr_cursor <= f_red(0);
+	--				vg_cursor <= f_green(0);
+	--				vb_cursor <= f_blue(0);
+	--				cursor_flag := '1';
+	--			else
+	--				cursor_flag := '0';
+	--		end if;
+	--		
+	--		-- MUX priority channels
+	--		if (cursor_flag = '1') then
+	--			vr <= vr_cursor;
+	--			vg <= vg_cursor;
+	--			vb <= vb_cursor;
+	--		end if;
 
-END PROCESS pixel_eval;
+	END PROCESS pixel_eval;
 
 
 -- FRAMEWORK FOR ROM 'GHOST PIXEL' FIX

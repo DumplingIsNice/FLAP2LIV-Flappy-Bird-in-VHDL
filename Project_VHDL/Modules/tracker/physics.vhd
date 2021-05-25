@@ -31,9 +31,11 @@ USE  IEEE.STD_LOGIC_ARITH.all;
 USE  IEEE.STD_LOGIC_SIGNED.all;
 
 ENTITY physics IS
-	PORT
-		(clk_25k, vert_sync, mouse_lclick : IN std_logic;		
-		y_pos : OUT std_logic_vector(9 downto 0));
+	PORT (
+		clk_25k, vert_sync	: IN std_logic;	
+		reset, mouse_lclick	: IN std_logic;		
+		y_pos 					: OUT std_logic_vector(9 downto 0)
+	);
 END ENTITY physics;
 
 ARCHITECTURE a OF physics IS
@@ -50,9 +52,11 @@ SIGNAL y						: std_logic_vector(9 downto 0) := CONV_STD_LOGIC_VECTOR(240,10);		
 
 BEGIN
 
-	Click_Check: PROCESS(vert_sync)
+	Click_Check: PROCESS(vert_sync, reset)
 	BEGIN
-		if (rising_edge(vert_sync)) then
+		if (reset = '1') then
+			v <= (others => '0');
+		elsif (rising_edge(vert_sync)) then
 			if (mouse_lclick = '1') then
 				v <= - IMPULSE;		-- 0 is top; thus negative is up
 			else
@@ -65,8 +69,10 @@ BEGIN
 		end if;
 	END PROCESS Click_Check;
 	
-	Boundary_Check: PROCESS(vert_sync)  	
+	Boundary_Check: PROCESS(vert_sync, reset)  	
 	BEGIN
+		if (reset = '1') then
+			y <= (others => '0');
 		-- Move ball once every vertical sync
 		if (rising_edge(vert_sync)) then			
 			-- Stop off top or bottom of the screen

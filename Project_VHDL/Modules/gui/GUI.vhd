@@ -36,6 +36,7 @@ ENTITY gui IS
 		mouse_col, mouse_row			: IN STD_LOGIC_VECTOR(9 downto 0);
 		bird_col, bird_row			: IN STD_LOGIC_VECTOR(9 downto 0);
 		
+		reset_menu						: IN STD_LOGIC;
 		score								: IN STD_LOGIC_VECTOR(7 downto 0);
 		difficulty_level				: IN STD_LOGIC_VECTOR(1 downto 0);
 		
@@ -49,7 +50,6 @@ END ENTITY gui;
 ARCHITECTURE behaviour OF gui IS
 	-- VARIABLES --
 	SIGNAL v_show_menu				: STD_LOGIC := '1';
-	SIGNAL reset_menu					: STD_LOGIC := '0';
 	SIGNAL v_select_test				: STD_LOGIC	:= '0';
 	SIGNAL v_select_game				: STD_LOGIC	:= '0';
 	TYPE STATE_TYPE is 				(S0,S1,S2,S3,S4);
