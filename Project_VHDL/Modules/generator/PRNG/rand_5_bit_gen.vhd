@@ -34,14 +34,15 @@ USE IEEE.STD_LOGIC_UNSIGNED.all;
 USE work.rand_num_pkg.all;
 
 ENTITY rand_5_bit_gen IS
-	PORT(   seed                    :   IN seed_pkg;
+	PORT(   --seed                    :   IN seed_pkg;
 		    enable, gen, reset	    : 	IN STD_LOGIC;
 		    rand_out                :	OUT STD_LOGIC_VECTOR (4 downto 0)
 	    );
 END rand_5_bit_gen;
 
 ARCHITECTURE beh OF rand_5_bit_gen IS
-
+	SIGNAL seed	: seed_pkg			:= (others => (others => '1'));
+	
     COMPONENT psudo_rand_gen IS
     PORT(   seed	                :	IN STD_LOGIC_VECTOR (9 DOWNTO 0);
     		enable, gen, reset	    : 	IN STD_LOGIC;

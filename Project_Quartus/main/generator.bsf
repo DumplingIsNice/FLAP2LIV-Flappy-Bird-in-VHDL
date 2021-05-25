@@ -20,9 +20,9 @@ applicable agreement for further details.
 */
 (header "symbol" (version "1.1"))
 (symbol
-	(rect 16 16 280 160)
+	(rect 16 16 280 192)
 	(text "generator" (rect 5 0 42 12)(font "Arial" ))
-	(text "inst" (rect 8 128 20 140)(font "Arial" ))
+	(text "inst" (rect 8 160 20 172)(font "Arial" ))
 	(port
 		(pt 0 32)
 		(input)
@@ -96,11 +96,25 @@ applicable agreement for further details.
 	(port
 		(pt 264 112)
 		(output)
-		(text "object_colour[23..0][3..0]" (rect 0 0 96 12)(font "Arial" ))
-		(text "object_colour[23..0][3..0]" (rect 147 107 243 119)(font "Arial" ))
+		(text "obj_colour_r[23..0][3..0]" (rect 0 0 94 12)(font "Arial" ))
+		(text "obj_colour_r[23..0][3..0]" (rect 149 107 243 119)(font "Arial" ))
 		(line (pt 264 112)(pt 248 112)(line_width 3))
 	)
+	(port
+		(pt 264 128)
+		(output)
+		(text "obj_colour_g[23..0][3..0]" (rect 0 0 95 12)(font "Arial" ))
+		(text "obj_colour_g[23..0][3..0]" (rect 148 123 243 135)(font "Arial" ))
+		(line (pt 264 128)(pt 248 128)(line_width 3))
+	)
+	(port
+		(pt 264 144)
+		(output)
+		(text "obj_colour_b[23..0][3..0]" (rect 0 0 95 12)(font "Arial" ))
+		(text "obj_colour_b[23..0][3..0]" (rect 148 139 243 151)(font "Arial" ))
+		(line (pt 264 144)(pt 248 144)(line_width 3))
+	)
 	(drawing
-		(rectangle (rect 16 16 248 128)(line_width 1))
+		(rectangle (rect 16 16 248 160)(line_width 1))
 	)
 )

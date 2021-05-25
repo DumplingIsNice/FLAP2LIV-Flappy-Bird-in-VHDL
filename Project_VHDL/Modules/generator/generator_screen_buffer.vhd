@@ -24,28 +24,28 @@ ENTITY generator_screen_buffer IS
 			read_data, reset 						: IN STD_LOGIC;
 			obj_cols_top, obj_cols_bot				: IN OBJ_COLS;
 			obj_rows_top, obj_rows_bot				: IN OBJ_ROWS;
-			object_type								: IN OBJ_TYPE;
-			obj_colour_r							: IN OBJ_COLOUR;
-			obj_colour_g							: IN OBJ_COLOUR;
-			obj_colour_b							: IN OBJ_COLOUR;
+			object_type								: IN OBJ_TYPES;
+			obj_colour_r							: IN OBJ_COLOURS;
+			obj_colour_g							: IN OBJ_COLOURS;
+			obj_colour_b							: IN OBJ_COLOURS;
 
             obj_cols_top_out, obj_cols_bot_out		: OUT OBJ_COLS			:= (others => (others => '0'));
 			obj_rows_top_out, obj_rows_bot_out		: OUT OBJ_ROWS			:= (others => (others => '0'));
-			obj_type_out							: OUT OBJ_TYPE			:= (others => (others => '0'));
-			obj_colour_r_out						: OUT OBJ_COLOUR 		:= (others => (others => '0'));
-			obj_colour_g_out						: OUT OBJ_COLOUR 		:= (others => (others => '0'));
-			obj_colour_b_out						: OUT OBJ_COLOUR 		:= (others => (others => '0'))
+			obj_type_out							: OUT OBJ_TYPES			:= (others => (others => '0'));
+			obj_colour_r_out						: OUT OBJ_COLOURS 	:= (others => (others => '0'));
+			obj_colour_g_out						: OUT OBJ_COLOURS 	:= (others => (others => '0'));
+			obj_colour_b_out						: OUT OBJ_COLOURS 	:= (others => (others => '0'))
         );
 END ENTITY generator_screen_buffer;
 
 ARCHITECTURE behaviour OF generator_screen_buffer IS
 	SIGNAL obj_cols_top_i, obj_cols_bot_i			: OBJ_COLS			:= (others => (others => '0'));
 	SIGNAL obj_rows_top_i, obj_rows_bot_i			: OBJ_ROWS			:= (others => (others => '0'));
-	SIGNAL object_type_i							: OBJ_TYPE			:= (others => (others => '0'));
-	SIGNAL object_colour_i							: OBJ_COLOUR		:= (others => (others => '0'));
-	SIGNAL obj_colour_r_i							: OBJ_COLOUR 		:= (others => (others => '0'));
-	SIGNAL obj_colour_g_i							: OBJ_COLOUR 		:= (others => (others => '0'));
-	SIGNAL obj_colour_b_i							: OBJ_COLOUR 		:= (others => (others => '0'));
+	SIGNAL object_type_i							: OBJ_TYPES			:= (others => (others => '0'));
+	SIGNAL object_colour_i							: OBJ_COLOURS		:= (others => (others => '0'));
+	SIGNAL obj_colour_r_i							: OBJ_COLOURS 		:= (others => (others => '0'));
+	SIGNAL obj_colour_g_i							: OBJ_COLOURS 		:= (others => (others => '0'));
+	SIGNAL obj_colour_b_i							: OBJ_COLOURS 		:= (others => (others => '0'));
 BEGIN
 
 	PROCESS(read_data, reset)

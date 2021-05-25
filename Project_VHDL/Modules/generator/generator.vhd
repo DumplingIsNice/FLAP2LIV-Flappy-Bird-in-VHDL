@@ -66,10 +66,10 @@ ENTITY generator IS
 
 			obj_cols_top, obj_cols_bot		: OUT OBJ_COLS		:= (others => (others => '0'));
 			obj_rows_top, obj_rows_bot		: OUT OBJ_ROWS		:= (others => (others => '0'));
-			object_type						: OUT OBJ_TYPE 		:= (others => (others => '0'));
-			obj_colour_r					: OUT OBJ_COLOUR 	:= (others => (others => '0'));
-			obj_colour_g					: OUT OBJ_COLOUR 	:= (others => (others => '0'));
-			obj_colour_b					: OUT OBJ_COLOUR 	:= (others => (others => '0'))
+			object_type						: OUT OBJ_TYPES 		:= (others => (others => '0'));
+			obj_colour_r					: OUT OBJ_COLOURS 	:= (others => (others => '0'));
+			obj_colour_g					: OUT OBJ_COLOURS 	:= (others => (others => '0'));
+			obj_colour_b					: OUT OBJ_COLOURS 	:= (others => (others => '0'))
         );
 END ENTITY generator;
 
@@ -83,8 +83,8 @@ ARCHITECTURE behaviour OF generator IS
 			VARIABLE obj_r, obj_g, obj_b 						: IN font_colour_packet;
 			VARIABLE mem_index 									: INOUT INTEGER;
 			SIGNAL top_cols, top_rows, bot_cols, bot_rows 		: OUT obj_cols;
-			SIGNAL object_type									: OUT obj_type;
-			SIGNAL obj_colour_r, obj_colour_g, obj_colour_b		: OUT OBJ_COLOUR
+			SIGNAL object_type									: OUT obj_types;
+			SIGNAL obj_colour_r, obj_colour_g, obj_colour_b		: OUT OBJ_COLOURS
         ) IS
 
     BEGIN 
