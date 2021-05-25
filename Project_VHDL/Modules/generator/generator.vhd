@@ -280,58 +280,58 @@ BEGIN
 					pipes_passed := pipes_passed + CONV_STD_LOGIC_VECTOR(1, 2);
 
 				-- Pickup object creation
-				-- ELSIF (dis_counter >= HALF_DIS_BETWEEN_PIPE) THEN
+				ELSIF (dis_counter >= HALF_DIS_BETWEEN_PIPE) THEN
 
-				-- 	-- Minimum threshold of pipes passed before pickups are generatied.
-				-- 	IF (pipes_passed > CONV_STD_LOGIC_VECTOR(2, 2)) THEN
-				-- 		pipes_passed := CONV_STD_LOGIC_VECTOR(0, 2);
+					-- Minimum threshold of pipes passed before pickups are generatied.
+					IF (pipes_passed > CONV_STD_LOGIC_VECTOR(2, 2)) THEN
+						pipes_passed := CONV_STD_LOGIC_VECTOR(0, 2);
 						
-				-- 		-- Random number drived from 5-bit random number.
-				-- 		pickup_sel := rand_num(3 downto 0);
+						-- Random number drived from 5-bit random number.
+						pickup_sel := rand_num(3 downto 0);
 
-				-- 		-- Currently fixed to 0 - 9; In the future, 6 numbers will be used as = no pickups.
-				-- 		IF (pickup_sel >= CONV_STD_LOGIC_VECTOR(10, 4)) THEN
-				-- 			pickup_sel := CONV_STD_LOGIC_VECTOR(0, 4);
-				-- 		END IF;
+						-- Currently fixed to 0 - 9; In the future, 6 numbers will be used as = no pickups.
+						IF (pickup_sel >= CONV_STD_LOGIC_VECTOR(10, 4)) THEN
+							pickup_sel := CONV_STD_LOGIC_VECTOR(0, 4);
+						END IF;
 
-				-- 		-- Probability evaluations for each type of pickup.
-				-- 		IF ((CONV_STD_LOGIC_VECTOR(0, 4) <= pickup_sel) AND (pickup_sel < INVI_CHANCE)) THEN
-				-- 			pickup_type := INVI_TYPE;
-				-- 			pickup_r := OBJ_COLOUR_ZERO;
-				-- 			pickup_g := "1111";
-				-- 			pickup_b := "1111";
-				-- 		ELSIF ((INVI_CHANCE <= pickup_sel) AND (pickup_sel < (LIFE_CHANCE+INVI_CHANCE))) THEN
-				-- 			pickup_type := LIFE_TYPE;
-				-- 			pickup_r := "1111";
-				-- 			pickup_g := OBJ_COLOUR_ZERO;
-				-- 			pickup_b := OBJ_COLOUR_ZERO;
-				-- 		ELSIF (((LIFE_CHANCE+INVI_CHANCE) <= pickup_sel) AND (pickup_sel < (LIFE_CHANCE+INVI_CHANCE+COLOUR_SH_CHANCE))) THEN
-				-- 			pickup_type := COLOUR_SH_TYPE;
-				-- 			pickup_r := OBJ_COLOUR_ZERO;
-				-- 			pickup_g := OBJ_COLOUR_ZERO;
-				-- 			pickup_b := "1111";
-				-- 		ELSE
-				-- 			pickup_type := NULL_TYPE;
-				-- 		END IF;
+						-- Probability evaluations for each type of pickup.
+						IF ((CONV_STD_LOGIC_VECTOR(0, 4) <= pickup_sel) AND (pickup_sel < INVI_CHANCE)) THEN
+							pickup_type := INVI_TYPE;
+							pickup_r := OBJ_COLOUR_ZERO;
+							pickup_g := "1111";
+							pickup_b := "1111";
+						ELSIF ((INVI_CHANCE <= pickup_sel) AND (pickup_sel < (LIFE_CHANCE+INVI_CHANCE))) THEN
+							pickup_type := LIFE_TYPE;
+							pickup_r := "1111";
+							pickup_g := OBJ_COLOUR_ZERO;
+							pickup_b := OBJ_COLOUR_ZERO;
+						ELSIF (((LIFE_CHANCE+INVI_CHANCE) <= pickup_sel) AND (pickup_sel < (LIFE_CHANCE+INVI_CHANCE+COLOUR_SH_CHANCE))) THEN
+							pickup_type := COLOUR_SH_TYPE;
+							pickup_r := OBJ_COLOUR_ZERO;
+							pickup_g := OBJ_COLOUR_ZERO;
+							pickup_b := "1111";
+						ELSE
+							pickup_type := NULL_TYPE;
+						END IF;
 
-				-- 		-- Pickup object creation
-				-- 		IF (pickup_type /= NULL_TYPE) THEN
-				-- 			pickup(3) := SCREEN_RIGHT;
-				-- 			pickup(2) := PICKUP_TOP_ROW;
-				-- 			pickup(1) := SCREEN_RIGHT;
-				-- 			pickup(0) := pickup(2) +  CONV_STD_LOGIC_VECTOR(32, 10);
+						-- Pickup object creation
+						IF (pickup_type /= NULL_TYPE) THEN
+							pickup(3) := SCREEN_RIGHT;
+							pickup(2) := PICKUP_TOP_ROW;
+							pickup(1) := SCREEN_RIGHT;
+							pickup(0) := pickup(2) +  CONV_STD_LOGIC_VECTOR(32, 10);
 
-				-- 			LOAD_OBJ(
-				-- 					pickup, pickup_type,
-				-- 					pickup_r, pickup_g, pickup_b, -- Need colour informations?
-				-- 					mem_index,
-				-- 					is_scored,
-				-- 					top_cols, top_rows, bot_cols, bot_rows,
-				-- 					object_type,
-				-- 					obj_colour_r, obj_colour_g, obj_colour_b);	
-				-- 		END IF;
-				-- 		pickup_type := NULL_TYPE;
-				-- 	END IF;
+							LOAD_OBJ(
+									pickup, pickup_type,
+									pickup_r, pickup_g, pickup_b, -- Need colour informations?
+									mem_index,
+									is_scored,
+									top_cols, top_rows, bot_cols, bot_rows,
+									object_type,
+									obj_colour_r, obj_colour_g, obj_colour_b);	
+						END IF;
+						pickup_type := NULL_TYPE;
+					END IF;
 				END IF;
 			END IF;
 			score_flag <= score_flag_i;
