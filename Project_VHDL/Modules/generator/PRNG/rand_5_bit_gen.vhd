@@ -6,7 +6,7 @@
     --        - When low, holds current output rand_out.
     -- reset - Asynchronous reset output to seed value.
 -- Output: 
-    -- rand_out - 5-bit output of values between (1-29)
+    -- rand_out - 5-bit output of values between (0-29)
 
 -- Additonal Info:
 --     Screen height of 480px. We want the gaps to be at least 40px away from the edge of the screen (at positions 0 and 479), 
@@ -34,14 +34,14 @@ USE IEEE.STD_LOGIC_UNSIGNED.all;
 USE work.rand_num_pkg.all;
 
 ENTITY rand_5_bit_gen IS
-	PORT(   --seed                    :   IN seed_pkg;
+	PORT(   -- seed                    :   IN seed_pkg;
 		    enable, gen, reset	    : 	IN STD_LOGIC;
 		    rand_out                :	OUT STD_LOGIC_VECTOR (4 downto 0)
 	    );
 END rand_5_bit_gen;
 
 ARCHITECTURE beh OF rand_5_bit_gen IS
-	SIGNAL seed	: seed_pkg			:= (others => (others => '1'));
+	SIGNAL seed	: seed_pkg			:= FIXED_SEED;
 	
     COMPONENT psudo_rand_gen IS
     PORT(   seed	                :	IN STD_LOGIC_VECTOR (9 DOWNTO 0);
@@ -86,15 +86,20 @@ BEGIN
                                     q => q_r4
                                 );               
 
+    seed(0) <= "0000000000";
+    seed(1) <= "1001000001";
+    seed(2) <= "1001000010";
+    seed(3) <= "1001000100";
+    seed(4) <= "1001001000";
     -- Feedback bits concat to 5-bit value, (0-31).
     rand_out_i <= q_r4&q_r3&q_r2&q_r1&q_r0;
     
     PROCESS (rand_out_i) IS
     BEGIN
         -- Noticable trend of commonity of 0s, and 1s. Made bias to center of screen.
-        IF (CONV_INTEGER(rand_out_i) = 1) THEN
+        IF (CONV_INTEGER(rand_out_i) = 31) THEN
             rand_out <= CONV_STD_LOGIC_VECTOR(16, rand_out_i'length);
-        ELSIF (CONV_INTEGER(rand_out_i) = 0) THEN
+        ELSIF (CONV_INTEGER(rand_out_i) = 30) THEN
             rand_out <= CONV_STD_LOGIC_VECTOR(15, rand_out_i'length);
         ELSE
             rand_out <= rand_out_i;

@@ -61,12 +61,13 @@ USE work.graphics_pkg.all;
 ENTITY generator IS
 	PORT(
 			vert_sync, enable, reset		: IN STD_LOGIC;
-			difficulty						: IN STD_LOGIC;
+			difficulty						: IN STD_LOGIC_VECTOR(1 downto 0);
 			rand_num						: IN STD_LOGIC_VECTOR(4 downto 0);
 
+			score_flag						: OUT STD_LOGIC		:= '0';
 			obj_cols_top, obj_cols_bot		: OUT OBJ_COLS		:= (others => (others => '0'));
 			obj_rows_top, obj_rows_bot		: OUT OBJ_ROWS		:= (others => (others => '0'));
-			object_type						: OUT OBJ_TYPES 		:= (others => (others => '0'));
+			object_type						: OUT OBJ_TYPES 	:= (others => (others => '0'));
 			obj_colour_r					: OUT OBJ_COLOURS 	:= (others => (others => '0'));
 			obj_colour_g					: OUT OBJ_COLOURS 	:= (others => (others => '0'));
 			obj_colour_b					: OUT OBJ_COLOURS 	:= (others => (others => '0'))
@@ -81,7 +82,9 @@ ARCHITECTURE behaviour OF generator IS
 			VARIABLE obj_data_pos 								: IN obj_pos;
 			VARIABLE obj_data_type								: IN obj_type_packet;
 			VARIABLE obj_r, obj_g, obj_b 						: IN font_colour_packet;
+			
 			VARIABLE mem_index 									: INOUT INTEGER;
+			VARIABLE is_scored									: OUT IS_SCORED_ARRAY;
 			SIGNAL top_cols, top_rows, bot_cols, bot_rows 		: OUT obj_cols;
 			SIGNAL object_type									: OUT obj_types;
 			SIGNAL obj_colour_r, obj_colour_g, obj_colour_b		: OUT OBJ_COLOURS
@@ -98,6 +101,12 @@ ARCHITECTURE behaviour OF generator IS
 		obj_colour_g(mem_index) 	<= obj_g;
 		obj_colour_b(mem_index) 	<= obj_b;
 
+		IF (obj_data_type = PIPE_TYPE) THEN
+			is_scored(mem_index) := '0';
+		ELSE
+			is_scored(mem_index) := '1';
+		END IF;
+
         IF (mem_index = 0) THEN
 			mem_index := OBJ_QUEUE_LENGTH;
         ELSE
@@ -111,7 +120,9 @@ ARCHITECTURE behaviour OF generator IS
         (   
 			VARIABLE speed 										: IN STD_LOGIC_VECTOR(9 downto 0);
 			VARIABLE mem_index 									: IN INTEGER;
-			SIGNAL top_cols, top_rows, bot_cols, bot_rows 		: INOUT obj_cols
+			SIGNAL top_cols, top_rows, bot_cols, bot_rows 		: INOUT obj_cols;
+			VARIABLE is_scored									: INOUT IS_SCORED_ARRAY;
+			SIGNAL score_flag									: INOUT STD_LOGIC
         ) IS
 
 		VARIABLE current_obj	: obj_pos := OBJ_POS_ALL_ZERO;
@@ -126,6 +137,14 @@ ARCHITECTURE behaviour OF generator IS
 
 				-- From obj_pos TYPE in graphics_pkg.vhd:
 				-- (3, 2) = top coordinate (col, row), (1, 0) = bot coordinate (col, row)
+
+				-- Fires score is passing right edge of pipe, shuts off on next frame.
+				IF (bot_cols(index) <= BIRD_POSITION AND is_scored(index) = '0') THEN
+					is_scored(index) := '1';
+					score_flag <= '1';
+				ELSE
+					score_flag <= '0';
+				END IF;
 
 				-- Bin objects which have left the screen.
 				IF (bot_cols(index) <= TEN_BIT_ALL_ZERO) THEN
@@ -151,6 +170,7 @@ ARCHITECTURE behaviour OF generator IS
     END PROCEDURE UPDATE_OBJ;
 
 	SIGNAL top_cols, top_rows, bot_cols, bot_rows 	: obj_cols 	:= 	OBJ_COLS_ALL_ZERO;
+	SIGNAL score_flag_i 							: STD_LOGIC := 	'0';
 BEGIN
 	-- Object generation
 	-- Interesting problem: Results always seemed to be delayed b 1/T. Yet it scales with T.
@@ -165,26 +185,40 @@ BEGIN
 
 		VARIABLE dis_counter						: STD_LOGIC_VECTOR(9 downto 0) 	:= CONV_STD_LOGIC_VECTOR(DIS_BETWEEN_PIPE, 10);
 		-- pixel/ver_sync
-		VARIABLE speed 								: STD_LOGIC_VECTOR(9 downto 0) 	:= CONV_STD_LOGIC_VECTOR(DEFAULT_SPEED, 10);
+		VARIABLE speed 								: STD_LOGIC_VECTOR(9 downto 0) 	:= DEFAULT_SPEED;
+		VARIABLE is_scored							: IS_SCORED_ARRAY := (others => '0');
 	BEGIN
 
 		IF (RISING_EDGE(vert_sync)) THEN
-
 			IF (reset = '1') THEN
 				top_cols <= OBJ_COLS_ALL_ZERO;
 				top_rows <= OBJ_COLS_ALL_ZERO;
 				bot_cols <= OBJ_COLS_ALL_ZERO;
 				bot_rows <= OBJ_COLS_ALL_ZERO;
-				speed := CONV_STD_LOGIC_VECTOR(DEFAULT_SPEED, 10);
+				score_flag <= '0';
+				speed := DEFAULT_SPEED;
 				mem_index := OBJ_QUEUE_LENGTH;
 				dis_counter := CONV_STD_LOGIC_VECTOR(DIS_BETWEEN_PIPE, 10);
 			END IF;
 
 			IF (enable = '1') THEN
-					-- Update object
-				-- To do: Speed change based on difficulty.
+				-- Speed change based on difficulty.
+				CASE(difficulty) is
+					WHEN DIFF_0 => 
+						speed := DEFAULT_SPEED;
+					WHEN DIFF_1 => 
+						speed := SPEED_1;
+					WHEN DIFF_2 => 
+						speed := SPEED_2;
+					WHEN DIFF_3 => 
+						speed := SPEED_3;
+					WHEN others =>
+						speed := speed;
+				END CASE; 
+				
+				-- Update object
 				dis_counter := dis_counter + speed;
-				UPDATE_OBJ(speed, mem_index, top_cols, top_rows, bot_cols, bot_rows);
+				UPDATE_OBJ(speed, mem_index, top_cols, top_rows, bot_cols, bot_rows, is_scored, score_flag_i);
 
 				-- Pipe Creation
 				IF (dis_counter >= CONV_STD_LOGIC_VECTOR(DIS_BETWEEN_PIPE, 10)) THEN
@@ -196,6 +230,10 @@ BEGIN
 					
 					gap_top := gap_pos + BORDER_MARGIN;
 					gap_bot := gap_top + GAP_HEIGHT;
+
+					IF (gap_bot >= SCREEN_BOT - BORDER_MARGIN) THEN
+						gap_bot := SCREEN_BOT - BORDER_MARGIN;
+					END IF;
 
 					-- From obj_pos TYPE in graphics_pkg.vhd:
 					-- (3, 2) = top coordinate (col, row), (1, 0) = bot coordinate (col, row)
@@ -209,7 +247,7 @@ BEGIN
 					pipe_bot(2) 	:= gap_bot; -- Bottem of gap to top coordinate of bottem pipe.
 					pipe_bot(1) 	:= SCREEN_RIGHT;
 					pipe_bot(0) 	:= SCREEN_BOT; 
-					pipe_bot_type 	:= "0001";
+					pipe_bot_type 	:= PIPE_TYPE;
 
 					pipe_r := OBJ_COLOUR_ZERO;
 					pipe_g := "1111";
@@ -220,6 +258,7 @@ BEGIN
 								pipe_top, pipe_top_type, 
 								pipe_r, pipe_g, pipe_b, 
 								mem_index, 
+								is_scored,
 								top_cols, top_rows, bot_cols, bot_rows,
 								object_type, 
 								obj_colour_r, obj_colour_g, obj_colour_b);	
@@ -227,14 +266,15 @@ BEGIN
 								pipe_bot, pipe_bot_type,
 								pipe_r, pipe_g, pipe_b,
 								mem_index,
+								is_scored,
 								top_cols, top_rows, bot_cols, bot_rows,
 								object_type,
 								obj_colour_r, obj_colour_g, obj_colour_b);	
 				END IF;
 			END IF;
+			score_flag <= score_flag_i;
 		END IF;
 	END PROCESS OBJ_CREATION;
-
 	
 	UNPACK: PROCESS(top_cols, top_rows, bot_cols, bot_rows)
 	BEGIN
