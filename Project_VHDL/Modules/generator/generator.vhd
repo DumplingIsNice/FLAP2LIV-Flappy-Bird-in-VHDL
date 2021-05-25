@@ -55,6 +55,7 @@ LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.all;
 USE IEEE.STD_LOGIC_ARITH.all;
 USE IEEE.STD_LOGIC_UNSIGNED.all;
+-- USE IEEE.NUMERIC_STD.all;
 
 USE work.graphics_pkg.all;
 
@@ -137,14 +138,6 @@ ARCHITECTURE behaviour OF generator IS
 				-- From obj_pos TYPE in graphics_pkg.vhd:
 				-- (3, 2) = top coordinate (col, row), (1, 0) = bot coordinate (col, row)
 
-				-- Fires score is passing right edge of pipe, shuts off on next frame.
-				IF (bot_cols(index) <= BIRD_POSITION AND is_scored(index) = '0') THEN
-					is_scored(index) := '1';
-					score_flag <= '1';
-				ELSE
-					score_flag <= '0';
-				END IF;
-
 				-- Bin objects which have left the screen.
 				IF (bot_cols(index) <= TEN_BIT_ALL_ZERO) THEN
 					top_cols(index) <= TEN_BIT_ALL_ZERO;
@@ -164,6 +157,14 @@ ARCHITECTURE behaviour OF generator IS
 						bot_cols(index) <= bot_cols(index) - speed;
 					END IF;
 				END IF;
+
+				-- Fires score_flag when passing right edge of pipe, shuts off on next frame.
+				IF (bot_cols(index) <= BIRD_POSITION AND is_scored(index) = '0') THEN
+					is_scored(index) := '1';
+					score_flag <= '1';
+				ELSIF (score_flag = '1') THEN
+					score_flag <= '0';
+				END IF;
 			END IF;
 		END LOOP;
     END PROCEDURE UPDATE_OBJ;
@@ -180,8 +181,13 @@ BEGIN
 		VARIABLE pipe_r, pipe_g, pipe_b				: obj_type_packet				:= OBJ_COLOUR_ZERO;
 		VARIABLE intermediate 						: STD_LOGIC_VECTOR(11 downto 0) := CONV_STD_LOGIC_VECTOR(0, 12);
 
-		VARIABLE mem_index : INTEGER := OBJ_QUEUE_LENGTH;
+		VARIABLE pickup								: obj_pos 						:= OBJ_POS_ALL_ZERO;
+		VARIABLE pickup_type						: obj_type_packet				:= NULL_TYPE;
+		VARIABLE pickup_r, pickup_g, pickup_b		: obj_type_packet				:= OBJ_COLOUR_ZERO;
+		VARIABLE pickup_sel							: STD_LOGIC_VECTOR(3 downto 0);
 
+		VARIABLE mem_index 							: INTEGER 						:= OBJ_QUEUE_LENGTH;
+		VARIABLE pipes_passed						: STD_LOGIC_VECTOR(1 downto 0)	:= CONV_STD_LOGIC_VECTOR(0, 2);
 		VARIABLE dis_counter						: STD_LOGIC_VECTOR(9 downto 0) 	:= CONV_STD_LOGIC_VECTOR(DIS_BETWEEN_PIPE, 10);
 		-- pixel/ver_sync
 		VARIABLE speed 								: STD_LOGIC_VECTOR(9 downto 0) 	:= DEFAULT_SPEED;
@@ -268,7 +274,63 @@ BEGIN
 								is_scored,
 								top_cols, top_rows, bot_cols, bot_rows,
 								object_type,
-								obj_colour_r, obj_colour_g, obj_colour_b);	
+								obj_colour_r, obj_colour_g, obj_colour_b);
+								
+					pipes_passed := pipes_passed + CONV_STD_LOGIC_VECTOR(1, 2);
+
+				-- Pickup object creation
+				ELSIF (dis_counter >= HALF_DIS_BETWEEN_PIPE) THEN
+
+					-- Minimum threshold of pipes passed before pickups are generatied.
+					IF (pipes_passed > CONV_STD_LOGIC_VECTOR(2, 2)) THEN
+						pipes_passed := CONV_STD_LOGIC_VECTOR(0, 2);
+						
+						-- Random number drived from 5-bit random number.
+						pickup_sel := rand_num(3 downto 0);
+
+						-- Currently fixed to 0 - 9; In the future, 6 numbers will be used as = no pickups.
+						IF (pickup_sel >= CONV_STD_LOGIC_VECTOR(10, 4)) THEN
+							pickup_sel := CONV_STD_LOGIC_VECTOR(0, 4);
+						END IF;
+
+						-- Probability evaluations for each type of pickup.
+						IF ((CONV_STD_LOGIC_VECTOR(0, 4) <= pickup_sel) AND (pickup_sel < INVI_CHANCE)) THEN
+							pickup_type := INVI_TYPE;
+							pickup_r := OBJ_COLOUR_ZERO;
+							pickup_g := "1111";
+							pickup_b := "1111";
+						ELSIF ((INVI_CHANCE <= pickup_sel) AND (pickup_sel < (LIFE_CHANCE+INVI_CHANCE))) THEN
+							pickup_type := LIFE_TYPE;
+							pickup_r := "1111";
+							pickup_g := OBJ_COLOUR_ZERO;
+							pickup_b := OBJ_COLOUR_ZERO;
+						ELSIF (((LIFE_CHANCE+INVI_CHANCE) <= pickup_sel) AND (pickup_sel < (LIFE_CHANCE+INVI_CHANCE+COLOUR_SH_CHANCE))) THEN
+							pickup_type := COLOUR_SH_TYPE;
+							pickup_r := OBJ_COLOUR_ZERO;
+							pickup_g := OBJ_COLOUR_ZERO;
+							pickup_b := "1111";
+						ELSE
+							pickup_type := NULL_TYPE;
+						END IF;
+
+						-- Pickup object creation
+						IF (pickup_type /= NULL_TYPE) THEN
+							pickup(3) := SCREEN_RIGHT;
+							pickup(2) := PICKUP_TOP_ROW;
+							pickup(1) := SCREEN_RIGHT;
+							pickup(0) := pickup(2) +  CONV_STD_LOGIC_VECTOR(32, 10);
+
+							LOAD_OBJ(
+									pickup, pickup_type,
+									pickup_r, pickup_g, pickup_b, -- Need colour informations?
+									mem_index,
+									is_scored,
+									top_cols, top_rows, bot_cols, bot_rows,
+									object_type,
+									obj_colour_r, obj_colour_g, obj_colour_b);	
+						END IF;
+						pickup_type := NULL_TYPE;
+					END IF;
 				END IF;
 			END IF;
 			score_flag <= score_flag_i;
