@@ -37,8 +37,6 @@ ENTITY gui IS
 		bird_col, bird_row			: IN STD_LOGIC_VECTOR(9 downto 0);
 		
 		reset_menu						: IN STD_LOGIC;
-		score								: IN STD_LOGIC_VECTOR(7 downto 0);
-		difficulty_level				: IN STD_LOGIC_VECTOR(1 downto 0);
 		
 		enable_mouse					: OUT STD_LOGIC		:= '1';
 		enable_bird						: OUT STD_LOGIC		:= '0';

@@ -60,14 +60,14 @@ USE work.graphics_pkg.all;
 
 ENTITY generator IS
 	PORT(
-			vert_sync, enable, reset		: IN STD_LOGIC;
+			vert_sync, enable, reset	: IN STD_LOGIC;
 			difficulty						: IN STD_LOGIC_VECTOR(1 downto 0);
-			rand_num						: IN STD_LOGIC_VECTOR(4 downto 0);
+			rand_num							: IN STD_LOGIC_VECTOR(4 downto 0);
 
 			score_flag						: OUT STD_LOGIC		:= '0';
-			obj_cols_top, obj_cols_bot		: OUT OBJ_COLS		:= (others => (others => '0'));
-			obj_rows_top, obj_rows_bot		: OUT OBJ_ROWS		:= (others => (others => '0'));
-			object_type						: OUT OBJ_TYPES 	:= (others => (others => '0'));
+			obj_cols_top, obj_cols_bot	: OUT OBJ_COLS			:= (others => (others => '0'));
+			obj_rows_top, obj_rows_bot	: OUT OBJ_ROWS			:= (others => (others => '0'));
+			object_type						: OUT OBJ_TYPES 		:= (others => (others => '0'));
 			obj_colour_r					: OUT OBJ_COLOURS 	:= (others => (others => '0'));
 			obj_colour_g					: OUT OBJ_COLOURS 	:= (others => (others => '0'));
 			obj_colour_b					: OUT OBJ_COLOURS 	:= (others => (others => '0'))
@@ -75,7 +75,6 @@ ENTITY generator IS
 END ENTITY generator;
 
 ARCHITECTURE behaviour OF generator IS
-
 	-- Loads a set of positon data into the next memory array
 	PROCEDURE LOAD_OBJ
         (   

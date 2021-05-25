@@ -32,6 +32,11 @@ ENTITY gui_feed IS
 		enable_mouse, enable_bird	: IN STD_LOGIC;
 		select_test, select_game	: IN STD_LOGIC;
 		show_menu						: IN STD_LOGIC;
+		show_pause						: IN STD_LOGIC;
+		
+		score, top_score				: IN STD_LOGIC_VECTOR(7 downto 0);
+		difficulty_level				: IN STD_LOGIC_VECTOR(1 downto 0);
+		lives								: IN STD_LOGIC_VECTOR(1 downto 0);
 		
 		f_cols									: OUT FONT_COLS		:= (others => (others => '0'));
 		f_rows									: OUT FONT_ROWS		:= (others => (others => '0'));
@@ -58,30 +63,30 @@ ARCHITECTURE behaviour OF gui_feed IS
 	CONSTANT GAME_BTN_SCALE			: STD_LOGIC_VECTOR(5 downto 0)	:= STD_LOGIC_VECTOR(TO_UNSIGNED(6,6));
 BEGIN
 
-	-- TEMP: to be replaced by GENERATOR after testing:
-	obj_cols_left(0)	<= STD_LOGIC_VECTOR(TO_UNSIGNED(500,10));
-	obj_cols_right(0)	<= STD_LOGIC_VECTOR(TO_UNSIGNED(560,10));
-	obj_rows_upper(0)	<= STD_LOGIC_VECTOR(TO_UNSIGNED(0,10));
-	obj_rows_lower(0)	<= STD_LOGIC_VECTOR(TO_UNSIGNED(220,10));
-	obj_red(0)			<= "1111";
-	obj_green(0)		<= "1111";
-	obj_blue(0)			<= "0000";
-	
-	obj_cols_left(1)	<= STD_LOGIC_VECTOR(TO_UNSIGNED(500,10));
-	obj_cols_right(1)	<= STD_LOGIC_VECTOR(TO_UNSIGNED(560,10));
-	obj_rows_upper(1)	<= STD_LOGIC_VECTOR(TO_UNSIGNED(320,10));
-	obj_rows_lower(1)	<= STD_LOGIC_VECTOR(TO_UNSIGNED(479,10));
-	obj_red(1)			<= "1111";
-	obj_green(1)		<= "1111";
-	obj_blue(1)			<= "0000";
-	
-	obj_cols_left(2)	<= STD_LOGIC_VECTOR(TO_UNSIGNED(600,10));
-	obj_cols_right(2)	<= STD_LOGIC_VECTOR(TO_UNSIGNED(620,10));
-	obj_rows_upper(2)	<= STD_LOGIC_VECTOR(TO_UNSIGNED(260,10));
-	obj_rows_lower(2)	<= STD_LOGIC_VECTOR(TO_UNSIGNED(300,10));
-	obj_red(2)			<= "1111";
-	obj_green(2)		<= "1111";
-	obj_blue(2)			<= "0000";
+--	-- TEMP: to be replaced by GENERATOR after testing:
+--	obj_cols_left(0)	<= STD_LOGIC_VECTOR(TO_UNSIGNED(500,10));
+--	obj_cols_right(0)	<= STD_LOGIC_VECTOR(TO_UNSIGNED(560,10));
+--	obj_rows_upper(0)	<= STD_LOGIC_VECTOR(TO_UNSIGNED(0,10));
+--	obj_rows_lower(0)	<= STD_LOGIC_VECTOR(TO_UNSIGNED(220,10));
+--	obj_red(0)			<= "1111";
+--	obj_green(0)		<= "1111";
+--	obj_blue(0)			<= "0000";
+--	
+--	obj_cols_left(1)	<= STD_LOGIC_VECTOR(TO_UNSIGNED(500,10));
+--	obj_cols_right(1)	<= STD_LOGIC_VECTOR(TO_UNSIGNED(560,10));
+--	obj_rows_upper(1)	<= STD_LOGIC_VECTOR(TO_UNSIGNED(320,10));
+--	obj_rows_lower(1)	<= STD_LOGIC_VECTOR(TO_UNSIGNED(479,10));
+--	obj_red(1)			<= "1111";
+--	obj_green(1)		<= "1111";
+--	obj_blue(1)			<= "0000";
+--	
+--	obj_cols_left(2)	<= STD_LOGIC_VECTOR(TO_UNSIGNED(600,10));
+--	obj_cols_right(2)	<= STD_LOGIC_VECTOR(TO_UNSIGNED(620,10));
+--	obj_rows_upper(2)	<= STD_LOGIC_VECTOR(TO_UNSIGNED(260,10));
+--	obj_rows_lower(2)	<= STD_LOGIC_VECTOR(TO_UNSIGNED(300,10));
+--	obj_red(2)			<= "1111";
+--	obj_green(2)		<= "1111";
+--	obj_blue(2)			<= "0000";
 
 
 	-- Mouse Cursor
@@ -136,6 +141,7 @@ BEGIN
 END PROCESS set_mouse_pos;
 
 generate_queue: PROCESS (vert_sync)
+	VARIABLE lives_address	: STD_LOGIC_VECTOR(5 downto 0)	:= (others => '0');
 BEGIN
 	if (rising_edge(vert_sync)) then
 		if (show_menu = '1') then
@@ -241,34 +247,35 @@ BEGIN
 
 		else
 			-- GAMEPLAY GUI
-			for i in 5 to 23 loop
+			for i in 4 to 23 loop
 				f_scales(i)	<= STD_LOGIC_VECTOR(TO_UNSIGNED(0,6));		-- hide all other packets when not needed
 			end loop;
 			
-			-- A
-			f_cols(2)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(60,10));
+			
+			-- Heart
+			f_cols(2)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(515,10)); -- 639 - (60 + 8*8)
 			f_rows(2)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(60,10));
 			f_scales(2)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(8,6));
-			f_addresses(2)		<= A_ADDRESS;
-			f_red(2)		<=	"1111";
-			f_green(2)	<=	"1111";
-			f_blue(2)	<=	"1111";
-			-- B
-			f_cols(3)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(124,10)); -- 60 + 8*8
+			f_addresses(2)		<= HEART_ADDRESS;
+			f_red(2)				<=	"1111";
+			f_green(2)			<=	"1111";
+			f_blue(2)			<=	"1111";
+			-- Lives
+			case lives is
+				when "00" =>	lives_address := o"60";
+				when "01" =>	lives_address := o"61";
+				when "10" =>	lives_address := o"62";
+				when others =>	lives_address := o"63";
+			end case;
+			
+			f_cols(3)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(579,10));	-- 639 - 60
 			f_rows(3)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(60,10));
 			f_scales(3)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(8,6));
-			f_addresses(3)		<= B_ADDRESS;
-			f_red(3)		<=	"1111";
-			f_green(3)	<=	"1111";
-			f_blue(3)	<=	"1111";
-			-- C
-			f_cols(4)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(188,10)); -- 60 + 2*8*8
-			f_rows(4)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(60,10));
-			f_scales(4)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(8,6));
-			f_addresses(4)		<= C_ADDRESS;
-			f_red(4)		<=	"1111";
-			f_green(4)	<=	"1111";
-			f_blue(4)	<=	"1111";
+			f_addresses(3)		<= lives_address;
+			f_red(3)				<=	"1111";
+			f_green(3)			<=	"1111";
+			f_blue(3)			<=	"1111";
+			
 		end if;
 	end if;
 

@@ -1,28 +1,3 @@
--- COLLISION
--- IN: Graphics
--- OUT: Tracker
-
--- The Collision module checks each frame for overlaps between the
--- bird's hitbox and any objects, and reports the type of collision
--- (if any) to the Tracker module.
-
--- Collision is checked by evaluating the pixels the bird's hitbox
--- overlaps, and determining the type of collision by ...
--- ... [use method below - unique rgb?]. This is encoded to a
--- simple bit vector and then sent to the Tracker.
-
-
-
-
--- NOTE: Since non-zero collision bits will be sparse, and we need
--- a relatively wide range (a discrete code for each pickup) we may
--- want to use an alternative to grid memory assignment.
-
--- A simpler solution would be for each collidable object to have
--- a unique rgb value, which would be checked (in addition to a one
--- bit flag to enable/disable collision checking). 
-
-
 --	COLLISION
 --
 --	Authors:		Callum McDowell
@@ -107,7 +82,8 @@ BEGIN
 	BEGIN
 		if (rising_edge(vert_sync)) then
 			for k in 0 to OBJ_QUEUE_LENGTH loop
-				if (f_BOUNDS_EVAL(UNSIGNED(bird_col) + SPRITE_OFFSET, UNSIGNED(bird_row) + SPRITE_OFFSET, obj_cols_left(k), obj_cols_right(k), obj_rows_upper(k), obj_rows_lower(k))) then
+				if (f_BOUNDS_EVAL(UNSIGNED(bird_col) + SPRITE_OFFSET, UNSIGNED(bird_row) + SPRITE_OFFSET, obj_cols_left(k), obj_cols_right(k), obj_rows_upper(k), obj_rows_lower(k))
+				or (UNSIGNED(bird_col) < UPPER_COLLISION) or UNSIGNED(bird_col) > LOWER_COLLISION) then
 					collision_flag <= '1';
 					collision_type <= obj_types(k);
 					exit;
