@@ -28,7 +28,7 @@ BEGIN
 
     q <= q_i(0);
 
-    shift: PROCESS (gen, reset) is
+    shift: PROCESS (gen, enable, reset, seed, q_i) is
         VARIABLE temp_tap1 : STD_LOGIC;
     BEGIN
 
