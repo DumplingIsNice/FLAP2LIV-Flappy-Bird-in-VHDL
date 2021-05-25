@@ -168,66 +168,69 @@ BEGIN
 		VARIABLE speed 								: STD_LOGIC_VECTOR(9 downto 0) 	:= CONV_STD_LOGIC_VECTOR(DEFAULT_SPEED, 10);
 	BEGIN
 
-		IF (reset = '1') THEN
-			top_cols <= OBJ_COLS_ALL_ZERO;
-			top_rows <= OBJ_COLS_ALL_ZERO;
-			bot_cols <= OBJ_COLS_ALL_ZERO;
-			bot_rows <= OBJ_COLS_ALL_ZERO;
-			speed := CONV_STD_LOGIC_VECTOR(DEFAULT_SPEED, 10);
-			mem_index := OBJ_QUEUE_LENGTH;
-			dis_counter := CONV_STD_LOGIC_VECTOR(DIS_BETWEEN_PIPE, 10);
-		END IF;
+		IF (RISING_EDGE(vert_sync)) THEN
 
-		IF (RISING_EDGE(vert_sync) AND enable = '1') THEN
-			-- Update object
-			-- To do: Speed change based on difficulty.
-			dis_counter := dis_counter + speed;
-			UPDATE_OBJ(speed, mem_index, top_cols, top_rows, bot_cols, bot_rows);
+			IF (reset = '1') THEN
+				top_cols <= OBJ_COLS_ALL_ZERO;
+				top_rows <= OBJ_COLS_ALL_ZERO;
+				bot_cols <= OBJ_COLS_ALL_ZERO;
+				bot_rows <= OBJ_COLS_ALL_ZERO;
+				speed := CONV_STD_LOGIC_VECTOR(DEFAULT_SPEED, 10);
+				mem_index := OBJ_QUEUE_LENGTH;
+				dis_counter := CONV_STD_LOGIC_VECTOR(DIS_BETWEEN_PIPE, 10);
+			END IF;
 
-			-- Pipe Creation
-			IF (dis_counter >= CONV_STD_LOGIC_VECTOR(DIS_BETWEEN_PIPE, 10)) THEN
-				dis_counter := CONV_STD_LOGIC_VECTOR(0, 10);
+			IF (enable = '1') THEN
+					-- Update object
+				-- To do: Speed change based on difficulty.
+				dis_counter := dis_counter + speed;
+				UPDATE_OBJ(speed, mem_index, top_cols, top_rows, bot_cols, bot_rows);
 
-				-- Calculate pipe gap position
-				intermediate := rand_num * GAP_FACTOR; -- Intermediate mulplication container register
-				gap_pos := intermediate(9 downto 0); -- Tested
-				
-				gap_top := gap_pos + BORDER_MARGIN;
-				gap_bot := gap_top + GAP_HEIGHT;
+				-- Pipe Creation
+				IF (dis_counter >= CONV_STD_LOGIC_VECTOR(DIS_BETWEEN_PIPE, 10)) THEN
+					dis_counter := CONV_STD_LOGIC_VECTOR(0, 10);
 
-				-- From obj_pos TYPE in graphics_pkg.vhd:
-				-- (3, 2) = top coordinate (col, row), (1, 0) = bot coordinate (col, row)
-				pipe_top(3) 	:= SCREEN_RIGHT; 
-				pipe_top(2) 	:= SCREEN_TOP;
-				pipe_top(1) 	:= SCREEN_RIGHT;
-				pipe_top(0) 	:= gap_top; -- Top of gap to bottem coordinate of top pipe.
-				pipe_top_type 	:= PIPE_TYPE;
+					-- Calculate pipe gap position
+					intermediate := rand_num * GAP_FACTOR; -- Intermediate mulplication container register
+					gap_pos := intermediate(9 downto 0); -- Tested
+					
+					gap_top := gap_pos + BORDER_MARGIN;
+					gap_bot := gap_top + GAP_HEIGHT;
 
-				pipe_bot(3) 	:= SCREEN_RIGHT; 
-				pipe_bot(2) 	:= gap_bot; -- Bottem of gap to top coordinate of bottem pipe.
-				pipe_bot(1) 	:= SCREEN_RIGHT;
-				pipe_bot(0) 	:= SCREEN_BOT; 
-				pipe_bot_type 	:= "0001";
+					-- From obj_pos TYPE in graphics_pkg.vhd:
+					-- (3, 2) = top coordinate (col, row), (1, 0) = bot coordinate (col, row)
+					pipe_top(3) 	:= SCREEN_RIGHT; 
+					pipe_top(2) 	:= SCREEN_TOP;
+					pipe_top(1) 	:= SCREEN_RIGHT;
+					pipe_top(0) 	:= gap_top; -- Top of gap to bottem coordinate of top pipe.
+					pipe_top_type 	:= PIPE_TYPE;
 
-				pipe_r := OBJ_COLOUR_ZERO;
-				pipe_g := "1111";
-				pipe_b := OBJ_COLOUR_ZERO;
+					pipe_bot(3) 	:= SCREEN_RIGHT; 
+					pipe_bot(2) 	:= gap_bot; -- Bottem of gap to top coordinate of bottem pipe.
+					pipe_bot(1) 	:= SCREEN_RIGHT;
+					pipe_bot(0) 	:= SCREEN_BOT; 
+					pipe_bot_type 	:= "0001";
 
-				-- Load real positional data into memory
-				LOAD_OBJ(
-							pipe_top, pipe_top_type, 
-							pipe_r, pipe_g, pipe_b, 
-							mem_index, 
-							top_cols, top_rows, bot_cols, bot_rows,
-							object_type, 
-							obj_colour_r, obj_colour_g, obj_colour_b);	
-				LOAD_OBJ(
-							pipe_bot, pipe_bot_type,
-							pipe_r, pipe_g, pipe_b,
-							mem_index,
-							top_cols, top_rows, bot_cols, bot_rows,
-							object_type,
-							obj_colour_r, obj_colour_g, obj_colour_b);	
+					pipe_r := OBJ_COLOUR_ZERO;
+					pipe_g := "1111";
+					pipe_b := OBJ_COLOUR_ZERO;
+
+					-- Load real positional data into memory
+					LOAD_OBJ(
+								pipe_top, pipe_top_type, 
+								pipe_r, pipe_g, pipe_b, 
+								mem_index, 
+								top_cols, top_rows, bot_cols, bot_rows,
+								object_type, 
+								obj_colour_r, obj_colour_g, obj_colour_b);	
+					LOAD_OBJ(
+								pipe_bot, pipe_bot_type,
+								pipe_r, pipe_g, pipe_b,
+								mem_index,
+								top_cols, top_rows, bot_cols, bot_rows,
+								object_type,
+								obj_colour_r, obj_colour_g, obj_colour_b);	
+				END IF;
 			END IF;
 		END IF;
 	END PROCESS OBJ_CREATION;
