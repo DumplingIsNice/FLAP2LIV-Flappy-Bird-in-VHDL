@@ -17,14 +17,14 @@
 --     row < height - (M + H)  ->  row < 479 - (40 + 96) = 343
 --     Range is 40->342, i.e. 302 individual pixels.
 
--- The value 302 would require a 9 bit unsigned value to store. To simplify, we could round the range to 300 (in doing so slightly increasing the lower padding by 2px), and then break it down into 10px chunks. The new value would have a maximum of 30, i.e. 5 bits to store.
--- We then fill a 5 bit std_logic_vector with random bits, constrain it to within the range 0 to 29 (rounding every 31 and 32 value to 29 creates a slight bias of 2/32 = ~6.3% towards the top, which we could ignore*), and multiply the final 5 bit value by 10 to recreate a signal with a range of 300 (just now with a resolution of 10, not 1).
--- This final value between 0->299 is then used to find the upper gap row bounds.
+-- 	The value 302 would require a 9 bit unsigned value to store. To simplify, we could round the range to 300 (in doing so slightly increasing the lower padding by 2px), and then break it down into 10px chunks. The new value would have a maximum of 30, i.e. 5 bits to store.
+-- 	We then fill a 5 bit std_logic_vector with random bits, constrain it to within the range 0 to 29 (rounding every 31 and 32 value to 29 creates a slight bias of 2/32 = ~6.3% towards the top, which we could ignore*), and multiply the final 5 bit value by 10 to recreate a signal with a range of 300 (just now with a resolution of 10, not 1).
+-- 	This final value between 0->299 is then used to find the upper gap row bounds.
 
---     upper gap row = M + (0->299)
---     lower gap row = upper gap row + H = M + (0->299) + H
+--    upper gap row = M + (0->299)
+--    lower gap row = upper gap row + H = M + (0->299) + H
 
--- \* (cropping the rng value to within the range 1->30 and then subtracting 1 would remove the bias but be more computationally intensive)
+-- 	* (cropping the rng value to within the range 1->30 and then subtracting 1 would remove the bias but be more computationally intensive)
 
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
@@ -53,7 +53,7 @@ ARCHITECTURE beh OF rand_5_bit_gen IS
     SIGNAL rand_out_i : STD_LOGIC_VECTOR (4 downto 0);
 BEGIN
 
-    -- Each componet in parallel outputs its feedback bit.
+    -- Each component in parallel outputs its feedback bit.
     R0: psudo_rand_gen port map (   seed => seed(0),
                                     enable => enable,
                                     gen => gen,

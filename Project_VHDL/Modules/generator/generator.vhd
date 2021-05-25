@@ -69,9 +69,9 @@ ENTITY generator IS
 
 			obj_cols_top, obj_cols_bot		: OUT OBJ_COLS		:= (others => (others => '0'));
 			obj_rows_top, obj_rows_bot		: OUT OBJ_ROWS		:= (others => (others => '0'));
-			object_type						: OUT OBJ_TYPE 		:= (others => (others => '0'));
-			object_colour					: OUT OBJ_COLOUR 	:= (others => (others => '0'));
-			q_out							: OUT OBJ_MEM		:= (others => OBJ_POS_ALL_ZERO)
+			object_type						: OUT OBJ_TYPES 		:= (others => (others => '0'));
+			object_colour					: OUT OBJ_COLOURS 	:= (others => (others => '0'))
+			--q_out							: OUT OBJ_MEM		:= (others => OBJ_POS_ALL_ZERO)
         );
 END ENTITY generator;
 
@@ -85,8 +85,8 @@ ARCHITECTURE behaviour OF generator IS
 			VARIABLE obj_data_colour	: IN font_colour_packet;
 			VARIABLE mem_index 			: INOUT INTEGER;
 			SIGNAL object_pos_mem 		: OUT obj_mem;
-			SIGNAL object_type			: OUT obj_type;
-			SIGNAL object_colour 		: OUT obj_colour
+			SIGNAL object_type			: OUT obj_types;
+			SIGNAL object_colour 		: OUT obj_colours
         ) IS
 
     BEGIN 
@@ -207,7 +207,7 @@ BEGIN
 			END IF;
 		END IF;
 
-		q_out <= object_pos_mem;
+		--q_out <= object_pos_mem;
 
 	END PROCESS OBJ_CREATION;
 
