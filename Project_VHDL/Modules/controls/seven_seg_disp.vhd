@@ -7,8 +7,7 @@ USE IEEE.NUMERIC_STD.all;
 ENTITY seven_segment_disp IS
     PORT (  clk, all_off                                : IN STD_LOGIC;
             in_value                                    : IN UNSIGNED (7 downto 0);
-            LED_out_ones, LED_out_tens, LED_out_huns    : OUT STD_LOGIC_VECTOR (7 downto 0);
-            digit                                       : OUT UNSIGNED (3 downto 0) := "0000"
+            LED_out_ones, LED_out_tens, LED_out_huns    : OUT STD_LOGIC_VECTOR (7 downto 0)
         );
 END ENTITY seven_segment_disp;
 

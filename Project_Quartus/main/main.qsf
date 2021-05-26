@@ -58,14 +58,6 @@ set_location_assignment PIN_L22 -to vert_sync
 set_location_assignment PIN_P22 -to mouse_clk
 set_location_assignment PIN_P21 -to mouse_data
 set_location_assignment PIN_D2 -to switch
-set_location_assignment PIN_D13 -to ssg[0]
-set_location_assignment PIN_E11 -to ssg[7]
-set_location_assignment PIN_F11 -to ssg[6]
-set_location_assignment PIN_H12 -to ssg[5]
-set_location_assignment PIN_H13 -to ssg[4]
-set_location_assignment PIN_G12 -to ssg[3]
-set_location_assignment PIN_F12 -to ssg[2]
-set_location_assignment PIN_F13 -to ssg[1]
 set_location_assignment PIN_H20 -to vga_red[2]
 set_location_assignment PIN_H19 -to vga_red[1]
 set_location_assignment PIN_H21 -to vga_red[0]
@@ -80,6 +72,11 @@ set_location_assignment PIN_K18 -to vga_blue[0]
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
 set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_location_assignment PIN_B1 -to show_pause
+set_location_assignment PIN_F1 -to game_pause_button
+set_location_assignment PIN_H2 -to game_reset_button
+set_location_assignment PIN_J6 -to invuln_toggle
+set_global_assignment -name VHDL_FILE ../../Project_VHDL/Modules/controls/seven_seg_disp.vhd
 set_global_assignment -name VHDL_FILE ../../Project_VHDL/Modules/tracker/tracker.vhd
 set_global_assignment -name VHDL_FILE ../../Project_VHDL/Modules/collision/collision.vhd
 set_global_assignment -name VHDL_FILE ../../Project_VHDL/Modules/generator/PRNG/rand_num_pkg.vhd
@@ -101,9 +98,29 @@ set_global_assignment -name CDF_FILE output_files/Chain1.cdf
 set_global_assignment -name VHDL_FILE ../../Project_VHDL/Modules/controls/controls.vhd
 set_global_assignment -name VHDL_FILE ../../Project_VHDL/Modules/controls/seven_seg_converter.vhd
 set_global_assignment -name VHDL_FILE ../../Project_VHDL/Modules/graphics/graphics_objects.vhd
-set_location_assignment PIN_B1 -to show_pause
-set_location_assignment PIN_F1 -to game_pause_button
-set_location_assignment PIN_H2 -to game_reset_button
 set_global_assignment -name VHDL_FILE ../../Project_VHDL/Modules/main/level_to_pulse.vhd
-set_location_assignment PIN_J6 -to invuln_toggle
+set_location_assignment PIN_E11 -to LED_ones[7]
+set_location_assignment PIN_F11 -to LED_ones[6]
+set_location_assignment PIN_H12 -to LED_ones[5]
+set_location_assignment PIN_H13 -to LED_ones[4]
+set_location_assignment PIN_G12 -to LED_ones[3]
+set_location_assignment PIN_F12 -to LED_ones[2]
+set_location_assignment PIN_F13 -to LED_ones[1]
+set_location_assignment PIN_D13 -to LED_ones[0]
+set_location_assignment PIN_A13 -to LED_tens[7]
+set_location_assignment PIN_B13 -to LED_tens[6]
+set_location_assignment PIN_C13 -to LED_tens[5]
+set_location_assignment PIN_A14 -to LED_tens[4]
+set_location_assignment PIN_B14 -to LED_tens[3]
+set_location_assignment PIN_E14 -to LED_tens[2]
+set_location_assignment PIN_A15 -to LED_tens[1]
+set_location_assignment PIN_B15 -to LED_tens[0]
+set_location_assignment PIN_D15 -to LED_huns[7]
+set_location_assignment PIN_A16 -to LED_huns[6]
+set_location_assignment PIN_B16 -to LED_huns[5]
+set_location_assignment PIN_E15 -to LED_huns[4]
+set_location_assignment PIN_A17 -to LED_huns[3]
+set_location_assignment PIN_B17 -to LED_huns[2]
+set_location_assignment PIN_F14 -to LED_huns[1]
+set_location_assignment PIN_A18 -to LED_huns[0]
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
