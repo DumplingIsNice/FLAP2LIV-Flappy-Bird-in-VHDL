@@ -35,6 +35,7 @@ ENTITY tracker IS
 		score_clk						: IN STD_LOGIC;
 		collision_flag					: IN STD_LOGIC;
 		collision_type					: IN OBJ_TYPE_PACKET;
+		invuln_toggle					: IN STD_LOGIC;	-- admin cheat toggle
 		
 		lives								: OUT STD_LOGIC_VECTOR(1 downto 0);
 		difficulty						: OUT STD_LOGIC_VECTOR(1 downto 0)	:= "00";
@@ -86,7 +87,7 @@ BEGIN
 	top_score <= v_top_score;
 	
 	is_colourshifted <= v_colourshift_active;
-	v_invuln_active <= fourHzFlag;
+	v_invuln_active <= fourHzFlag or invuln_toggle;
 	is_invulnerable <= v_invuln_active;
 	
 	-- GAME STATE FSM --

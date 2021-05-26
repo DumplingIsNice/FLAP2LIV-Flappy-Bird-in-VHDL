@@ -34,7 +34,7 @@ USE IEEE.STD_LOGIC_UNSIGNED.all;
 USE work.rand_num_pkg.all;
 
 ENTITY rand_5_bit_gen IS
-	PORT(  seed                    :   	IN seed_pkg;
+	PORT(  seed                    :   	IN STD_LOGIC_VECTOR(9 downto 0);
 		    enable, gen, reset	    : 	IN STD_LOGIC;
 		    rand_out                :	OUT STD_LOGIC_VECTOR (4 downto 0)
 	    );
@@ -54,31 +54,31 @@ ARCHITECTURE beh OF rand_5_bit_gen IS
 BEGIN
 
     -- Each component in parallel outputs its feedback bit.
-    R0: psudo_rand_gen port map (   seed => seed(0),
+    R0: psudo_rand_gen port map (   seed => seed,
                                     enable => enable,
                                     gen => gen,
                                     reset => reset,
                                     q => q_r0
                                 );
-    R1: psudo_rand_gen port map (   seed => seed(1),
+    R1: psudo_rand_gen port map (   seed => seed,
                                     enable => enable,
                                     gen => gen,
                                     reset => reset,
                                     q => q_r1
                                 );
-    R2: psudo_rand_gen port map (   seed => seed(2),
+    R2: psudo_rand_gen port map (   seed => seed(0) & seed(9 downto 1),
                                     enable => enable,
                                     gen => gen,
                                     reset => reset,
                                     q => q_r2
                                 );
-    R3: psudo_rand_gen port map (   seed => seed(3),
+    R3: psudo_rand_gen port map (   seed => seed(2 downto 0) & seed(9 downto 4) & seed(3),
                                     enable => enable,
                                     gen => gen,
                                     reset => reset,
                                     q => q_r3
                                 );
-    R4: psudo_rand_gen port map (   seed => seed(4),
+    R4: psudo_rand_gen port map (   seed => seed(4 downto 0) & seed(9 downto 5),
                                     enable => enable,
                                     gen => gen,
                                     reset => reset,

@@ -101,6 +101,13 @@ applicable agreement for further details.
 		(line (pt 0 192)(pt 16 192)(line_width 3))
 	)
 	(port
+		(pt 0 208)
+		(input)
+		(text "invuln_toggle" (rect 0 0 50 12)(font "Arial" ))
+		(text "invuln_toggle" (rect 21 203 71 215)(font "Arial" ))
+		(line (pt 0 208)(pt 16 208)(line_width 1))
+	)
+	(port
 		(pt 248 32)
 		(output)
 		(text "lives[1..0]" (rect 0 0 36 12)(font "Arial" ))

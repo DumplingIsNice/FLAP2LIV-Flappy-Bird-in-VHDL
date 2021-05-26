@@ -20,14 +20,14 @@ applicable agreement for further details.
 */
 (header "symbol" (version "1.1"))
 (symbol
-	(rect 16 16 232 128)
+	(rect 16 16 216 128)
 	(text "rand_5_bit_gen" (rect 5 0 67 12)(font "Arial" ))
 	(text "inst" (rect 8 96 20 108)(font "Arial" ))
 	(port
 		(pt 0 32)
 		(input)
-		(text "seed[4..0][9..0]" (rect 0 0 60 12)(font "Arial" ))
-		(text "seed[4..0][9..0]" (rect 21 27 81 39)(font "Arial" ))
+		(text "seed[9..0]" (rect 0 0 38 12)(font "Arial" ))
+		(text "seed[9..0]" (rect 21 27 59 39)(font "Arial" ))
 		(line (pt 0 32)(pt 16 32)(line_width 3))
 	)
 	(port
@@ -52,13 +52,13 @@ applicable agreement for further details.
 		(line (pt 0 80)(pt 16 80)(line_width 1))
 	)
 	(port
-		(pt 216 32)
+		(pt 200 32)
 		(output)
 		(text "rand_out[4..0]" (rect 0 0 56 12)(font "Arial" ))
-		(text "rand_out[4..0]" (rect 139 27 195 39)(font "Arial" ))
-		(line (pt 216 32)(pt 200 32)(line_width 3))
+		(text "rand_out[4..0]" (rect 123 27 179 39)(font "Arial" ))
+		(line (pt 200 32)(pt 184 32)(line_width 3))
 	)
 	(drawing
-		(rectangle (rect 16 16 200 96)(line_width 1))
+		(rectangle (rect 16 16 184 96)(line_width 1))
 	)
 )
