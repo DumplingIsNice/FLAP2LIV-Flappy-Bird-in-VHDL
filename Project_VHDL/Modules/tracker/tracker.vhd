@@ -27,18 +27,25 @@ ENTITY tracker IS
 	PORT (
 		clk								: IN STD_LOGIC;
 		reset_button, pause_button	: IN STD_LOGIC;
+		enable_game_start				: IN STD_LOGIC;
+		select_test						: IN STD_LOGIC;
 		mouse_lclick					: IN STD_LOGIC;
 		mouse_rclick					: IN STD_LOGIC;	-- rclick to restart
 		
+		score_clk						: IN STD_LOGIC;
 		collision_flag					: IN STD_LOGIC;
 		collision_type					: IN OBJ_TYPE_PACKET;
 		
 		lives								: OUT STD_LOGIC_VECTOR(1 downto 0);
 		difficulty						: OUT STD_LOGIC_VECTOR(1 downto 0)	:= "00";
 		score, top_score				: OUT UNSIGNED(7 downto 0);
+		is_paused						: OUT STD_LOGIC;
+		is_gameover						: OUT STD_LOGIC;
+		is_invulnerable				: OUT STD_LOGIC;
+		is_colourshifted				: OUT STD_LOGIC;
 		
 		enable_mechanics				: OUT STD_LOGIC;
-		reset_mechanics				: OUT STD_LOGIC;
+		reset_mechanics				: OUT STD_LOGIC;	-- signal to reset external modules
 		enable_menu						: OUT STD_LOGIC	-- goes to reset on GUI
 	);
 END ENTITY tracker;
@@ -46,7 +53,16 @@ END ENTITY tracker;
 
 
 ARCHITECTURE behaviour OF tracker IS
-	TYPE STATE_TYPE is 				(S0,S1,S2,S3,S4);
+
+	COMPONENT level_to_pulse IS
+	PORT (
+		clk, d	: IN STD_LOGIC;
+		q			: OUT STD_LOGIC
+	);
+	END COMPONENT level_to_pulse;
+
+
+	TYPE STATE_TYPE is 				(S0,S1,S2,S3);
 	SIGNAL state, next_state		: STATE_TYPE;
 	
 	CONSTANT STARTING_LIVES			: UNSIGNED(1 downto 0)		:= TO_UNSIGNED(2,2);
@@ -55,10 +71,17 @@ ARCHITECTURE behaviour OF tracker IS
 	SIGNAL reset_game					: STD_LOGIC;	-- signal to reset lives, score, etc at end of game
 	
 	SIGNAL v_lives						: UNSIGNED(1 downto 0)		:= STARTING_LIVES;
+	SIGNAL v_score, v_top_score	: UNSIGNED(7 downto 0)		:= (others => '0');
+	SIGNAL v_invuln_active			: STD_LOGIC;
+	SIGNAL mouse_lclick_trigger	: STD_LOGIC	:= '0';	-- signal is a 1 clk pulse for each rising_edge(mouse_lclick)
 BEGIN
 
-	lives <= STD_LOGIC_VECTOR(v_lives);
+	lclick_ltp: level_to_pulse PORT MAP (clk, mouse_lclick, mouse_lclick_trigger);
 
+	lives <= STD_LOGIC_VECTOR(v_lives);
+	score <= v_score;
+	top_score <= v_top_score;
+	
 	-- GAME STATE FSM --
 	SYNC_PROC: process (clk)
 	BEGIN
@@ -75,54 +98,78 @@ BEGIN
 	BEGIN	
 		case (state) is
 			when S0 =>
-				-- GAMEOVER
+				-- READY
+				enable_menu			<= '0';
 				enable_mechanics	<= '0';
 				reset_mechanics	<= '1';
-				enable_menu			<= '0';
-				reset_game			<= '1'; 
+				reset_game			<= '1';
+				
+				is_paused			<= '0';
+				is_gameover			<= '0';
 			when S1 =>
 				-- PLAY
+				enable_menu			<= '0';
 				enable_mechanics	<= '1';
 				reset_mechanics	<= '0';
-				enable_menu			<= '0';
 				reset_game			<= '0';
-			when others =>
-				-- PAUSE
+				
+				is_paused			<= '0';
+				is_gameover			<= '0';
+			when S2 =>
+				-- GAMEOVER
+				enable_menu			<= '0';
 				enable_mechanics	<= '0';
 				reset_mechanics	<= '0';
-				enable_menu			<= '0';
 				reset_game			<= '0';
+				
+				is_paused			<= '0';
+				is_gameover			<= '1';
+			when others =>
+				-- PAUSE
+				enable_menu			<= '0';
+				enable_mechanics	<= '0';
+				reset_mechanics	<= '0';
+				reset_game			<= '0';
+				
+				is_paused			<= '1';
+				is_gameover			<= '0';
 		end case;
 	END PROCESS OUTPUT_DECODE;
 	
-	NEXT_STATE_DECODE: process (state, mouse_lclick, pause_button)
+	NEXT_STATE_DECODE: process (state, mouse_lclick, mouse_lclick_trigger, v_pause)
 	BEGIN
 		next_state <= S0;
 		
 		case (state) is
 			when S0 =>
-				-- GAMEOVER
-				next_state <= S1;
-				--if (mouse_rclick = '1') then
-				--	next_state <= S1;
-				--else
-				--	next_state <= S0;
-				--end if;
+				-- READY
+				if (mouse_lclick_trigger = '1' and enable_game_start = '1') then
+					next_state <= S1;
+				else
+					next_state <= S0;
+				end if;
 			when S1 =>
 				-- PLAY
 				if (v_pause = '1') then
-					next_state <= S2;
+					next_state <= S3;
 				elsif (v_lives = TO_UNSIGNED(0,2)) then
-					next_state <= S0;
+					next_state <= S2;
 				else
 					next_state <= S1;
+				end if;
+			when S2 =>
+				-- GAMEOVER
+				if (mouse_lclick_trigger = '1') then
+					next_state <= S0;
+				else
+					next_state <= S2;
 				end if;
 			when others =>
 				-- PAUSE
 				if (v_pause = '0') then
 					next_state <= S1;
 				else
-					next_state <= S2;
+					next_state <= S3;
 				end if;
 		end case;
 	END PROCESS NEXT_STATE_DECODE;
@@ -146,15 +193,54 @@ BEGIN
 		if (reset_game = '1') then
 			v_lives <= STARTING_LIVES;
 		elsif (rising_edge(collision_flag)) then
+			is_colourshifted <= '0';
+			
 			case (collision_type) is
-				when "0000" =>
-					v_lives <= v_lives - TO_UNSIGNED(1,2);
-					-- invuln
-				when others =>
-					v_lives <= v_lives + TO_UNSIGNED(1,2);
+				when NULL_TYPE =>
+					-- Obstacles
+					if (v_lives > TO_UNSIGNED(0,2) and v_invuln_active = '0') then
+						v_lives <= v_lives - TO_UNSIGNED(1,2);
+						-- invuln
+					end if;
+				when INVI_TYPE =>
+					-- Invulnerability
+				
+				when LIFE_TYPE =>
+					-- Extra life
+					if (v_lives < TO_UNSIGNED(3,2)) then
+						v_lives <= v_lives + TO_UNSIGNED(1,2);
+					end if;
+				when others => 
+					-- Colour shift
+					is_colourshifted <= '1';
 			end case;
 		end if;
 	END PROCESS on_collision;
+	
+	
+	score_count: PROCESS (score_clk, reset_game)
+	BEGIN
+		if (reset_game = '1') then
+			v_score <= (others => '0');
+			difficulty <= (others => '0');
+		elsif (rising_edge(score_clk)) then
+			v_score <= v_score + TO_UNSIGNED(1,8);
+			
+			if (v_score > v_top_score) then
+				v_top_score <= v_score;
+			end if;
+			
+			if (select_test = '0') then
+				if (v_score > DIFFICULTY_THRESHOLD_1) then
+					difficulty <= "01";
+				elsif (v_score > DIFFICULTY_THRESHOLD_2) then
+					difficulty <= "10";
+				elsif (v_score > DIFFICULTY_THRESHOLD_3) then
+					difficulty <= "11";
+				end if;
+			end if;
+		end if;
+	END PROCESS score_count;
 	
 	
 END behaviour;

@@ -37,6 +37,7 @@ ENTITY gui_feed IS
 		score, top_score				: IN STD_LOGIC_VECTOR(7 downto 0);
 		difficulty_level				: IN STD_LOGIC_VECTOR(1 downto 0);
 		lives								: IN STD_LOGIC_VECTOR(1 downto 0);
+		is_paused, is_gameover		: IN STD_LOGIC;
 		
 		f_cols									: OUT FONT_COLS		:= (others => (others => '0'));
 		f_rows									: OUT FONT_ROWS		:= (others => (others => '0'));
@@ -245,6 +246,66 @@ BEGIN
 			f_cols(23)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(567,10));	-- 327 + (6*8*5)
 			f_addresses(23)	<= SQUARE_BRACKET_CLOSE_ADDRESS;
 
+		elsif (is_paused = '1') then
+			-- PAUSED SPLASH SCREEN
+			for i in 9 to 23 loop
+				f_scales(i)	<= STD_LOGIC_VECTOR(TO_UNSIGNED(0,6));		-- hide all other packets when not needed
+			end loop;
+			
+			for i in 2 to 8 loop
+				f_rows(i)		<= STD_LOGIC_VECTOR(TO_UNSIGNED(31,10));
+				f_scales(i)		<= TITLE_SCALE;
+				f_red(i)		<=	"1111";
+				f_green(i)	<=	"1111";
+				f_blue(i)	<=	"1111";
+			end loop;
+			
+			f_cols(2)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(127,10));	-- 31 + 32
+			f_addresses(2)		<= P_ADDRESS;
+			f_cols(3)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(191,10));	-- 31 + (8*8*1) + 32
+			f_addresses(3)		<= A_ADDRESS;
+			f_cols(4)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(255,10));	-- 31 + (8*8*2) + 32
+			f_addresses(4)		<= U_ADDRESS;
+			f_cols(5)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(319,10));	-- 31 + (8*8*3) + 32
+			f_addresses(5)		<= S_ADDRESS;
+			f_cols(6)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(383,10));	-- 31 + (8*8*4) + 32
+			f_addresses(6)		<= E_ADDRESS;
+			f_cols(7)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(437,10));	-- 31 + (8*8*5) + 32
+			f_addresses(7)		<= D_ADDRESS;
+			
+		elsif (is_gameover = '1') then
+			-- GAME OVER SPLASH SCREEN
+			for i in 11 to 23 loop
+				f_scales(i)	<= STD_LOGIC_VECTOR(TO_UNSIGNED(0,6));		-- hide all other packets when not needed
+			end loop;
+			
+			for i in 2 to 10 loop
+				f_rows(i)		<= STD_LOGIC_VECTOR(TO_UNSIGNED(31,10));
+				f_scales(i)		<= TITLE_SCALE;
+				f_red(i)		<=	"1111";
+				f_green(i)	<=	"1111";
+				f_blue(i)	<=	"1111";
+			end loop;
+			
+			f_cols(2)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(31,10));	-- 31
+			f_addresses(2)		<= G_ADDRESS;
+			f_cols(3)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(95,10));	-- 31 + (8*8*1)
+			f_addresses(3)		<= A_ADDRESS;
+			f_cols(4)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(159,10));	-- 31 + (8*8*2)
+			f_addresses(4)		<= M_ADDRESS;
+			f_cols(5)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(223,10));	-- 31 + (8*8*3)
+			f_addresses(5)		<= E_ADDRESS;
+			f_cols(6)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(287,10));	-- 31 + (8*8*4)
+			f_addresses(6)		<= SPACE_ADDRESS;
+			f_cols(7)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(351,10));	-- 31 + (8*8*5)
+			f_addresses(7)		<= O_ADDRESS;
+			f_cols(8)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(415,10));	-- 31 + (8*8*6)
+			f_addresses(8)		<= V_ADDRESS;
+			f_cols(9)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(479,10));	-- 31 + (8*8*7)
+			f_addresses(9)		<= E_ADDRESS;
+			f_cols(10)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(543,10));	-- 31 + (8*8*8)
+			f_addresses(10)	<= R_ADDRESS;
+			
 		else
 			-- GAMEPLAY GUI
 			for i in 4 to 23 loop

@@ -41,7 +41,9 @@ ENTITY gui IS
 		enable_mouse					: OUT STD_LOGIC		:= '1';
 		enable_bird						: OUT STD_LOGIC		:= '0';
 		select_test, select_game	: OUT STD_LOGIC;
-		show_menu						: OUT STD_LOGIC);
+		show_menu						: OUT STD_LOGIC;
+		enable_game_start				: OUT STD_LOGIC
+	);
 END ENTITY gui;
 
 
@@ -119,6 +121,7 @@ BEGIN
 				show_menu	<= '1';
 				enable_bird	<= '0';
 				enable_mouse<= '1';
+				enable_game_start	<= '0';
 			when S1 =>
 				-- GAME
 				select_game	<= '1';
@@ -126,6 +129,7 @@ BEGIN
 				show_menu	<= '1';
 				enable_bird	<= '0';
 				enable_mouse<= '1';
+				enable_game_start	<= '0';
 			when S2 =>
 				-- TEST
 				select_game	<= '0';
@@ -133,6 +137,7 @@ BEGIN
 				show_menu	<= '1';
 				enable_bird	<= '0';
 				enable_mouse<= '1';
+				enable_game_start	<= '0';
 			when S3 =>
 				-- PLAY (GAME)
 				select_game	<= '1';
@@ -140,6 +145,7 @@ BEGIN
 				show_menu	<= '0';
 				enable_bird	<= '1';
 				enable_mouse<= '0';
+				enable_game_start	<= '1';
 			when others =>
 				-- PLAY (TEST)
 				select_game	<= '0';
@@ -147,6 +153,7 @@ BEGIN
 				show_menu	<= '0';
 				enable_bird	<= '1';
 				enable_mouse<= '0';
+				enable_game_start	<= '1';
 		end case;
 	END PROCESS OUTPUT_DECODE;
 	

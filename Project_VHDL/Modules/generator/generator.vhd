@@ -196,10 +196,14 @@ BEGIN
 
 		IF (RISING_EDGE(vert_sync)) THEN
 			IF (reset = '1') THEN
-				top_cols <= OBJ_COLS_ALL_ZERO;
-				top_rows <= OBJ_COLS_ALL_ZERO;
-				bot_cols <= OBJ_COLS_ALL_ZERO;
-				bot_rows <= OBJ_COLS_ALL_ZERO;
+				top_cols <= (others => (others => '0'));
+				top_rows <= (others => (others => '0'));
+				bot_cols <= (others => (others => '0'));
+				bot_rows <= (others => (others => '0'));
+--				top_cols <= OBJ_COLS_ALL_ZERO;
+--				top_rows <= OBJ_COLS_ALL_ZERO;
+--				bot_cols <= OBJ_COLS_ALL_ZERO;
+--				bot_rows <= OBJ_COLS_ALL_ZERO;
 				score_flag <= '0';
 				speed := DEFAULT_SPEED;
 				mem_index := OBJ_QUEUE_LENGTH;
