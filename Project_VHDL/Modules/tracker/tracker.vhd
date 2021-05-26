@@ -25,7 +25,7 @@ USE work.graphics_pkg.all;
 
 ENTITY tracker IS
 	PORT (
-		clk								: IN STD_LOGIC;
+		clk, vert_sync					: IN STD_LOGIC;
 		reset_button, pause_button	: IN STD_LOGIC;
 		enable_game_start				: IN STD_LOGIC;
 		select_test						: IN STD_LOGIC;
@@ -73,6 +73,9 @@ ARCHITECTURE behaviour OF tracker IS
 	SIGNAL v_lives						: UNSIGNED(1 downto 0)		:= STARTING_LIVES;
 	SIGNAL v_score, v_top_score	: UNSIGNED(7 downto 0)		:= (others => '0');
 	SIGNAL v_invuln_active			: STD_LOGIC;
+	signal v_colourshift_active	: STD_LOGIC;
+	SIGNAL fourHzFlag					: STD_LOGIC;
+	SIGNAL reset_fourHzCounter		: STD_LOGIC;
 	SIGNAL mouse_lclick_trigger	: STD_LOGIC	:= '0';	-- signal is a 1 clk pulse for each rising_edge(mouse_lclick)
 BEGIN
 
@@ -81,6 +84,10 @@ BEGIN
 	lives <= STD_LOGIC_VECTOR(v_lives);
 	score <= v_score;
 	top_score <= v_top_score;
+	
+	is_colourshifted <= v_colourshift_active;
+	v_invuln_active <= fourHzFlag;
+	is_invulnerable <= v_invuln_active;
 	
 	-- GAME STATE FSM --
 	SYNC_PROC: process (clk)
@@ -136,7 +143,7 @@ BEGIN
 		end case;
 	END PROCESS OUTPUT_DECODE;
 	
-	NEXT_STATE_DECODE: process (state, mouse_lclick, mouse_lclick_trigger, v_pause)
+	NEXT_STATE_DECODE: process (state, mouse_lclick, mouse_lclick_trigger, v_pause, v_lives)
 	BEGIN
 		next_state <= S0;
 		
@@ -192,30 +199,52 @@ BEGIN
 	BEGIN
 		if (reset_game = '1') then
 			v_lives <= STARTING_LIVES;
+			v_colourshift_active <= '0';
 		elsif (rising_edge(collision_flag)) then
-			is_colourshifted <= '0';
+			v_colourshift_active <= '0';
+			reset_fourHzCounter <= '0';
 			
 			case (collision_type) is
-				when NULL_TYPE =>
-					-- Obstacles
-					if (v_lives > TO_UNSIGNED(0,2) and v_invuln_active = '0') then
-						v_lives <= v_lives - TO_UNSIGNED(1,2);
-						-- invuln
+				when COLOUR_SH_TYPE =>
+					-- Colour shift
+					if (v_colourshift_active = '1') then
+						v_colourshift_active <= '0';
+					else
+						v_colourshift_active <= '1';
 					end if;
 				when INVI_TYPE =>
 					-- Invulnerability
-				
+					reset_fourHzCounter <= '1';
 				when LIFE_TYPE =>
 					-- Extra life
 					if (v_lives < TO_UNSIGNED(3,2)) then
 						v_lives <= v_lives + TO_UNSIGNED(1,2);
 					end if;
 				when others => 
-					-- Colour shift
-					is_colourshifted <= '1';
+					-- Obstacles
+					if (v_lives > TO_UNSIGNED(0,2) and v_invuln_active = '0') then
+						v_lives <= v_lives - TO_UNSIGNED(1,2);
+					end if;	
 			end case;
 		end if;
 	END PROCESS on_collision;
+	
+	
+	fourHzCounter: PROCESS (vert_sync, reset_fourHzCounter)
+		VARIABLE counter			: UNSIGNED(8 downto 0) := (others => '0');
+		CONSTANT count_limit		: UNSIGNED(8 downto 0) := TO_UNSIGNED(239,9);
+	BEGIN
+		if (reset_fourHzCounter = '1') then
+			counter := (others => '0');
+		elsif (rising_edge(vert_sync)) then
+			if (counter < count_limit) then
+				counter := counter + TO_UNSIGNED(1,9);
+				fourHzFlag <= '1';
+			else
+				fourHzFlag <= '0';
+			end if;
+		end if;
+	END PROCESS fourHzCounter;
 	
 	
 	score_count: PROCESS (score_clk, reset_game)
@@ -241,6 +270,7 @@ BEGIN
 			end if;
 		end if;
 	END PROCESS score_count;
+	
 	
 	
 END behaviour;

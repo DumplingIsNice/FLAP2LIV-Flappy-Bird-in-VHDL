@@ -55,7 +55,7 @@ END ENTITY collision;
 
 ARCHITECTURE behaviour OF collision IS
 	-- Offset shifts collision point from top left corner to center
-	-- Offset is 1/2 of 8*scale (scale is 6)
+	-- Offset is 48, 8*scale (scale is 6)
 	CONSTANT SPRITE_OFFSET					: UNSIGNED(9 downto 0)		:= TO_UNSIGNED(24,10);
 	
 	-- f_BOUNDS_EVAL
@@ -79,13 +79,18 @@ ARCHITECTURE behaviour OF collision IS
 BEGIN
 
 	eval_collision: PROCESS (vert_sync) IS
+		VARIABLE offset_bird_col, offset_bird_row	:  UNSIGNED(9 downto 0);
 	BEGIN
 		if (rising_edge(vert_sync)) then
+			offset_bird_col := UNSIGNED(bird_col) + SPRITE_OFFSET;
+			offset_bird_row := UNSIGNED(bird_row) + SPRITE_OFFSET;
+			
 			for k in 0 to OBJ_QUEUE_LENGTH loop
-				if (f_BOUNDS_EVAL(UNSIGNED(bird_col) + SPRITE_OFFSET, UNSIGNED(bird_row) + SPRITE_OFFSET, obj_cols_left(k), obj_cols_right(k), obj_rows_upper(k), obj_rows_lower(k))
-				or (UNSIGNED(bird_col) < UPPER_COLLISION) or UNSIGNED(bird_col) > LOWER_COLLISION) then
-					collision_flag <= '1';
+				if (f_BOUNDS_EVAL(UNSIGNED(bird_col), UNSIGNED(bird_row), obj_cols_left(k), obj_cols_right(k), obj_rows_upper(k), obj_rows_lower(k))
+				or  f_BOUNDS_EVAL(offset_bird_col, offset_bird_row, obj_cols_left(k), obj_cols_right(k), obj_rows_upper(k), obj_rows_lower(k))
+				or (UNSIGNED(bird_col) > LOWER_COLLISION)) then
 					collision_type <= obj_types(k);
+					collision_flag <= '1';
 					exit;
 				else
 					collision_flag <= '0';

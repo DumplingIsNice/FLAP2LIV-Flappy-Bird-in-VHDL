@@ -66,7 +66,7 @@ ENTITY generator IS
 			rand_num							: IN STD_LOGIC_VECTOR(4 downto 0);
 
 			score_flag						: OUT STD_LOGIC		:= '0';
-			obj_cols_top, obj_cols_bot	: OUT OBJ_COLS			:= (others => (others => '0'));
+			obj_cols_left, obj_cols_right	: OUT OBJ_COLS			:= (others => (others => '0'));
 			obj_rows_top, obj_rows_bot	: OUT OBJ_ROWS			:= (others => (others => '0'));
 			object_type						: OUT OBJ_TYPES 		:= (others => (others => '0'));
 			obj_colour_r					: OUT OBJ_COLOURS 	:= (others => (others => '0'));
@@ -344,9 +344,9 @@ BEGIN
 	UNPACK: PROCESS(top_cols, top_rows, bot_cols, bot_rows)
 	BEGIN
 		FOR index IN (OBJ_QUEUE_LENGTH) downto 0 LOOP
-			obj_cols_top(index) <= top_cols(index);
+			obj_cols_left(index) <= top_cols(index);
 			obj_rows_top(index) <= top_rows(index);
-			obj_cols_bot(index) <= bot_cols(index);
+			obj_cols_right(index) <= bot_cols(index);
 			obj_rows_bot(index) <= bot_rows(index);
 		END LOOP;
 	END PROCESS UNPACK;

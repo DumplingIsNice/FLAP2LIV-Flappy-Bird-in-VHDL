@@ -52,6 +52,27 @@ applicable agreement for further details.
 		(line (pt 0 80)(pt 16 80)(line_width 3))
 	)
 	(port
+		(pt 0 96)
+		(input)
+		(text "mod_r" (rect 0 0 27 12)(font "Arial" ))
+		(text "mod_r" (rect 21 91 48 103)(font "Arial" ))
+		(line (pt 0 96)(pt 16 96)(line_width 1))
+	)
+	(port
+		(pt 0 112)
+		(input)
+		(text "mod_g" (rect 0 0 28 12)(font "Arial" ))
+		(text "mod_g" (rect 21 107 49 119)(font "Arial" ))
+		(line (pt 0 112)(pt 16 112)(line_width 1))
+	)
+	(port
+		(pt 0 128)
+		(input)
+		(text "mod_b" (rect 0 0 28 12)(font "Arial" ))
+		(text "mod_b" (rect 21 123 49 135)(font "Arial" ))
+		(line (pt 0 128)(pt 16 128)(line_width 1))
+	)
+	(port
 		(pt 224 32)
 		(output)
 		(text "red_out[3..0]" (rect 0 0 50 12)(font "Arial" ))

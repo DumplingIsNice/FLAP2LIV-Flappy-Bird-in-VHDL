@@ -10,6 +10,7 @@ use work.graphics_pkg.all;
 ENTITY VGA_SYNC IS
 	PORT(	clock_25Mhz					: IN	STD_LOGIC;
 			red, green, blue			: IN FONT_COLOUR_PACKET;
+			mod_r, mod_g, mod_b		: IN STD_LOGIC;					-- modify colour outputs; post processing effect
 	
 			red_out, green_out, blue_out	: OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
 			horiz_sync_out, vert_sync_out	: OUT	STD_LOGIC;
@@ -85,14 +86,30 @@ BEGIN
 	END IF;
 
 -- Put all video signals through DFFs to elminate any delays that cause a blurry image
-		if (video_on = '1') then
+		if (video_on = '1' and mod_r = '0') then
 			red_out <= red;
+		elsif (video_on = '1' and mod_r = '1') then
+			red_out <= red(3 downto 1) & "0";
 		else
 			red_out <= (others => '0');
 		end if;
 		
-		if (video_on = '1') then green_out <= green;	else green_out	<= (others => '0'); end if;
-		if (video_on = '1') then blue_out <= blue;	else blue_out	<= (others => '0'); end if;
+		if (video_on = '1' and mod_g = '0') then
+			green_out <= green;
+		elsif (video_on = '1' and mod_g = '1') then
+			green_out <= "0" & green(2) & "0" & green(0);
+		else
+			green_out	<= (others => '0');
+		end if;
+		
+		if (video_on = '1' and mod_b = '0') then
+			blue_out <= blue;
+		elsif (video_on = '1' and mod_b = '1') then
+			blue_out <= "0001";
+		else
+			blue_out	<= (others => '0');
+		end if;
+		
 		horiz_sync_out <= horiz_sync;
 		vert_sync_out <= vert_sync;
 

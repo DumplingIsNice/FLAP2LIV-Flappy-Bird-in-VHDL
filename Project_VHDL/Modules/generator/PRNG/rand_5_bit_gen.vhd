@@ -34,14 +34,13 @@ USE IEEE.STD_LOGIC_UNSIGNED.all;
 USE work.rand_num_pkg.all;
 
 ENTITY rand_5_bit_gen IS
-	PORT(   -- seed                    :   IN seed_pkg;
+	PORT(  seed                    :   	IN seed_pkg;
 		    enable, gen, reset	    : 	IN STD_LOGIC;
 		    rand_out                :	OUT STD_LOGIC_VECTOR (4 downto 0)
 	    );
 END rand_5_bit_gen;
 
 ARCHITECTURE beh OF rand_5_bit_gen IS
-	SIGNAL seed	: seed_pkg			:= FIXED_SEED;
 	
     COMPONENT psudo_rand_gen IS
     PORT(   seed	                :	IN STD_LOGIC_VECTOR (9 DOWNTO 0);
@@ -86,11 +85,6 @@ BEGIN
                                     q => q_r4
                                 );               
 
-    seed(0) <= "0000000000";
-    seed(1) <= "1001000001";
-    seed(2) <= "1001000010";
-    seed(3) <= "1001000100";
-    seed(4) <= "1001001000";
     -- Feedback bits concat to 5-bit value, (0-31).
     rand_out_i <= q_r4&q_r3&q_r2&q_r1&q_r0;
     

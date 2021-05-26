@@ -68,15 +68,15 @@ applicable agreement for further details.
 	(port
 		(pt 264 48)
 		(output)
-		(text "obj_cols_top[23..0][9..0]" (rect 0 0 94 12)(font "Arial" ))
-		(text "obj_cols_top[23..0][9..0]" (rect 149 43 243 55)(font "Arial" ))
+		(text "obj_cols_left[23..0][9..0]" (rect 0 0 94 12)(font "Arial" ))
+		(text "obj_cols_left[23..0][9..0]" (rect 149 43 243 55)(font "Arial" ))
 		(line (pt 264 48)(pt 248 48)(line_width 3))
 	)
 	(port
 		(pt 264 64)
 		(output)
-		(text "obj_cols_bot[23..0][9..0]" (rect 0 0 94 12)(font "Arial" ))
-		(text "obj_cols_bot[23..0][9..0]" (rect 149 59 243 71)(font "Arial" ))
+		(text "obj_cols_right[23..0][9..0]" (rect 0 0 99 12)(font "Arial" ))
+		(text "obj_cols_right[23..0][9..0]" (rect 144 59 243 71)(font "Arial" ))
 		(line (pt 264 64)(pt 248 64)(line_width 3))
 	)
 	(port
