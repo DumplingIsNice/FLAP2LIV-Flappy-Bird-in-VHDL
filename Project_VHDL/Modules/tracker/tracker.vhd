@@ -231,18 +231,22 @@ BEGIN
 	END PROCESS on_collision;
 	
 	
-	fourHzCounter: PROCESS (vert_sync, reset_fourHzCounter)
+	fourHzCounter: PROCESS (vert_sync, reset_fourHzCounter, reset_game)
 		VARIABLE counter			: UNSIGNED(8 downto 0) := (others => '0');
 		CONSTANT count_limit		: UNSIGNED(8 downto 0) := TO_UNSIGNED(239,9);
 	BEGIN
-		if (reset_fourHzCounter = '1') then
+		if (reset_fourHzCounter = '1' or reset_game = '1') then
 			counter := (others => '0');
 		elsif (rising_edge(vert_sync)) then
-			if (counter < count_limit) then
-				counter := counter + TO_UNSIGNED(1,9);
-				fourHzFlag <= '1';
+			if (v_pause = '1') then
+				if (counter < count_limit) then
+					counter := counter + TO_UNSIGNED(1,9);
+					fourHzFlag <= '1';
+				else
+					fourHzFlag <= '0';
+				end if;
 			else
-				fourHzFlag <= '0';
+				fourHzFlag <= fourHzFlag;
 			end if;
 		end if;
 	END PROCESS fourHzCounter;
@@ -269,6 +273,7 @@ BEGIN
 					difficulty <= "11";
 				end if;
 			end if;
+			
 		end if;
 	END PROCESS score_count;
 	
