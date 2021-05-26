@@ -121,6 +121,7 @@ ARCHITECTURE behaviour OF generator IS
 			VARIABLE speed 										: IN STD_LOGIC_VECTOR(9 downto 0);
 			VARIABLE mem_index 									: IN INTEGER;
 			SIGNAL top_cols, top_rows, bot_cols, bot_rows 		: INOUT obj_cols;
+			SIGNAL obj_colour_r, obj_colour_g, obj_colour_b		: OUT OBJ_COLOURS;
 			VARIABLE is_scored									: INOUT IS_SCORED_ARRAY;
 			SIGNAL score_flag									: INOUT STD_LOGIC
         ) IS
@@ -144,6 +145,10 @@ ARCHITECTURE behaviour OF generator IS
 					top_rows(index) <= TEN_BIT_ALL_ZERO;
 					bot_cols(index) <= TEN_BIT_ALL_ZERO;
 					bot_rows(index) <= TEN_BIT_ALL_ZERO;
+
+					obj_colour_r(index) <= OBJ_COLOUR_ZERO;
+					obj_colour_g(index) <= OBJ_COLOUR_ZERO;
+					obj_colour_b(index) <= OBJ_COLOUR_ZERO;
 				ELSE
 					-- Increment object location
 
@@ -231,7 +236,11 @@ BEGIN
 				
 				-- Update object
 				dis_counter := dis_counter + speed;
-				UPDATE_OBJ(speed, mem_index, top_cols, top_rows, bot_cols, bot_rows, is_scored, score_flag_i);
+				UPDATE_OBJ(	speed, 
+							mem_index, 
+							top_cols, top_rows, bot_cols, bot_rows, 
+							obj_colour_r, obj_colour_g, obj_colour_b, 
+							is_scored, score_flag_i);
 
 				-- Pipe Creation
 				IF (dis_counter >= CONV_STD_LOGIC_VECTOR(DIS_BETWEEN_PIPE, 10)) THEN
