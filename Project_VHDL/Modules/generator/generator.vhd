@@ -61,14 +61,14 @@ USE work.graphics_pkg.all;
 
 ENTITY generator IS
 	PORT(
-			vert_sync, enable, reset		: IN STD_LOGIC;
+			vert_sync, enable, reset	: IN STD_LOGIC;
 			difficulty						: IN STD_LOGIC_VECTOR(1 downto 0);
-			rand_num						: IN STD_LOGIC_VECTOR(4 downto 0);
+			rand_num							: IN STD_LOGIC_VECTOR(4 downto 0);
 
 			score_flag						: OUT STD_LOGIC		:= '0';
-			obj_cols_top, obj_cols_bot		: OUT OBJ_COLS		:= (others => (others => '0'));
-			obj_rows_top, obj_rows_bot		: OUT OBJ_ROWS		:= (others => (others => '0'));
-			object_type						: OUT OBJ_TYPES 	:= (others => (others => '0'));
+			obj_cols_top, obj_cols_bot	: OUT OBJ_COLS			:= (others => (others => '0'));
+			obj_rows_top, obj_rows_bot	: OUT OBJ_ROWS			:= (others => (others => '0'));
+			object_type						: OUT OBJ_TYPES 		:= (others => (others => '0'));
 			obj_colour_r					: OUT OBJ_COLOURS 	:= (others => (others => '0'));
 			obj_colour_g					: OUT OBJ_COLOURS 	:= (others => (others => '0'));
 			obj_colour_b					: OUT OBJ_COLOURS 	:= (others => (others => '0'))
@@ -76,7 +76,6 @@ ENTITY generator IS
 END ENTITY generator;
 
 ARCHITECTURE behaviour OF generator IS
-
 	-- Loads a set of positon data into the next memory array
 	PROCEDURE LOAD_OBJ
         (   
@@ -140,17 +139,21 @@ ARCHITECTURE behaviour OF generator IS
 				-- (3, 2) = top coordinate (col, row), (1, 0) = bot coordinate (col, row)
 
 				-- Bin objects which have left the screen.
-				IF (bot_cols(index) <= TEN_BIT_ALL_ZERO) THEN
+				IF (bot_cols(index) <= TEN_BIT_ALL_ZERO or bot_cols(index) > SCREEN_RIGHT) THEN
 					top_cols(index) <= TEN_BIT_ALL_ZERO;
 					top_rows(index) <= TEN_BIT_ALL_ZERO;
 					bot_cols(index) <= TEN_BIT_ALL_ZERO;
 					bot_rows(index) <= TEN_BIT_ALL_ZERO;
 				ELSE
+					-- Increment object location
+
 					-- Col of top coordinate remains at SCREEN_LEFT
 					-- When it has reached SCREEN_LEFT and beyond
 					-- (not within 0 to SCREEN_RIGHT)
-					IF (top_cols(index) /= 0 OR not(top_cols(index) <= SCREEN_RIGHT)) THEN
+					IF (top_cols(index) /= TEN_BIT_ALL_ZERO or not(top_cols(index) <= SCREEN_RIGHT)) THEN
 						top_cols(index) <= top_cols(index) - speed;
+					ELSIF (top_cols(index) = TEN_BIT_ALL_ZERO or top_cols(index) > SCREEN_RIGHT) THEN
+						top_cols(index) <= TEN_BIT_ALL_ZERO;
 					END IF;
 					-- Col of bottem coordinate remains at SCREEN_RIGHT 
 					-- until PIP_WIDTH have been reached.
@@ -197,10 +200,14 @@ BEGIN
 
 		IF (RISING_EDGE(vert_sync)) THEN
 			IF (reset = '1') THEN
-				top_cols <= OBJ_COLS_ALL_ZERO;
-				top_rows <= OBJ_COLS_ALL_ZERO;
-				bot_cols <= OBJ_COLS_ALL_ZERO;
-				bot_rows <= OBJ_COLS_ALL_ZERO;
+				top_cols <= (others => (others => '0'));
+				top_rows <= (others => (others => '0'));
+				bot_cols <= (others => (others => '0'));
+				bot_rows <= (others => (others => '0'));
+--				top_cols <= OBJ_COLS_ALL_ZERO;
+--				top_rows <= OBJ_COLS_ALL_ZERO;
+--				bot_cols <= OBJ_COLS_ALL_ZERO;
+--				bot_rows <= OBJ_COLS_ALL_ZERO;
 				score_flag <= '0';
 				speed := DEFAULT_SPEED;
 				mem_index := OBJ_QUEUE_LENGTH;
