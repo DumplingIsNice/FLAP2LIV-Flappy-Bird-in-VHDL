@@ -66,7 +66,7 @@ ENTITY generator IS
 			rand_num							: IN STD_LOGIC_VECTOR(4 downto 0);
 
 			score_flag						: OUT STD_LOGIC		:= '0';
-			obj_cols_left, obj_cols_right	: OUT OBJ_COLS			:= (others => (others => '0'));
+			obj_cols_top, obj_cols_bot	: OUT OBJ_COLS			:= (others => (others => '0'));
 			obj_rows_top, obj_rows_bot	: OUT OBJ_ROWS			:= (others => (others => '0'));
 			object_type						: OUT OBJ_TYPES 		:= (others => (others => '0'));
 			obj_colour_r					: OUT OBJ_COLOURS 	:= (others => (others => '0'));
@@ -121,6 +121,7 @@ ARCHITECTURE behaviour OF generator IS
 			VARIABLE speed 										: IN STD_LOGIC_VECTOR(9 downto 0);
 			VARIABLE mem_index 									: IN INTEGER;
 			SIGNAL top_cols, top_rows, bot_cols, bot_rows 		: INOUT obj_cols;
+			SIGNAL obj_colour_r, obj_colour_g, obj_colour_b		: OUT OBJ_COLOURS;
 			VARIABLE is_scored									: INOUT IS_SCORED_ARRAY;
 			SIGNAL score_flag									: INOUT STD_LOGIC
         ) IS
@@ -139,17 +140,25 @@ ARCHITECTURE behaviour OF generator IS
 				-- (3, 2) = top coordinate (col, row), (1, 0) = bot coordinate (col, row)
 
 				-- Bin objects which have left the screen.
-				IF (bot_cols(index) <= TEN_BIT_ALL_ZERO) THEN
+				IF (bot_cols(index) <= TEN_BIT_ALL_ZERO or bot_cols(index) > SCREEN_RIGHT) THEN
 					top_cols(index) <= TEN_BIT_ALL_ZERO;
 					top_rows(index) <= TEN_BIT_ALL_ZERO;
 					bot_cols(index) <= TEN_BIT_ALL_ZERO;
 					bot_rows(index) <= TEN_BIT_ALL_ZERO;
+
+					obj_colour_r(index) <= OBJ_COLOUR_ZERO;
+					obj_colour_g(index) <= OBJ_COLOUR_ZERO;
+					obj_colour_b(index) <= OBJ_COLOUR_ZERO;
 				ELSE
+					-- Increment object location
+
 					-- Col of top coordinate remains at SCREEN_LEFT
 					-- When it has reached SCREEN_LEFT and beyond
 					-- (not within 0 to SCREEN_RIGHT)
-					IF (top_cols(index) /= 0 OR not(top_cols(index) <= SCREEN_RIGHT)) THEN
+					IF (top_cols(index) /= TEN_BIT_ALL_ZERO or not(top_cols(index) <= SCREEN_RIGHT)) THEN
 						top_cols(index) <= top_cols(index) - speed;
+					ELSIF (top_cols(index) = TEN_BIT_ALL_ZERO or top_cols(index) > SCREEN_RIGHT) THEN
+						top_cols(index) <= TEN_BIT_ALL_ZERO;
 					END IF;
 					-- Col of bottem coordinate remains at SCREEN_RIGHT 
 					-- until PIP_WIDTH have been reached.
@@ -227,7 +236,11 @@ BEGIN
 				
 				-- Update object
 				dis_counter := dis_counter + speed;
-				UPDATE_OBJ(speed, mem_index, top_cols, top_rows, bot_cols, bot_rows, is_scored, score_flag_i);
+				UPDATE_OBJ(	speed, 
+							mem_index, 
+							top_cols, top_rows, bot_cols, bot_rows, 
+							obj_colour_r, obj_colour_g, obj_colour_b, 
+							is_scored, score_flag_i);
 
 				-- Pipe Creation
 				IF (dis_counter >= CONV_STD_LOGIC_VECTOR(DIS_BETWEEN_PIPE, 10)) THEN
@@ -344,9 +357,9 @@ BEGIN
 	UNPACK: PROCESS(top_cols, top_rows, bot_cols, bot_rows)
 	BEGIN
 		FOR index IN (OBJ_QUEUE_LENGTH) downto 0 LOOP
-			obj_cols_left(index) <= top_cols(index);
+			obj_cols_top(index) <= top_cols(index);
 			obj_rows_top(index) <= top_rows(index);
-			obj_cols_right(index) <= bot_cols(index);
+			obj_cols_bot(index) <= bot_cols(index);
 			obj_rows_bot(index) <= bot_rows(index);
 		END LOOP;
 	END PROCESS UNPACK;
