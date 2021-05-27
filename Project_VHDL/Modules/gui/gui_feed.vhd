@@ -283,7 +283,7 @@ BEGIN
 			
 			
 			-- Heart
-			f_cols(2)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(515,10)); -- 639 - (60 + 8*8)
+			f_cols(2)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(455,10)); -- 639 - (120 + 8*8)
 			f_rows(2)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(60,10));
 			f_scales(2)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(8,6));
 			f_addresses(2)		<= HEART_ADDRESS;
@@ -298,7 +298,7 @@ BEGIN
 				when others =>	lives_address := o"63";
 			end case;
 			
-			f_cols(3)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(579,10));	-- 639 - 60
+			f_cols(3)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(519,10));	-- 639 - 120
 			f_rows(3)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(60,10));
 			f_scales(3)			<= STD_LOGIC_VECTOR(TO_UNSIGNED(8,6));
 			f_addresses(3)		<= lives_address;

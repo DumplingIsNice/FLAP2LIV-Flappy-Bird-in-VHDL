@@ -250,6 +250,7 @@ BEGIN
 					fourHzFlag <= '0';
 				end if;
 			else
+				counter := counter;
 				fourHzFlag <= fourHzFlag;
 			end if;
 		end if;

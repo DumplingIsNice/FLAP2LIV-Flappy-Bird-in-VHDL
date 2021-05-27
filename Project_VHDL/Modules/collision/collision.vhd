@@ -85,18 +85,24 @@ BEGIN
 			offset_bird_col := UNSIGNED(bird_col) + SPRITE_OFFSET;
 			offset_bird_row := UNSIGNED(bird_row) + SPRITE_OFFSET;
 			
-			for k in 0 to OBJ_QUEUE_LENGTH loop
-				if (f_BOUNDS_EVAL(UNSIGNED(bird_col), UNSIGNED(bird_row), obj_cols_left(k), obj_cols_right(k), obj_rows_upper(k), obj_rows_lower(k))
-				or  f_BOUNDS_EVAL(offset_bird_col, offset_bird_row, obj_cols_left(k), obj_cols_right(k), obj_rows_upper(k), obj_rows_lower(k))
-				or (UNSIGNED(bird_col) > LOWER_COLLISION)) then
-					collision_type <= obj_types(k);
-					collision_flag <= '1';
-					exit;
-				else
-					collision_flag <= '0';
-					collision_type <= (others => '0');
-				end if;
-			end loop;
+			if (UNSIGNED(bird_col) > LOWER_COLLISION) then
+				collision_type <= (others => '0');
+				collision_flag <= '1';
+			else
+				for k in 0 to OBJ_QUEUE_LENGTH loop
+					if (f_BOUNDS_EVAL(UNSIGNED(bird_col), UNSIGNED(bird_row), obj_cols_left(k), obj_cols_right(k), obj_rows_upper(k), obj_rows_lower(k))
+					or  f_BOUNDS_EVAL(offset_bird_col, offset_bird_row, obj_cols_left(k), obj_cols_right(k), obj_rows_upper(k), obj_rows_lower(k))) then
+						collision_type <= obj_types(k);
+						collision_flag <= '1';
+						exit;
+					else
+						collision_flag <= '0';
+						collision_type <= (others => '0');
+					end if;
+				end loop;
+			
+			end if;
+			
 		end if;
 	END PROCESS eval_collision;
 

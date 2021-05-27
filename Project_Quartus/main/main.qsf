@@ -94,7 +94,6 @@ set_global_assignment -name VHDL_FILE ../../Project_VHDL/Modules/graphics/vga_sy
 set_global_assignment -name QIP_FILE ../../Project_VHDL/Modules/main/altpll0.qip
 set_global_assignment -name BDF_FILE ../../Project_VHDL/Modules/main/main.bdf
 set_global_assignment -name CDF_FILE output_files/Chain1.cdf
-set_global_assignment -name VHDL_FILE ../../Project_VHDL/Modules/controls/controls.vhd
 set_global_assignment -name VHDL_FILE ../../Project_VHDL/Modules/controls/seven_seg_converter.vhd
 set_global_assignment -name VHDL_FILE ../../Project_VHDL/Modules/graphics/graphics_objects.vhd
 set_global_assignment -name VHDL_FILE ../../Project_VHDL/Modules/main/level_to_pulse.vhd
