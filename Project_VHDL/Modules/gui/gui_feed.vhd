@@ -5,14 +5,14 @@
 --	Course:		CS305 Miniproject
 --
 --
---	In:			
+--	In:			GUI			(FSM that determinewhich output to use)	
 --
---	Out:			
+--	Out:			GRAPHICS		(font_queue data is used )
 --
 --	Summary
 --
 --		GUI_FEED is a wrapper for setting predetermined font queue packet values.
---		
+--		It handles all the rendering commands for the font queue to be sent to the screen.
 
 
 LIBRARY IEEE;
@@ -80,7 +80,7 @@ BEGIN
 set_bird_pos: PROCESS (vert_sync)
 BEGIN
 	if (rising_edge(vert_sync)) then
-		f_cols(1) <= STD_LOGIC_VECTOR(TO_UNSIGNED(400,10));	-- bird_cols;
+		f_cols(1) <= bird_col;
 		f_rows(1) <= bird_row;
 		
 		if (enable_bird = '1') then

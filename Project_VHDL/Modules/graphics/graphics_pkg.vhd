@@ -1,6 +1,6 @@
 --	GRAPHICS_PKG
 --
---	Authors:		Callum McDowell
+--	Authors:		Callum McDowell, Hao Lin
 --	Date:			May 2021
 --	Course:		CS305 Miniproject
 --
@@ -20,6 +20,9 @@
 --
 --		As VHDL synthesis has limited array dimension support we split the packet into
 --		1D arrays of equal size (queue length), and access the relevant data in parallel.
+--
+--		Various other constants and records for the TRACKER, GENERATOR, and GRAPHICS_OBJECTS
+--		are also stored here.
 
 
 LIBRARY	IEEE;
@@ -60,8 +63,8 @@ SUBTYPE obj_type_packet IS STD_LOGIC_VECTOR(3 downto 0);
 TYPE obj_types			IS ARRAY (OBJ_QUEUE_LENGTH downto 0) OF OBJ_TYPE_PACKET;
 TYPE obj_colours		IS ARRAY (OBJ_QUEUE_LENGTH downto 0) OF FONT_COLOUR_PACKET;
 
-	-- record is used for structured storage in generator memory
 TYPE obj_queue_packet IS RECORD
+	-- record is used for structured storage in generator memory
 	col					: STD_LOGIC_VECTOR(9 downto 0);
 	row					: STD_LOGIC_VECTOR(9 downto 0);
 	obj_type				: OBJ_TYPE_PACKET;
@@ -125,8 +128,8 @@ CONSTANT DIFF_2 				: STD_LOGIC_VECTOR(1 downto 0)	:= "10";
 CONSTANT DIFF_3 				: STD_LOGIC_VECTOR(1 downto 0)	:= "11";
 
 CONSTANT DEFAULT_SPEED		: STD_LOGIC_VECTOR(9 downto 0)	:= STD_LOGIC_VECTOR(TO_UNSIGNED(5, 10));
-CONSTANT SPEED_1				: STD_LOGIC_VECTOR(9 downto 0)	:= STD_LOGIC_VECTOR(TO_UNSIGNED(10, 10));
-CONSTANT SPEED_2				: STD_LOGIC_VECTOR(9 downto 0)	:= STD_LOGIC_VECTOR(TO_UNSIGNED(15, 10));
+CONSTANT SPEED_1				: STD_LOGIC_VECTOR(9 downto 0)	:= STD_LOGIC_VECTOR(TO_UNSIGNED(8, 10));
+CONSTANT SPEED_2				: STD_LOGIC_VECTOR(9 downto 0)	:= STD_LOGIC_VECTOR(TO_UNSIGNED(12, 10));
 CONSTANT SPEED_3				: STD_LOGIC_VECTOR(9 downto 0)	:= STD_LOGIC_VECTOR(TO_UNSIGNED(20, 10));
 
 CONSTANT UPPER_COLLISION	: UNSIGNED(9 downto 0)				:= TO_UNSIGNED(33,10);	-- 1/2 sprite height (i.e. 0.5*8*6) + 10px margin

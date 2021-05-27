@@ -1,3 +1,12 @@
+-- CHAR_ROM
+--
+-- Provided content.
+--
+-- Summary
+--
+--		Used to access the bitmaps stored in a ROM M9K block.
+--		ROM is configured with custTCGROM.MIF in Project_Quartus/main.
+
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
 USE IEEE.STD_LOGIC_ARITH.all;

@@ -84,6 +84,22 @@ applicable agreement for further details.
 	(text "VCC" (rect 136 7 156 17)(font "Arial" (font_size 6)))
 )
 (pin
+	(input)
+	(rect -1408 792 -1232 808)
+	(text "INPUT" (rect 133 0 161 10)(font "Arial" (font_size 6)))
+	(text "score_mux_switch" (rect 9 0 99 12)(font "Arial" ))
+	(pt 176 8)
+	(drawing
+		(line (pt 92 12)(pt 117 12))
+		(line (pt 92 4)(pt 117 4))
+		(line (pt 121 8)(pt 176 8))
+		(line (pt 92 12)(pt 92 4))
+		(line (pt 117 4)(pt 121 8))
+		(line (pt 117 12)(pt 121 8))
+	)
+	(text "VCC" (rect 136 7 156 17)(font "Arial" (font_size 6)))
+)
+(pin
 	(output)
 	(rect -952 1016 -776 1032)
 	(text "OUTPUT" (rect 1 0 39 10)(font "Arial" (font_size 6)))
@@ -1497,6 +1513,13 @@ applicable agreement for further details.
 		(text "y_pos[9..0]" (rect 132 27 179 39)(font "Arial" ))
 		(line (pt 200 32)(pt 184 32)(line_width 3))
 	)
+	(port
+		(pt 200 48)
+		(output)
+		(text "col_pos[9..0]" (rect 0 0 63 12)(font "Arial" ))
+		(text "col_pos[9..0]" (rect 126 43 179 55)(font "Arial" ))
+		(line (pt 200 48)(pt 184 48)(line_width 3))
+	)
 	(drawing
 		(rectangle (rect 16 16 184 128))
 	)
@@ -1577,9 +1600,9 @@ applicable agreement for further details.
 	)
 )
 (symbol
-	(rect -1224 736 -984 848)
+	(rect -1224 736 -984 880)
 	(text "seven_segment_disp" (rect 5 0 110 12)(font "Arial" ))
-	(text "inst2" (rect 8 96 31 108)(font "Arial" ))
+	(text "inst2" (rect 8 128 31 140)(font "Arial" ))
 	(port
 		(pt 0 32)
 		(input)
@@ -1597,9 +1620,23 @@ applicable agreement for further details.
 	(port
 		(pt 0 64)
 		(input)
-		(text "in_value[7..0]" (rect 0 0 67 12)(font "Arial" ))
-		(text "in_value[7..0]" (rect 21 59 88 71)(font "Arial" ))
-		(line (pt 0 64)(pt 16 64)(line_width 3))
+		(text "mux" (rect 0 0 21 12)(font "Arial" ))
+		(text "mux" (rect 21 59 42 71)(font "Arial" ))
+		(line (pt 0 64)(pt 16 64))
+	)
+	(port
+		(pt 0 80)
+		(input)
+		(text "in_value1[7..0]" (rect 0 0 73 12)(font "Arial" ))
+		(text "in_value1[7..0]" (rect 21 75 94 87)(font "Arial" ))
+		(line (pt 0 80)(pt 16 80)(line_width 3))
+	)
+	(port
+		(pt 0 96)
+		(input)
+		(text "in_value2[7..0]" (rect 0 0 73 12)(font "Arial" ))
+		(text "in_value2[7..0]" (rect 21 91 94 103)(font "Arial" ))
+		(line (pt 0 96)(pt 16 96)(line_width 3))
 	)
 	(port
 		(pt 240 32)
@@ -1623,7 +1660,7 @@ applicable agreement for further details.
 		(line (pt 240 64)(pt 224 64)(line_width 3))
 	)
 	(drawing
-		(rectangle (rect 16 16 224 96))
+		(rectangle (rect 16 16 224 128))
 	)
 )
 (connector
@@ -1916,18 +1953,6 @@ applicable agreement for further details.
 	(pt -1864 1632)
 )
 (connector
-	(text "mouse_row[9..0]" (rect -1864 1648 -1783 1660)(font "Arial" ))
-	(pt -1776 1664)
-	(pt -1864 1664)
-	(bus)
-)
-(connector
-	(text "mouse_col[9..0]" (rect -1864 1632 -1785 1644)(font "Arial" ))
-	(pt -1864 1648)
-	(pt -1776 1648)
-	(bus)
-)
-(connector
 	(text "collision_flag" (rect -1456 1600 -1393 1612)(font "Arial" ))
 	(pt -1408 1616)
 	(pt -1496 1616)
@@ -2095,11 +2120,6 @@ applicable agreement for further details.
 (connector
 	(pt -2248 1184)
 	(pt -2520 1184)
-	(bus)
-)
-(connector
-	(pt -2248 1216)
-	(pt -2520 1216)
 	(bus)
 )
 (connector
@@ -2550,9 +2570,42 @@ applicable agreement for further details.
 	(bus)
 )
 (connector
-	(text "top_score[7..0]" (rect -1302 784 -1228 796)(font "Arial" ))
-	(pt -1224 800)
-	(pt -1304 800)
+	(text "top_score[7..0]" (rect -1302 800 -1228 812)(font "Arial" ))
+	(pt -1224 816)
+	(pt -1304 816)
+	(bus)
+)
+(connector
+	(pt -2360 1216)
+	(pt -2360 1352)
+	(bus)
+)
+(connector
+	(pt -2520 1216)
+	(pt -2360 1216)
+	(bus)
+)
+(connector
+	(pt -2360 1216)
+	(pt -2248 1216)
+	(bus)
+)
+(connector
+	(text "score[7..0]" (rect -2325 1336 -2272 1348)(font "Arial" ))
+	(pt -2280 1352)
+	(pt -2360 1352)
+	(bus)
+)
+(connector
+	(text "score[7..0]" (rect -1301 816 -1248 828)(font "Arial" ))
+	(pt -1224 832)
+	(pt -1304 832)
+	(bus)
+)
+(connector
+	(text "bird_row[9..0]" (rect -1863 1648 -1797 1660)(font "Arial" ))
+	(pt -1776 1664)
+	(pt -1864 1664)
 	(bus)
 )
 (connector
@@ -2561,9 +2614,9 @@ applicable agreement for further details.
 	(bus)
 )
 (connector
-	(text "top_score[7..0]" (rect -2344 1320 -2270 1332)(font "Arial" ))
+	(text "top_score[7..0]" (rect -2336 1320 -2262 1332)(font "Arial" ))
 	(pt -2344 1336)
-	(pt -2312 1336)
+	(pt -2288 1336)
 	(bus)
 )
 (connector
@@ -2592,6 +2645,34 @@ applicable agreement for further details.
 	(pt -2896 1360)
 	(pt -2768 1360)
 )
+(connector
+	(text "bird_col[9..0]" (rect -2561 1600 -2498 1612)(font "Arial" ))
+	(pt -2560 1616)
+	(pt -2472 1616)
+	(bus)
+)
+(connector
+	(text "bird_col[9..0]" (rect -1864 1632 -1801 1644)(font "Arial" ))
+	(pt -1863 1648)
+	(pt -1776 1648)
+	(bus)
+)
+(connector
+	(text "bird_col[9..0]" (rect -2856 1040 -2793 1052)(font "Arial" ))
+	(pt -2855 1056)
+	(pt -2768 1056)
+	(bus)
+)
+(connector
+	(text "bird_col[9..0]" (rect -2336 1056 -2273 1068)(font "Arial" ))
+	(pt -2335 1072)
+	(pt -2248 1072)
+	(bus)
+)
+(connector
+	(pt -1232 800)
+	(pt -1224 800)
+)
 (junction (pt -1968 1480))
 (junction (pt -1952 1464))
 (junction (pt -1936 1448))
@@ -2601,5 +2682,6 @@ applicable agreement for further details.
 (junction (pt -984 1040))
 (junction (pt -2384 1200))
 (junction (pt -2536 576))
-(junction (pt -2344 1232))
 (junction (pt -2896 1360))
+(junction (pt -2360 1216))
+(junction (pt -2344 1232))

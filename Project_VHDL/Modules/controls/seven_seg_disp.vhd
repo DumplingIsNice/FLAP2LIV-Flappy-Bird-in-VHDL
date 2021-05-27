@@ -5,8 +5,8 @@ USE IEEE.STD_LOGIC_1164.all;
 USE IEEE.NUMERIC_STD.all;
 
 ENTITY seven_segment_disp IS
-    PORT (  clk, all_off                                : IN STD_LOGIC;
-            in_value                                    : IN UNSIGNED (7 downto 0);
+    PORT (  clk, all_off, mux                           : IN STD_LOGIC;
+            in_value1, in_value2                        : IN UNSIGNED (7 downto 0);
             LED_out_ones, LED_out_tens, LED_out_huns    : OUT STD_LOGIC_VECTOR (7 downto 0)
         );
 END ENTITY seven_segment_disp;
@@ -14,6 +14,7 @@ END ENTITY seven_segment_disp;
 ARCHITECTURE beh OF SEVEN_SEGMENT_DISP IS
     CONSTANT HUN_CONST                              : UNSIGNED (14 downto 0) := to_unsigned(327, 15); -- 2^15/100
     CONSTANT TEN_CONST                              : UNSIGNED (14 downto 0) := to_unsigned(3276,15); -- 2^15/10
+	 SIGNAL in_value											 : UNSIGNED (7 downto 0);
     SIGNAL digit_huns, digit_tens, digit_ones       : STD_LOGIC_VECTOR (3 downto 0);
     SIGNAL LED_dp_huns, LED_dp_tens, LED_dp_ones    : std_logic;  
 
@@ -47,6 +48,7 @@ BEGIN
                 digit_tens <= "1111";
                 digit_huns <= "1111";
             ELSE
+					if (mux = '1') then in_value <= in_value2; else in_value <= in_value1; end if;
                 -- Constant division algorithm
                 -- (dividend*(2^(quantize-bits - 1)/CONSTANT)) >> 15 = divident/CONSTANT
                 -- With 2^11 rounding.

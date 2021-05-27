@@ -29,12 +29,16 @@ LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.all;
 USE IEEE.NUMERIC_STD.all;
 
+USE work.graphics_pkg.all;
+ 
+
 ENTITY physics IS
 	PORT (
 		clk_25k, vert_sync	: IN std_logic;	
 		reset, enable		: IN std_logic;	
 		mouse_lclick			: IN std_logic;		
-		y_pos 					: OUT std_logic_vector(9 downto 0)
+		y_pos 					: OUT std_logic_vector(9 downto 0);
+		col_pos					: OUT std_logic_vector(9 downto 0)
 	);
 END ENTITY physics;
 
@@ -51,6 +55,8 @@ SIGNAL v						: SIGNED(9 downto 0);
 SIGNAL y						: SIGNED(9 downto 0) 	:= TO_SIGNED(240,10);		-- start in middle of screen
 
 BEGIN
+
+	col_pos <= STD_LOGIC_VECTOR(TO_UNSIGNED(BIRD_POSITION,10));
 
 	Click_Check: PROCESS(vert_sync, reset)
 	BEGIN

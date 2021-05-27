@@ -1,3 +1,13 @@
+-- VGA SYNC
+--
+-- Supplied file.
+--
+--	Summary
+--
+--		Provides timing for sending rgb signals to the VGA port.
+--		We have modified this slightly to include colour shifting filters
+--		(mod_r/g/b) for special effects.
+
 
 library IEEE;
 use  IEEE.STD_LOGIC_1164.all;
