@@ -272,10 +272,12 @@ BEGIN
 			if (select_test = '0') then
 				if (v_score > DIFFICULTY_THRESHOLD_1) then
 					difficulty <= "01";
-				elsif (v_score > DIFFICULTY_THRESHOLD_2) then
-					difficulty <= "10";
-				elsif (v_score > DIFFICULTY_THRESHOLD_3) then
-					difficulty <= "11";
+					if (v_score > DIFFICULTY_THRESHOLD_2) then
+						difficulty <= "10";
+					end if;
+						if (v_score > DIFFICULTY_THRESHOLD_3) then
+							difficulty <= "11";
+						end if;
 				end if;
 			end if;
 			

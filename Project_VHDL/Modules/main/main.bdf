@@ -1525,14 +1525,14 @@ applicable agreement for further details.
 	)
 )
 (symbol
-	(rect -2768 1432 -2568 1544)
+	(rect -2768 1432 -2560 1544)
 	(text "rand_5_bit_gen" (rect 5 0 79 12)(font "Arial" ))
 	(text "inst27" (rect 8 96 37 108)(font "Arial" ))
 	(port
 		(pt 0 32)
 		(input)
-		(text "seed[9..0]" (rect 0 0 49 12)(font "Arial" ))
-		(text "seed[9..0]" (rect 21 27 70 39)(font "Arial" ))
+		(text "seed_in[9..0]" (rect 0 0 63 12)(font "Arial" ))
+		(text "seed_in[9..0]" (rect 21 27 84 39)(font "Arial" ))
 		(line (pt 0 32)(pt 16 32)(line_width 3))
 	)
 	(port
@@ -1557,14 +1557,14 @@ applicable agreement for further details.
 		(line (pt 0 80)(pt 16 80))
 	)
 	(port
-		(pt 200 32)
+		(pt 208 32)
 		(output)
 		(text "rand_out[4..0]" (rect 0 0 68 12)(font "Arial" ))
-		(text "rand_out[4..0]" (rect 122 27 179 39)(font "Arial" ))
-		(line (pt 200 32)(pt 184 32)(line_width 3))
+		(text "rand_out[4..0]" (rect 130 27 187 39)(font "Arial" ))
+		(line (pt 208 32)(pt 192 32)(line_width 3))
 	)
 	(drawing
-		(rectangle (rect 16 16 184 96))
+		(rectangle (rect 16 16 192 96))
 	)
 )
 (symbol
@@ -2545,11 +2545,6 @@ applicable agreement for further details.
 	(bus)
 )
 (connector
-	(pt -2568 1464)
-	(pt -2248 1464)
-	(bus)
-)
-(connector
 	(text "clk_25Hz" (rect -1302 752 -1258 764)(font "Arial" ))
 	(pt -1224 768)
 	(pt -1304 768)
@@ -2630,22 +2625,6 @@ applicable agreement for further details.
 	(bus)
 )
 (connector
-	(pt -2544 576)
-	(pt -2536 576)
-)
-(connector
-	(pt -2536 576)
-	(pt -2520 576)
-)
-(connector
-	(pt -2904 1360)
-	(pt -2896 1360)
-)
-(connector
-	(pt -2896 1360)
-	(pt -2768 1360)
-)
-(connector
 	(text "bird_col[9..0]" (rect -2561 1600 -2498 1612)(font "Arial" ))
 	(pt -2560 1616)
 	(pt -2472 1616)
@@ -2672,6 +2651,27 @@ applicable agreement for further details.
 (connector
 	(pt -1232 800)
 	(pt -1224 800)
+)
+(connector
+	(pt -2560 1464)
+	(pt -2248 1464)
+	(bus)
+)
+(connector
+	(pt -2544 576)
+	(pt -2536 576)
+)
+(connector
+	(pt -2536 576)
+	(pt -2520 576)
+)
+(connector
+	(pt -2904 1360)
+	(pt -2896 1360)
+)
+(connector
+	(pt -2896 1360)
+	(pt -2768 1360)
 )
 (junction (pt -1968 1480))
 (junction (pt -1952 1464))

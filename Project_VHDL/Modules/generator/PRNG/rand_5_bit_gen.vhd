@@ -34,7 +34,7 @@ USE IEEE.STD_LOGIC_UNSIGNED.all;
 USE work.rand_num_pkg.all;
 
 ENTITY rand_5_bit_gen IS
-	PORT(  seed                    :   	IN STD_LOGIC_VECTOR(9 downto 0);
+	PORT(   seed_in                 :   IN STD_LOGIC_VECTOR (9 DOWNTO 0);
 		    enable, gen, reset	    : 	IN STD_LOGIC;
 		    rand_out                :	OUT STD_LOGIC_VECTOR (4 downto 0)
 	    );
@@ -49,36 +49,43 @@ ARCHITECTURE beh OF rand_5_bit_gen IS
     	);
     END COMPONENT psudo_rand_gen;
 
-    SIGNAL q_r0, q_r1, q_r2, q_r3, q_r4 : STD_LOGIC;
-    SIGNAL rand_out_i : STD_LOGIC_VECTOR (4 downto 0);
+    SIGNAL q_r0, q_r1, q_r2, q_r3, q_r4     : STD_LOGIC;
+    SIGNAL rand_out_i                       : STD_LOGIC_VECTOR (4 downto 0);
+    SIGNAL seed                             : seed_pkg;
 BEGIN
 
+    seed(0) <= "0000000000";
+    seed(1) <= "1000000100";
+    seed(2) <= "0000010100";
+    seed(3) <= "0001000000";
+    seed(4) <= "0000010000";
+
     -- Each component in parallel outputs its feedback bit.
-    R0: psudo_rand_gen port map (   seed => seed,
+    R0: psudo_rand_gen port map (   seed => seed(0),
                                     enable => enable,
                                     gen => gen,
                                     reset => reset,
                                     q => q_r0
                                 );
-    R1: psudo_rand_gen port map (   seed => seed,
+    R1: psudo_rand_gen port map (   seed => seed(1),
                                     enable => enable,
                                     gen => gen,
                                     reset => reset,
                                     q => q_r1
                                 );
-    R2: psudo_rand_gen port map (   seed => seed(0) & seed(9 downto 1),
+    R2: psudo_rand_gen port map (   seed => seed(2),
                                     enable => enable,
                                     gen => gen,
                                     reset => reset,
                                     q => q_r2
                                 );
-    R3: psudo_rand_gen port map (   seed => seed(2 downto 0) & seed(9 downto 4) & seed(3),
+    R3: psudo_rand_gen port map (   seed => seed(3),
                                     enable => enable,
                                     gen => gen,
                                     reset => reset,
                                     q => q_r3
                                 );
-    R4: psudo_rand_gen port map (   seed => seed(4 downto 0) & seed(9 downto 5),
+    R4: psudo_rand_gen port map (   seed => seed(4),
                                     enable => enable,
                                     gen => gen,
                                     reset => reset,
@@ -94,6 +101,8 @@ BEGIN
         IF (CONV_INTEGER(rand_out_i) = 31) THEN
             rand_out <= CONV_STD_LOGIC_VECTOR(16, rand_out_i'length);
         ELSIF (CONV_INTEGER(rand_out_i) = 30) THEN
+            rand_out <= CONV_STD_LOGIC_VECTOR(15, rand_out_i'length);
+        ELSIF (CONV_INTEGER(rand_out_i) > 20) THEN
             rand_out <= CONV_STD_LOGIC_VECTOR(15, rand_out_i'length);
         ELSE
             rand_out <= rand_out_i;

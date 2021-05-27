@@ -4,7 +4,7 @@ JedecChain;
 	DefaultMfr(6E);
 
 	P ActionCode(Cfg)
-		Device PartName(EP3C16F484) Path("C:/Users/OEM/Documents/GitHub/CS305_VHDL_Project/Project_Quartus/main/output_files/") File("main.sof") MfrSpec(OpMask(1));
+		Device PartName(EP3C16F484) Path("C:/Users/danie/Documents/GitHub/CS305_VHDL_Project/Project_Quartus/main/output_files/") File("main.sof") MfrSpec(OpMask(1));
 
 ChainEnd;
 

@@ -193,6 +193,7 @@ BEGIN
 		VARIABLE pickup_type						: obj_type_packet				:= NULL_TYPE;
 		VARIABLE pickup_r, pickup_g, pickup_b		: obj_type_packet				:= OBJ_COLOUR_ZERO;
 		VARIABLE pickup_sel							: STD_LOGIC_VECTOR(3 downto 0);
+		VARIABLE location							: STD_LOGIC_VECTOR(9 downto 0)	:= PICKUP_TOP_ROW;
 
 		VARIABLE mem_index 							: INTEGER 						:= OBJ_QUEUE_LENGTH;
 		VARIABLE pipes_passed						: STD_LOGIC_VECTOR(1 downto 0)	:= CONV_STD_LOGIC_VECTOR(0, 2);
@@ -340,8 +341,14 @@ BEGIN
 
 						-- Pickup object creation
 						IF (pickup_type /= NULL_TYPE) THEN
+							CASE(pickup_sel(0)) IS 
+								WHEN '0' => location := PICKUP_TOP_ROW;
+								WHEN '1' => location := PICKUP_BOT_ROW;
+								WHEN OTHERS => location := PICKUP_TOP_ROW;
+							END CASE;
+							
 							pickup(3) := SCREEN_RIGHT;
-							pickup(2) := PICKUP_TOP_ROW;
+							pickup(2) := location;
 							pickup(1) := SCREEN_RIGHT;
 							pickup(0) := pickup(2) +  CONV_STD_LOGIC_VECTOR(32, 10);
 
